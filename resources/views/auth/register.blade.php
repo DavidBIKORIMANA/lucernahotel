@@ -1,110 +1,105 @@
-@extends('frontend.main_master')
-@section('main')
-
-    <!-- Inner Banner -->
-    <!-- <div class="inner-banner inner-bg10">
-        <div class="container">
-            <div class="inner-title">
-                <ul>
-                    <li>
-                        <a href="index.html">Home</a>
-                    </li>
-                    <li><i class='bx bx-chevron-right'></i></li>
-                    <li>Sign Up</li>
-                </ul>
-                <h3>Sign Up</h3>
-            </div>
-        </div>
-    </div> -->
-    <!-- Inner Banner End -->
-
-    <!-- Sign Up Area -->
-    <div class="sign-up-area pt-100 pb-70">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="user-all-form">
-                        <div class="contact-form">
-                            <div class="section-title text-center">
-                                <!-- <span class="sp-color">Sign Up</span> -->
-                                <h2>Create an Account!</h2>
-                            </div>
-                            <form method="POST" action="{{ route('register') }}">
-                        @csrf
-
-                        <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
-
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="default-btn btn-bg-three border-radius-5">
-                                    {{ __('Register') }}
-                                </button>
-                            </div>
-                            <div class="col-12">
-                <p class="account-desc">
-                    Already have an account? 
-                    <a href="{{ route('login') }}">Sign In</a>
-                </p>
-            </div>
-                        </div>
-                    </form>
-    
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account — {{ config('app.name') }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ asset('frontend/assets/img/favicon.png') }}">
+    <style>
+        :root{--brand:#0c4da2;--brand-dark:#034ea2;--navy:#0c2340;--white:#fff;--off-white:#f6f7fa;--ink:#181c2a;--mid:#4a5568;--gold:#d4a853;--f-head:'Cormorant Garamond',Georgia,serif;--f-body:'Source Sans 3',-apple-system,sans-serif;}
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+        html,body{height:100%;font-family:var(--f-body);color:var(--ink);-webkit-font-smoothing:antialiased;}
+        .auth-wrapper{display:flex;min-height:100vh;}
+        .auth-hero{flex:1;position:relative;background:var(--navy);display:flex;flex-direction:column;overflow:hidden;}
+        .auth-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+        .auth-hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(3,78,162,.85) 0%,rgba(7,22,38,.7) 50%,rgba(7,22,38,.8) 100%);}
+        .auth-hero-top{position:relative;z-index:2;padding:36px 48px;}
+        .auth-hero-logo{height:38px;filter:brightness(10);}
+        .auth-hero-content{position:relative;z-index:2;padding:0 48px 48px;margin-top:auto;margin-bottom:auto;max-width:520px;}
+        .auth-hero-title{font-family:var(--f-head);font-size:38px;font-weight:400;color:var(--white);line-height:1.2;margin-bottom:14px;}
+        .auth-hero-sub{font-family:var(--f-body);font-size:15px;color:rgba(255,255,255,.7);line-height:1.8;}
+        .auth-hero-stars{color:var(--gold);font-size:16px;letter-spacing:5px;margin-bottom:14px;display:block;}
+        .auth-form-panel{width:520px;flex-shrink:0;display:flex;flex-direction:column;justify-content:center;padding:40px 56px;background:var(--white);overflow-y:auto;}
+        .auth-back{font-family:var(--f-body);font-size:13px;color:var(--mid);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:28px;transition:color .2s;}
+        .auth-back:hover{color:var(--brand);}
+        .auth-back svg{width:16px;height:16px;}
+        .auth-form-title{font-family:var(--f-head);font-size:32px;font-weight:400;color:var(--navy);margin-bottom:6px;}
+        .auth-form-sub{font-family:var(--f-body);font-size:14px;color:var(--mid);margin-bottom:28px;line-height:1.6;}
+        .auth-field{margin-bottom:18px;}
+        .auth-label{display:block;font-family:var(--f-body);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);margin-bottom:6px;}
+        .auth-input{width:100%;font-family:var(--f-body);font-size:15px;padding:12px 16px;border:1.5px solid #dde2ea;border-radius:4px;background:var(--off-white);color:var(--ink);transition:border-color .2s,box-shadow .2s;outline:none;}
+        .auth-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(12,77,162,.1);background:var(--white);}
+        .auth-input::placeholder{color:#a0aec0;}
+        .auth-btn{width:100%;font-family:var(--f-body);font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:14px;border:none;border-radius:4px;cursor:pointer;transition:all .25s;margin-top:6px;}
+        .auth-btn-primary{background-image:linear-gradient(179deg,#0a70e3 .46%,#034ea2 87.03%);color:var(--white);}
+        .auth-btn-primary:hover{box-shadow:0 6px 20px rgba(3,78,162,.3);transform:translateY(-1px);}
+        .auth-footer-text{text-align:center;font-size:14px;color:var(--mid);margin-top:20px;}
+        .auth-footer-text a{color:var(--brand);font-weight:600;text-decoration:none;}
+        .auth-footer-text a:hover{text-decoration:underline;}
+        .auth-error{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;font-size:13px;padding:10px 14px;border-radius:4px;margin-bottom:16px;}
+        .auth-field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+        @media(max-width:960px){.auth-hero{display:none;}.auth-form-panel{width:100%;max-width:480px;margin:0 auto;padding:32px 24px;}}
+    </style>
+</head>
+<body>
+<div class="auth-wrapper">
+    <div class="auth-hero">
+        <img src="{{ asset('frontend/assets/img/about-img.jpg') }}" alt="{{ config('app.name') }}">
+        <div class="auth-hero-overlay"></div>
+        <div class="auth-hero-content">
+            <span class="auth-hero-stars">★★★</span>
+            <h2 class="auth-hero-title">Begin Your Journey at {{ config('app.name') }}</h2>
+            <p class="auth-hero-sub">Create an account to book rooms, access exclusive offers, and manage your reservations with ease.</p>
         </div>
     </div>
-    <!-- Sign Up Area End -->
 
+    <div class="auth-form-panel">
+        <a href="{{ route('home') }}" class="auth-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back to Home
+        </a>
 
+        <h1 class="auth-form-title">Create Account</h1>
+        <p class="auth-form-sub">Join us and unlock a world of hospitality.</p>
 
-@endsection
+        @if ($errors->any())
+            <div class="auth-error">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('register') }}">
+            @csrf
+            <div class="auth-field">
+                <label class="auth-label" for="name">Full Name</label>
+                <input class="auth-input" type="text" name="name" id="name" value="{{ old('name') }}" placeholder="Enter your full name" required autofocus>
+            </div>
+
+            <div class="auth-field">
+                <label class="auth-label" for="email">Email Address</label>
+                <input class="auth-input" type="email" name="email" id="email" value="{{ old('email') }}" placeholder="you@example.com" required>
+            </div>
+
+            <div class="auth-field-row">
+                <div class="auth-field">
+                    <label class="auth-label" for="password">Password</label>
+                    <input class="auth-input" type="password" name="password" id="password" placeholder="Min. 8 characters" required>
+                </div>
+                <div class="auth-field">
+                    <label class="auth-label" for="password_confirmation">Confirm Password</label>
+                    <input class="auth-input" type="password" name="password_confirmation" id="password_confirmation" placeholder="Repeat password" required>
+                </div>
+            </div>
+
+            <button type="submit" class="auth-btn auth-btn-primary">Create Account</button>
+        </form>
+
+        <p class="auth-footer-text">Already have an account? <a href="{{ route('login') }}">Sign In</a></p>
+    </div>
+</div>
+</body>
+</html>

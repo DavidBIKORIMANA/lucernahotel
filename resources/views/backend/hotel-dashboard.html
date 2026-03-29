@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Grand Hotel — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-deep:    #090d17;
+    --bg-base:    #0e1422;
+    --bg-card:    #131928;
+    --bg-card2:   #192033;
+    --bg-hover:   #1e2840;
+    --gold:       #c9a84c;
+    --gold-light: #e4c97a;
+    --gold-dim:   #8a6e2e;
+    --gold-bg:    rgba(201,168,76,.08);
+    --border:     rgba(201,168,76,.12);
+    --border2:    rgba(255,255,255,.06);
+    --text-1:     #f0ead8;
+    --text-2:     #9ea8be;
+    --text-3:     #5b6478;
+    --danger:     #e05252;
+    --success:    #4caf7d;
+    --info:       #4b8ef5;
+    --warning:    #e89b3a;
+    --sidebar-w:  260px;
+    --header-h:   68px;
+    --radius:     14px;
+    --radius-sm:  8px;
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-ui:      'Plus Jakarta Sans', system-ui, sans-serif;
+    --transition:   0.22s cubic-bezier(.4,0,.2,1);
+  }
+
+  html, body { height: 100%; font-family: var(--font-ui); background: var(--bg-deep); color: var(--text-1); font-size: 14px; line-height: 1.6; }
+
+  /* ── Scrollbar ─────────────────────────────── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* ── Layout shell ────────────────────────────── */
+  .shell { display: flex; min-height: 100vh; }
+
+  /* ════════════════════════════════════════════════
+     SIDEBAR
+  ════════════════════════════════════════════════ */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--bg-base);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    overflow-y: auto;
+    transition: transform var(--transition);
+  }
+
+  .sidebar-brand {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-icon {
+    width: 38px; height: 38px;
+    background: var(--gold-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .brand-name {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-1);
+    letter-spacing: .3px;
+  }
+  .brand-sub {
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-top: -2px;
+  }
+
+  .nav-section { padding: 16px 12px 0; }
+  .nav-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-3);
+    font-weight: 600;
+    padding: 0 12px;
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    color: var(--text-2);
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+    position: relative;
+    text-decoration: none;
+  }
+  .nav-item:hover { background: var(--bg-hover); color: var(--text-1); }
+  .nav-item.active {
+    background: var(--gold-bg);
+    color: var(--gold);
+    border: 1px solid var(--border);
+  }
+  .nav-item.active .nav-icon { color: var(--gold); }
+  .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: .8; }
+  .nav-item.active .nav-icon { opacity: 1; }
+  .nav-text { font-size: 13.5px; font-weight: 500; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--gold);
+    color: var(--bg-deep);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 20px;
+    min-width: 20px;
+    text-align: center;
+  }
+  .nav-badge.red { background: var(--danger); color: #fff; }
+
+  .nav-group { margin-bottom: 2px; }
+  .nav-group-toggle {
+    display: flex; align-items: center; gap: 11px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    color: var(--text-2);
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+    user-select: none;
+  }
+  .nav-group-toggle:hover { background: var(--bg-hover); color: var(--text-1); }
+  .nav-group-children {
+    padding-left: 16px;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height .3s ease;
+  }
+  .nav-group.open .nav-group-children { max-height: 300px; }
+  .nav-chevron {
+    margin-left: auto;
+    transition: transform .25s;
+    width: 14px; height: 14px;
+    color: var(--text-3);
+  }
+  .nav-group.open .nav-chevron { transform: rotate(90deg); }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px 12px;
+    border-top: 1px solid var(--border);
+  }
+  .user-card {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+  .user-card:hover { background: var(--bg-hover); }
+  .user-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--gold-bg);
+    border: 1.5px solid var(--gold-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; color: var(--gold);
+    flex-shrink: 0;
+  }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--text-1); }
+  .user-role { font-size: 11px; color: var(--text-3); }
+  .user-more { margin-left: auto; color: var(--text-3); }
+
+  /* ════════════════════════════════════════════════
+     MAIN
+  ════════════════════════════════════════════════ */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ── Header ──────────────────────────────────── */
+  .header {
+    height: var(--header-h);
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 28px;
+    gap: 16px;
+    position: sticky; top: 0; z-index: 90;
+  }
+  .header-title {
+    font-family: var(--font-display);
+    font-size: 22px; font-weight: 500;
+    color: var(--text-1);
+    flex: 1;
+  }
+  .header-title span { color: var(--gold); }
+
+  .search-wrap {
+    position: relative;
+    display: flex; align-items: center;
+  }
+  .search-wrap svg { position: absolute; left: 12px; color: var(--text-3); pointer-events: none; }
+  .search-input {
+    background: var(--bg-card);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 8px 16px 8px 36px;
+    color: var(--text-1);
+    font-family: var(--font-ui);
+    font-size: 13px;
+    width: 220px;
+    outline: none;
+    transition: border var(--transition), width var(--transition);
+  }
+  .search-input::placeholder { color: var(--text-3); }
+  .search-input:focus { border-color: var(--gold-dim); width: 270px; }
+
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+  .icon-btn {
+    width: 38px; height: 38px;
+    background: var(--bg-card);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition), border var(--transition);
+    position: relative;
+    text-decoration: none;
+  }
+  .icon-btn:hover { background: var(--bg-hover); color: var(--gold); border-color: var(--border); }
+  .badge-dot {
+    position: absolute; top: 7px; right: 7px;
+    width: 7px; height: 7px;
+    background: var(--danger);
+    border: 1.5px solid var(--bg-base);
+    border-radius: 50%;
+  }
+
+  .header-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--gold-bg);
+    border: 1.5px solid var(--gold-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    color: var(--gold);
+    cursor: pointer;
+    transition: border-color var(--transition);
+  }
+  .header-avatar:hover { border-color: var(--gold); }
+
+  /* ── Page content ────────────────────────────── */
+  .page { padding: 28px; flex: 1; }
+
+  .welcome-bar {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .welcome-greeting {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--text-1);
+    line-height: 1.1;
+  }
+  .welcome-greeting span { color: var(--gold); }
+  .welcome-sub { font-size: 13px; color: var(--text-3); margin-top: 4px; }
+  .date-chip {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 12.5px;
+    color: var(--text-2);
+    display: flex; align-items: center; gap: 7px;
+  }
+  .date-chip svg { color: var(--gold); }
+
+  /* ── KPI Cards ───────────────────────────────── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 22px 22px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color var(--transition), transform .2s;
+    cursor: default;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .kpi-card:hover { border-color: var(--gold-dim); transform: translateY(-2px); }
+  .kpi-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+  .kpi-icon {
+    width: 42px; height: 42px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .kpi-icon.gold { background: var(--gold-bg); border: 1px solid rgba(201,168,76,.2); color: var(--gold); }
+  .kpi-icon.blue { background: rgba(75,142,245,.08); border: 1px solid rgba(75,142,245,.2); color: var(--info); }
+  .kpi-icon.green { background: rgba(76,175,125,.08); border: 1px solid rgba(76,175,125,.2); color: var(--success); }
+  .kpi-icon.warn { background: rgba(232,155,58,.08); border: 1px solid rgba(232,155,58,.2); color: var(--warning); }
+
+  .kpi-trend {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    display: flex; align-items: center; gap: 3px;
+  }
+  .kpi-trend.up { background: rgba(76,175,125,.12); color: var(--success); }
+  .kpi-trend.down { background: rgba(224,82,82,.12); color: var(--danger); }
+
+  .kpi-value {
+    font-family: var(--font-display);
+    font-size: 34px;
+    font-weight: 600;
+    color: var(--text-1);
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+  .kpi-label { font-size: 12px; color: var(--text-3); font-weight: 500; letter-spacing: .3px; }
+  .kpi-bar {
+    margin-top: 14px;
+    height: 3px;
+    background: var(--border2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .kpi-bar-fill { height: 100%; border-radius: 2px; }
+
+  /* ── Charts row ─────────────────────────────── */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 18px; font-weight: 500;
+    color: var(--text-1);
+  }
+  .card-title small {
+    display: block;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--text-3);
+    font-weight: 400;
+    margin-top: 2px;
+    letter-spacing: .3px;
+  }
+  .pill-tabs { display: flex; gap: 4px; }
+  .pill-tab {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+    color: var(--text-3);
+    font-weight: 500;
+  }
+  .pill-tab.active { background: var(--gold-bg); color: var(--gold); border: 1px solid var(--border); }
+  .pill-tab:not(.active):hover { background: var(--bg-hover); color: var(--text-2); }
+
+  /* donut legend */
+  .donut-legend { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+  .legend-row { display: flex; align-items: center; gap: 10px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .legend-label { font-size: 12.5px; color: var(--text-2); flex: 1; }
+  .legend-value { font-size: 13px; font-weight: 600; color: var(--text-1); }
+  .legend-pct { font-size: 11px; color: var(--text-3); }
+
+  /* ── Lower row ──────────────────────────────── */
+  .lower-row {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 16px;
+  }
+
+  /* ── Table card ─────────────────────────────── */
+  .table-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .table-card .card-header { padding: 20px 24px 0; }
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th {
+    padding: 10px 16px;
+    font-size: 10.5px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-3);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border2);
+    text-align: left;
+    white-space: nowrap;
+  }
+  .data-table td {
+    padding: 13px 16px;
+    font-size: 13px;
+    color: var(--text-2);
+    border-bottom: 1px solid rgba(255,255,255,.03);
+    vertical-align: middle;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr { transition: background var(--transition); }
+  .data-table tr:hover td { background: var(--bg-hover); color: var(--text-1); }
+
+  .guest-cell { display: flex; align-items: center; gap: 10px; }
+  .guest-av {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .guest-av.c1 { background: rgba(201,168,76,.12); color: var(--gold); }
+  .guest-av.c2 { background: rgba(75,142,245,.12); color: var(--info); }
+  .guest-av.c3 { background: rgba(76,175,125,.12); color: var(--success); }
+  .guest-av.c4 { background: rgba(224,82,82,.12); color: var(--danger); }
+  .guest-av.c5 { background: rgba(232,155,58,.12); color: var(--warning); }
+  .guest-name { font-size: 13px; font-weight: 500; color: var(--text-1); }
+  .guest-email { font-size: 11px; color: var(--text-3); }
+
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .status-pill::before { content: ''; width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
+  .status-pill.confirmed { background: rgba(76,175,125,.1); color: var(--success); border: 1px solid rgba(76,175,125,.2); }
+  .status-pill.confirmed::before { background: var(--success); }
+  .status-pill.pending { background: rgba(232,155,58,.1); color: var(--warning); border: 1px solid rgba(232,155,58,.2); }
+  .status-pill.pending::before { background: var(--warning); }
+  .status-pill.checked-in { background: rgba(75,142,245,.1); color: var(--info); border: 1px solid rgba(75,142,245,.2); }
+  .status-pill.checked-in::before { background: var(--info); }
+  .status-pill.cancelled { background: rgba(224,82,82,.1); color: var(--danger); border: 1px solid rgba(224,82,82,.2); }
+  .status-pill.cancelled::before { background: var(--danger); }
+
+  .amount-cell { font-weight: 600; color: var(--gold); }
+
+  /* ── Side panel ─────────────────────────────── */
+  .side-col { display: flex; flex-direction: column; gap: 16px; }
+
+  .room-status-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 22px;
+    flex: 1;
+  }
+  .room-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .room-type-chip {
+    background: var(--bg-card2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 14px;
+    transition: border-color var(--transition);
+  }
+  .room-type-chip:hover { border-color: var(--gold-dim); }
+  .room-type-name { font-size: 12px; color: var(--text-3); margin-bottom: 4px; font-weight: 500; }
+  .room-type-count { font-family: var(--font-display); font-size: 26px; font-weight: 600; color: var(--text-1); line-height: 1; }
+  .room-type-sub { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+  .room-type-bar { margin-top: 8px; height: 2px; background: var(--border2); border-radius: 2px; overflow: hidden; }
+  .room-type-bar-fill { height: 100%; border-radius: 2px; }
+
+  .activity-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 22px;
+  }
+  .activity-list { margin-top: 16px; display: flex; flex-direction: column; gap: 0; }
+  .activity-item {
+    display: flex; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,.03);
+    position: relative;
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-dot-wrap { display: flex; flex-direction: column; align-items: center; }
+  .activity-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .activity-line { width: 1px; flex: 1; background: var(--border2); margin-top: 4px; }
+  .activity-item:last-child .activity-line { display: none; }
+  .activity-text { font-size: 12.5px; color: var(--text-2); flex: 1; }
+  .activity-text strong { color: var(--text-1); font-weight: 500; }
+  .activity-time { font-size: 11px; color: var(--text-3); }
+
+  /* ── View all button ────────────────────────── */
+  .view-all-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--gold);
+    font-size: 12px;
+    font-family: var(--font-ui);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--transition);
+    text-decoration: none;
+  }
+  .view-all-btn:hover { background: var(--gold-bg); }
+
+  /* ── Animations ─────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .kpi-card { animation: fadeUp .5s ease both; }
+  .kpi-card:nth-child(1) { animation-delay: .05s; }
+  .kpi-card:nth-child(2) { animation-delay: .12s; }
+  .kpi-card:nth-child(3) { animation-delay: .19s; }
+  .kpi-card:nth-child(4) { animation-delay: .26s; }
+  .chart-card, .table-card, .room-status-card, .activity-card { animation: fadeUp .5s ease both; animation-delay: .3s; }
+
+  /* ── Divider line in table header ── */
+  .table-card .card-header { border-bottom: 1px solid var(--border2); padding-bottom: 20px; }
+
+  /* ── Responsive hint ── */
+  @media (max-width: 1280px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    .lower-row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .main { margin-left: 0; }
+    .kpi-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── Sparkline mini-chart inside KPI ── */
+  .kpi-spark { position: absolute; bottom: 0; right: 0; opacity: .35; pointer-events: none; }
+</style>
+</head>
+
+<body>
+<div class="shell">
+
+  <!-- ══ SIDEBAR ══════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 22V9l9-7 9 7v13"/><path d="M9 22V12h6v10"/><rect x="11" y="4" width="2" height="2" fill="currentColor" stroke="none"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">Grand Hotel</div>
+        <div class="brand-sub">Admin Panel</div>
+      </div>
+    </div>
+
+    <nav class="nav-section">
+      <div class="nav-label" style="margin-top:8px;">Overview</div>
+
+      <a class="nav-item active" href="#">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span class="nav-text">Dashboard</span>
+      </a>
+
+      <div class="nav-label">Rooms & Stays</div>
+
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M2 22V12l10-8 10 8v10H2z"/><path d="M9 22v-6h6v6"/></svg>
+        <span class="nav-text">Accommodation</span>
+      </a>
+
+      <div class="nav-group" onclick="toggleGroup(this)">
+        <div class="nav-group-toggle">
+          <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M2 9h20M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M8 5v14"/></svg>
+          <span class="nav-text">Bookings</span>
+          <span class="nav-badge red">8</span>
+          <svg class="nav-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="nav-group-children">
+          <a class="nav-item" href="#" style="padding-left:8px; font-size:13px;">
+            <svg class="nav-icon" style="width:14px;height:14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg>
+            <span class="nav-text">Booking List</span>
+          </a>
+          <a class="nav-item" href="#" style="padding-left:8px; font-size:13px;">
+            <svg class="nav-icon" style="width:14px;height:14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg>
+            <span class="nav-text">Add Booking</span>
+          </a>
+        </div>
+      </div>
+
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span class="nav-text">Reviews</span>
+        <span class="nav-badge">3</span>
+      </a>
+
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+        <span class="nav-text">Room List</span>
+      </a>
+
+      <div class="nav-label">Operations</div>
+
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span class="nav-text">Manage Teams</span>
+      </a>
+
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="nav-text">Booking Report</span>
+      </a>
+
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span class="nav-text">Contact Messages</span>
+        <span class="nav-badge red">5</span>
+      </a>
+
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+        <span class="nav-text">Hotel Gallery</span>
+      </a>
+
+      <div class="nav-label">System</div>
+
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 1 1-14.14 0"/></svg>
+        <span class="nav-text">Role &amp; Permissions</span>
+      </a>
+
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span class="nav-text">Admin Users</span>
+      </a>
+
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 1 1-14.14 0"/></svg>
+        <span class="nav-text">Settings</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">JD</div>
+        <div>
+          <div class="user-name">James Dubois</div>
+          <div class="user-role">Super Admin</div>
+        </div>
+        <svg class="user-more" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN ══════════════════════════════════ -->
+  <div class="main">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-title">
+        Grand <span>Overview</span>
+      </div>
+
+      <div class="search-wrap">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-input" type="search" placeholder="Search guests, rooms…"/>
+      </div>
+
+      <div class="header-actions">
+        <a class="icon-btn" href="#" title="Notifications">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="badge-dot"></span>
+        </a>
+        <a class="icon-btn" href="#" title="Calendar">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </a>
+        <a class="icon-btn" href="#" title="Reports">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </a>
+        <div class="header-avatar" title="James Dubois">JD</div>
+      </div>
+    </header>
+
+    <!-- Page -->
+    <div class="page">
+
+      <!-- Welcome -->
+      <div class="welcome-bar">
+        <div>
+          <div class="welcome-greeting">Good morning, <span>James</span> 👋</div>
+          <div class="welcome-sub">Here's what's happening at the hotel today.</div>
+        </div>
+        <div class="date-chip">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Sunday, 29 March 2026
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <div class="kpi-icon gold">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg>
+            </div>
+            <div class="kpi-trend up">
+              <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              +14.2%
+            </div>
+          </div>
+          <div class="kpi-value">$84,250</div>
+          <div class="kpi-label">TOTAL REVENUE · THIS MONTH</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:74%;background:var(--gold);"></div></div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <div class="kpi-icon blue">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path d="M2 9h20M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg>
+            </div>
+            <div class="kpi-trend up">
+              <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              +6.8%
+            </div>
+          </div>
+          <div class="kpi-value">248</div>
+          <div class="kpi-label">ACTIVE BOOKINGS · THIS MONTH</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:62%;background:var(--info);"></div></div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <div class="kpi-icon green">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path d="M3 22V12l9-8 9 8v10"/><path d="M9 22v-6h6v6"/></svg>
+            </div>
+            <div class="kpi-trend up">
+              <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              +3.1%
+            </div>
+          </div>
+          <div class="kpi-value">87<span style="font-size:20px;color:var(--text-3);">%</span></div>
+          <div class="kpi-label">OCCUPANCY RATE · TODAY</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:87%;background:var(--success);"></div></div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <div class="kpi-icon warn">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="kpi-trend down">
+              <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+              −2.4%
+            </div>
+          </div>
+          <div class="kpi-value">1,840</div>
+          <div class="kpi-label">TOTAL GUESTS · THIS YEAR</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:55%;background:var(--warning);"></div></div>
+        </div>
+
+      </div>
+
+      <!-- Charts Row -->
+      <div class="charts-row">
+
+        <!-- Revenue Line Chart -->
+        <div class="chart-card">
+          <div class="card-header">
+            <div class="card-title">
+              Revenue Overview
+              <small>Monthly performance tracking</small>
+            </div>
+            <div class="pill-tabs">
+              <div class="pill-tab">Week</div>
+              <div class="pill-tab active">Month</div>
+              <div class="pill-tab">Year</div>
+            </div>
+          </div>
+          <canvas id="revenueChart" height="110"></canvas>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="chart-card">
+          <div class="card-header">
+            <div class="card-title">
+              Room Occupancy
+              <small>Current distribution</small>
+            </div>
+          </div>
+          <div style="position:relative; width:170px; margin:0 auto;">
+            <canvas id="donutChart" width="170" height="170"></canvas>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;">
+              <div style="font-family:var(--font-display);font-size:28px;font-weight:600;color:var(--text-1);line-height:1;">87%</div>
+              <div style="font-size:10px;color:var(--text-3);letter-spacing:.5px;">OCCUPIED</div>
+            </div>
+          </div>
+          <div class="donut-legend">
+            <div class="legend-row"><div class="legend-dot" style="background:#c9a84c;"></div><span class="legend-label">Occupied</span><span class="legend-value">87</span><span class="legend-pct">rooms</span></div>
+            <div class="legend-row"><div class="legend-dot" style="background:#4b8ef5;"></div><span class="legend-label">Reserved</span><span class="legend-value">8</span><span class="legend-pct">rooms</span></div>
+            <div class="legend-row"><div class="legend-dot" style="background:#4caf7d;"></div><span class="legend-label">Available</span><span class="legend-value">5</span><span class="legend-pct">rooms</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Lower Row -->
+      <div class="lower-row">
+
+        <!-- Bookings Table -->
+        <div class="table-card">
+          <div class="card-header">
+            <div class="card-title">
+              Recent Bookings
+              <small>Latest reservations</small>
+            </div>
+            <a class="view-all-btn" href="#">
+              View all
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Guest</th>
+                <th>Room</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="guest-cell"><div class="guest-av c1">AM</div><div><div class="guest-name">Amara Mbeki</div><div class="guest-email">a.mbeki@mail.com</div></div></div></td>
+                <td>Suite 401</td>
+                <td>29 Mar 2026</td>
+                <td>02 Apr 2026</td>
+                <td class="amount-cell">$1,240</td>
+                <td><span class="status-pill checked-in">Checked In</span></td>
+              </tr>
+              <tr>
+                <td><div class="guest-cell"><div class="guest-av c2">LR</div><div><div class="guest-name">Lucas Reinhart</div><div class="guest-email">l.reinhart@corp.de</div></div></div></td>
+                <td>Deluxe 208</td>
+                <td>30 Mar 2026</td>
+                <td>01 Apr 2026</td>
+                <td class="amount-cell">$640</td>
+                <td><span class="status-pill confirmed">Confirmed</span></td>
+              </tr>
+              <tr>
+                <td><div class="guest-cell"><div class="guest-av c3">SN</div><div><div class="guest-name">Sofia Nakamura</div><div class="guest-email">s.nakamura@jp.net</div></div></div></td>
+                <td>Standard 114</td>
+                <td>28 Mar 2026</td>
+                <td>31 Mar 2026</td>
+                <td class="amount-cell">$480</td>
+                <td><span class="status-pill confirmed">Confirmed</span></td>
+              </tr>
+              <tr>
+                <td><div class="guest-cell"><div class="guest-av c4">KP</div><div><div class="guest-name">Kwame Patel</div><div class="guest-email">k.patel@email.io</div></div></div></td>
+                <td>Junior Suite 305</td>
+                <td>25 Mar 2026</td>
+                <td>29 Mar 2026</td>
+                <td class="amount-cell">$920</td>
+                <td><span class="status-pill pending">Pending</span></td>
+              </tr>
+              <tr>
+                <td><div class="guest-cell"><div class="guest-av c5">EV</div><div><div class="guest-name">Elena Vásquez</div><div class="guest-email">e.vasquez@mx.co</div></div></div></td>
+                <td>Penthouse 501</td>
+                <td>01 Apr 2026</td>
+                <td>07 Apr 2026</td>
+                <td class="amount-cell">$3,600</td>
+                <td><span class="status-pill confirmed">Confirmed</span></td>
+              </tr>
+              <tr>
+                <td><div class="guest-cell"><div class="guest-av c1">TC</div><div><div class="guest-name">Théo Chabot</div><div class="guest-email">t.chabot@fr.me</div></div></div></td>
+                <td>Deluxe 212</td>
+                <td>22 Mar 2026</td>
+                <td>24 Mar 2026</td>
+                <td class="amount-cell">$380</td>
+                <td><span class="status-pill cancelled">Cancelled</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Right Column -->
+        <div class="side-col">
+
+          <!-- Room Status -->
+          <div class="room-status-card">
+            <div class="card-header" style="margin-bottom:0;">
+              <div class="card-title" style="font-size:16px;">
+                Room Types
+                <small>Availability by category</small>
+              </div>
+            </div>
+            <div class="room-grid">
+              <div class="room-type-chip">
+                <div class="room-type-name">Standard</div>
+                <div class="room-type-count">42</div>
+                <div class="room-type-sub">3 available</div>
+                <div class="room-type-bar"><div class="room-type-bar-fill" style="width:93%;background:var(--gold);"></div></div>
+              </div>
+              <div class="room-type-chip">
+                <div class="room-type-name">Deluxe</div>
+                <div class="room-type-count">28</div>
+                <div class="room-type-sub">2 available</div>
+                <div class="room-type-bar"><div class="room-type-bar-fill" style="width:89%;background:var(--info);"></div></div>
+              </div>
+              <div class="room-type-chip">
+                <div class="room-type-name">Jr. Suite</div>
+                <div class="room-type-count">16</div>
+                <div class="room-type-sub">0 available</div>
+                <div class="room-type-bar"><div class="room-type-bar-fill" style="width:100%;background:var(--danger);"></div></div>
+              </div>
+              <div class="room-type-chip">
+                <div class="room-type-name">Suite &amp; PH</div>
+                <div class="room-type-count">14</div>
+                <div class="room-type-sub">1 available</div>
+                <div class="room-type-bar"><div class="room-type-bar-fill" style="width:87%;background:var(--success);"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="activity-card">
+            <div class="card-header" style="margin-bottom:0;">
+              <div class="card-title" style="font-size:16px;">
+                Recent Activity
+                <small>Live updates</small>
+              </div>
+            </div>
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="activity-dot-wrap">
+                  <div class="activity-dot" style="background:var(--success);"></div>
+                  <div class="activity-line"></div>
+                </div>
+                <div style="flex:1;">
+                  <div class="activity-text"><strong>Amara Mbeki</strong> checked into Suite 401</div>
+                  <div class="activity-time">2 min ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot-wrap">
+                  <div class="activity-dot" style="background:var(--info);"></div>
+                  <div class="activity-line"></div>
+                </div>
+                <div style="flex:1;">
+                  <div class="activity-text">New booking for <strong>Penthouse 501</strong></div>
+                  <div class="activity-time">18 min ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot-wrap">
+                  <div class="activity-dot" style="background:var(--warning);"></div>
+                  <div class="activity-line"></div>
+                </div>
+                <div style="flex:1;">
+                  <div class="activity-text"><strong>Review</strong> submitted for Room 208 ★★★★☆</div>
+                  <div class="activity-time">1 hr ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot-wrap">
+                  <div class="activity-dot" style="background:var(--danger);"></div>
+                  <div class="activity-line"></div>
+                </div>
+                <div style="flex:1;">
+                  <div class="activity-text">Booking <strong>#BK-1041</strong> cancelled by guest</div>
+                  <div class="activity-time">3 hr ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot-wrap">
+                  <div class="activity-dot" style="background:var(--gold);"></div>
+                  <div class="activity-line"></div>
+                </div>
+                <div style="flex:1;">
+                  <div class="activity-text">Payment received — <strong>$3,600</strong></div>
+                  <div class="activity-time">5 hr ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /side-col -->
+      </div><!-- /lower-row -->
+
+    </div><!-- /page -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+  /* ── Nav group toggle ── */
+  function toggleGroup(el) {
+    el.classList.toggle('open');
+  }
+
+  /* ── Revenue Chart ── */
+  const rCtx = document.getElementById('revenueChart').getContext('2d');
+
+  const grad = rCtx.createLinearGradient(0, 0, 0, 220);
+  grad.addColorStop(0, 'rgba(201,168,76,0.28)');
+  grad.addColorStop(1, 'rgba(201,168,76,0.00)');
+
+  const grad2 = rCtx.createLinearGradient(0, 0, 0, 220);
+  grad2.addColorStop(0, 'rgba(75,142,245,0.18)');
+  grad2.addColorStop(1, 'rgba(75,142,245,0.00)');
+
+  new Chart(rCtx, {
+    type: 'line',
+    data: {
+      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      datasets: [
+        {
+          label: 'Revenue',
+          data: [42000,55000,49000,63000,71000,68000,78000,82000,76000,88000,79000,84250],
+          borderColor: '#c9a84c',
+          backgroundColor: grad,
+          borderWidth: 2.2,
+          tension: 0.42,
+          fill: true,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: '#c9a84c',
+          pointHoverBorderColor: '#090d17',
+          pointHoverBorderWidth: 2,
+        },
+        {
+          label: 'Last Year',
+          data: [35000,44000,41000,52000,60000,58000,66000,69000,63000,72000,65000,70000],
+          borderColor: '#4b8ef5',
+          backgroundColor: grad2,
+          borderWidth: 1.8,
+          tension: 0.42,
+          fill: true,
+          borderDash: [5,4],
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: '#4b8ef5',
+          pointHoverBorderColor: '#090d17',
+          pointHoverBorderWidth: 2,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#131928',
+          borderColor: 'rgba(201,168,76,.2)',
+          borderWidth: 1,
+          padding: 10,
+          titleColor: '#9ea8be',
+          bodyColor: '#f0ead8',
+          titleFont: { family: "'Plus Jakarta Sans'", size: 11 },
+          bodyFont: { family: "'Plus Jakarta Sans'", size: 13, weight: '600' },
+          callbacks: {
+            label: ctx => `  $${ctx.parsed.y.toLocaleString()}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: '#5b6478', font: { family: "'Plus Jakarta Sans'", size: 11 }, maxRotation: 0 },
+          border: { display: false }
+        },
+        y: {
+          grid: { color: 'rgba(255,255,255,.04)', drawTicks: false },
+          ticks: {
+            color: '#5b6478',
+            font: { family: "'Plus Jakarta Sans'", size: 11 },
+            padding: 8,
+            callback: v => '$' + (v/1000).toFixed(0) + 'k'
+          },
+          border: { display: false }
+        }
+      }
+    }
+  });
+
+  /* ── Donut Chart ── */
+  const dCtx = document.getElementById('donutChart').getContext('2d');
+  new Chart(dCtx, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [87, 8, 5],
+        backgroundColor: ['#c9a84c','#4b8ef5','#4caf7d'],
+        borderWidth: 0,
+        hoverOffset: 4,
+      }]
+    },
+    options: {
+      cutout: '76%',
+      responsive: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } }
+    }
+  });
+
+  /* ── Pill tab switching ── */
+  document.querySelectorAll('.pill-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      tab.closest('.pill-tabs').querySelectorAll('.pill-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

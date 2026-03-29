@@ -15,16 +15,11 @@ use Carbon\Carbon;
 class RoomController extends Controller
 {
     public function EditRoom($id, $type){
-        // dd($type);
         $basic_facility = Facility::where('rooms_id',$id)->get();
         $multiimgs = MultiImage::where('rooms_id',$id)->get();
         $editData = Room::find($id);
         $allroomNo = RoomNumber::where('rooms_id',$id)->get();
-        if($type==='Room'){
-            return view('backend.allroom.rooms.edit_rooms',compact('editData','basic_facility','multiimgs','allroomNo'));
-        }else{
-            return view('backend.allroom.rooms.edit_halls',compact('editData','basic_facility','multiimgs','allroomNo'));
-        }
+        return view('backend.allroom.rooms.edit_rooms',compact('editData','basic_facility','multiimgs','allroomNo'));
     } //End Method 
 
 
@@ -166,7 +161,7 @@ class RoomController extends Controller
 
     public function EditRoomNumber($id){
 
-        $editroomno = RoomNumber::find($id);
+        $editroomno = RoomNumber::with('room_type')->find($id);
         return view('backend.allroom.rooms.edit_room_no',compact('editroomno'));
 
     }//End Method 

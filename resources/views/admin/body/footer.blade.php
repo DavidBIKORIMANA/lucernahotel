@@ -1,4 +1,3 @@
-<footer class="page-footer">
-    <p class="mb-0">Copyright © 2024 - <?php echo date("Y"); ?>
-. All right reserved.</p>
-</footer>
+<div class="admin-footer">
+    Copyright © 2024 – {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
+</div>

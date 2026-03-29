@@ -18,6 +18,7 @@ use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\GalleryController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Frontend\ReviewController;
+use App\Http\Controllers\Backend\RateSeasonController;
 use App\Http\Controllers\Backend\ReviewController as BackendReviewController;
 use App\Models\Booking;
 // Route::get('/', function () {
@@ -107,6 +108,15 @@ Route::middleware(['auth','roles:admin'])->group(function(){
       Route::get('/view/room/list', 'ViewRoomList')->name('view.room.list');
       Route::get('/add/room/list', 'AddRoomList')->name('add.room.list'); 
       Route::post('/store/roomlist', 'StoreRoomList')->name('store.roomlist'); 
+   });
+   /// Rate Season All Route
+   Route::controller(RateSeasonController::class)->group(function(){
+      Route::get('/rate/seasons', 'AllSeasons')->name('all.seasons');
+      Route::get('/add/season', 'AddSeason')->name('add.season');
+      Route::post('/store/season', 'StoreSeason')->name('store.season');
+      Route::get('/edit/season/{id}', 'EditSeason')->name('edit.season');
+      Route::post('/update/season/{id}', 'UpdateSeason')->name('update.season');
+      Route::get('/delete/season/{id}', 'DeleteSeason')->name('delete.season');
    });
    /// Admin Room List All Route 
    Route::controller(SettingController::class)->group(function(){

@@ -9,7 +9,7 @@
    HERO
 ══════════════════════════════ */
 .hero {
-    position:relative; height:100vh; min-height:660px;
+    position:relative; height:80vh; min-height:540px;
     overflow:hidden; display:flex; align-items:center; justify-content:center;
 }
 .hero-slides  { position:absolute; inset:0; }
@@ -32,21 +32,24 @@
     max-width:820px; margin:0 auto;
 }
 .hero-eyebrow {
-    font-family:var(--f-body); font-size:10.5px; font-weight:600;
+    font-family:var(--f-body); font-size:12px; font-weight:600;
     letter-spacing:.28em; text-transform:uppercase;
-    color:var(--brand-pale); display:block; margin-bottom:16px;
+    color:var(--white); display:block; margin-bottom:16px;
+    text-shadow:0 1px 6px rgba(0,0,0,.2);
     opacity:0; animation:fu .85s .2s var(--ease) forwards;
 }
 .hero-title {
     font-family:var(--f-head);
-    font-size:clamp(42px,7.5vw,90px); font-weight:400;
+    font-size:clamp(34px,5.5vw,68px); font-weight:500;
     line-height:1.08; color:var(--white); margin-bottom:18px;
+    text-shadow:0 2px 20px rgba(0,0,0,.3);
     opacity:0; animation:fu 1s .4s var(--ease) forwards;
 }
-.hero-title em { font-style:italic; font-weight:300; }
+.hero-title em { font-style:italic; font-weight:400; }
 .hero-sub {
-    font-family:var(--f-body); font-size:15.5px; font-weight:400; line-height:1.75;
-    color:rgba(255,255,255,.68); max-width:520px; margin:0 auto 32px;
+    font-family:var(--f-body); font-size:16px; font-weight:400; line-height:1.75;
+    color:rgba(255,255,255,.85); max-width:520px; margin:0 auto 32px;
+    text-shadow:0 1px 8px rgba(0,0,0,.2);
     opacity:0; animation:fu 1s .6s var(--ease) forwards;
 }
 .hero-actions {
@@ -76,53 +79,73 @@
 .hstat-lbl { font-family:var(--f-body); font-size:9.5px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--brand-pale); }
 
 /* ══════════════════════════════
-   BOOKING BAR (Marriott-style compact sticky)
+   BOOKING BAR
 ══════════════════════════════ */
+.booking-section {
+    padding:48px 48px 56px;
+    background:var(--off-white);
+}
+.booking-section-inner {
+    max-width:1280px; margin:0 auto;
+}
+.booking-section-header {
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-bottom:28px;
+}
+.booking-section-title {
+    font-family:var(--f-head); font-size:28px; font-weight:400;
+    font-style:italic; color:var(--navy);
+}
+.booking-section-sub {
+    font-family:var(--f-body); font-size:13px; color:var(--soft);
+    letter-spacing:.03em;
+}
 .booking-bar {
-    background:var(--white); position:sticky; top:0; z-index:200;
-    box-shadow:0 2px 16px rgba(12,36,64,.09);
-    border-bottom:3px solid var(--brand);
+    background:var(--white);
+    box-shadow:0 4px 28px rgba(12,36,64,.1);
+    border-bottom:4px solid var(--brand);
+    border-radius:4px;
+    overflow:hidden;
 }
 .booking-bar-inner {
     display:flex; align-items:stretch;
-    max-width:1280px; margin:0 auto;
 }
 .bfield {
-    flex:1; padding:16px 22px; border-right:1px solid rgba(12,77,162,.08);
+    flex:1; padding:24px 28px; border-right:1px solid rgba(12,77,162,.08);
     display:flex; flex-direction:column; justify-content:center;
     transition:background .2s;
 }
-.bfield:hover,.bfield:focus-within { background:rgba(12,77,162,.03); }
+.bfield:hover,.bfield:focus-within { background:rgba(12,77,162,.04); }
 .bfield label {
-    font-family:var(--f-body); font-size:8.5px; font-weight:600;
+    font-family:var(--f-body); font-size:10px; font-weight:700;
     letter-spacing:.2em; text-transform:uppercase; color:var(--brand);
-    margin-bottom:4px; display:block;
+    margin-bottom:6px; display:block;
 }
 .bfield input,.bfield select {
-    font-family:var(--f-head); font-size:15px; font-weight:400;
+    font-family:var(--f-head); font-size:17px; font-weight:400;
     color:var(--navy); background:transparent; border:none; outline:none;
     appearance:none; width:100%; cursor:pointer;
 }
 .bfield input::placeholder { color:rgba(12,35,64,.3); font-style:italic; }
 .bfield select option { background:var(--white); }
 .booking-btn {
-    background:var(--brand); border:none; padding:0 44px;
-    font-family:var(--f-body); font-size:11.5px; font-weight:600;
+    background:var(--brand); border:none; padding:0 52px;
+    font-family:var(--f-body); font-size:13px; font-weight:700;
     letter-spacing:.14em; text-transform:uppercase; color:var(--white);
-    cursor:pointer; white-space:nowrap; transition:background .25s;
-    min-width:180px;
+    cursor:pointer; white-space:nowrap; transition:all .3s;
+    min-width:210px;
 }
-.booking-btn:hover { background:var(--brand-light); }
+.booking-btn:hover { background:var(--brand-light); box-shadow:inset 0 0 0 200px rgba(255,255,255,.08); }
 
-/* Marriott-style hotel identity strip above booking bar */
+/* Hotel identity strip above booking bar */
 .hotel-identity-strip {
     background:var(--white); border-bottom:1px solid rgba(12,77,162,.06);
-    padding:10px 0;
-    position:sticky; top:0; z-index:201;
+    padding:14px 0;
     box-shadow:0 1px 0 rgba(12,77,162,.06);
+    border-radius:4px 4px 0 0;
 }
 .hotel-identity-inner {
-    max-width:1280px; margin:0 auto; padding:0 22px;
+    max-width:1280px; margin:0 auto; padding:0 28px;
     display:flex; align-items:center; justify-content:space-between;
 }
 .hotel-identity-left { display:flex; align-items:center; gap:12px; }
@@ -138,9 +161,11 @@
 .hi-dot.half { background:linear-gradient(90deg,var(--brand) 50%,rgba(12,77,162,.15) 50%); }
 .hi-score { font-family:var(--f-body); font-size:12.5px; font-weight:600; color:var(--ink); }
 .hi-reviews { font-family:var(--f-body); font-size:11.5px; color:var(--brand); text-decoration:underline; cursor:pointer; }
-.hotel-identity-right { display:flex; gap:18px; align-items:center; }
-.hi-map { font-family:var(--f-body); font-size:11.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--brand); text-decoration:none; display:flex; align-items:center; gap:5px; }
-.hi-phone { font-family:var(--f-body); font-size:11.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--brand); text-decoration:none; display:flex; align-items:center; gap:5px; }
+.hotel-identity-right { display:flex; gap:22px; align-items:center; }
+.hi-map { font-family:var(--f-body); font-size:12.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--brand); text-decoration:none; display:flex; align-items:center; gap:6px; transition:color .2s; }
+.hi-map:hover { color:var(--brand-light); }
+.hi-phone { font-family:var(--f-body); font-size:12.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--brand); text-decoration:none; display:flex; align-items:center; gap:6px; transition:color .2s; }
+.hi-phone:hover { color:var(--brand-light); }
 
 /* ══════════════════════════════
    ABOUT
@@ -439,16 +464,18 @@
     .about-inner,.events-inner,.contact-inner { gap:44px; }
 }
 @media(max-width:768px){
-    .hero { min-height:520px; }
-    .hero-title { font-size:clamp(38px,11vw,58px); }
+    .hero { min-height:420px; }
+    .hero-title { font-size:clamp(28px,9vw,44px); }
     .hero-sub { font-size:14px; }
     .hero-dots { bottom:100px; }
     .hero-stats { grid-template-columns:repeat(2,1fr); }
     .hstat { padding:14px; }
     .hotel-identity-strip { display:none; }
+    .booking-section { padding:32px 14px 40px; }
+    .booking-section-header { flex-direction:column; align-items:flex-start; gap:4px; margin-bottom:20px; }
     .booking-bar-inner { flex-direction:column; }
-    .bfield { border-right:none; border-bottom:1px solid rgba(12,77,162,.07); padding:13px 16px; }
-    .booking-btn { padding:16px; }
+    .bfield { border-right:none; border-bottom:1px solid rgba(12,77,162,.07); padding:18px 20px; }
+    .booking-btn { padding:20px; }
     .about-inner,.events-inner,.contact-inner { grid-template-columns:1fr; gap:32px; }
     .about-img-main { height:300px; }
     .about-img-badge { display:none; }
@@ -511,36 +538,42 @@
     </div>
 </section>
 
-{{-- MARRIOTT-STYLE HOTEL IDENTITY STRIP --}}
-<div class="hotel-identity-strip" id="booking">
-    <div class="hotel-identity-inner">
-        <div class="hotel-identity-left">
-            <div class="hotel-identity-name">Lucerna Kabgayi Hôtel</div>
-            <div class="hotel-identity-rating">
-                <div class="hi-dots">
-                    <div class="hi-dot"></div><div class="hi-dot"></div>
-                    <div class="hi-dot"></div><div class="hi-dot"></div>
-                    <div class="hi-dot half"></div>
-                </div>
-                <span class="hi-score">4.5</span>
-                <span class="hi-reviews">· 128 Reviews</span>
-            </div>
-        </div>
-        <div class="hotel-identity-right">
-            <a href="https://maps.google.com/?q=Lucerna+Kabgayi+Hotel" target="_blank" class="hi-map">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                View Map
-            </a>
-            <a href="tel:+250794191115" class="hi-phone">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.63 19.79 19.79 0 01.01 4.05 2 2 0 012 1.87h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
-                +250 794 191 115
-            </a>
-        </div>
-    </div>
-</div>
+{{-- BOOKING SECTION --}}
+<section class="booking-section" id="booking">
+    <div class="booking-section-inner">
+        {{-- <div class="booking-section-header">
+            <h2 class="booking-section-title">Plan Your Stay</h2>
+            <span class="booking-section-sub">Select your dates and preferences below</span>
+        </div> --}}
 
-{{-- BOOKING BAR (Pikaday calendar) --}}
-<div class="booking-bar">
+        {{-- <div class="hotel-identity-strip">
+            <div class="hotel-identity-inner">
+                <div class="hotel-identity-left">
+                    <div class="hotel-identity-name">Lucerna Kabgayi Hôtel</div>
+                    <div class="hotel-identity-rating">
+                        <div class="hi-dots">
+                            <div class="hi-dot"></div><div class="hi-dot"></div>
+                            <div class="hi-dot"></div><div class="hi-dot"></div>
+                            <div class="hi-dot half"></div>
+                        </div>
+                        <span class="hi-score">4.5</span>
+                        <span class="hi-reviews">· 128 Reviews</span>
+                    </div>
+                </div>
+                <div class="hotel-identity-right">
+                    <a href="https://maps.google.com/?q=Lucerna+Kabgayi+Hotel" target="_blank" rel="noopener" class="hi-map">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        View Map
+                    </a>
+                    <a href="tel:+250794191115" class="hi-phone">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.63 19.79 19.79 0 01.01 4.05 2 2 0 012 1.87h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                        +250 794 191 115
+                    </a>
+                </div>
+            </div>
+        </div> --}}
+
+        <div class="booking-bar">
     <form method="GET" action="{{ route('booking.search') }}" class="booking-bar-inner" id="bookingForm">
         @csrf
         <div class="bfield">
@@ -571,7 +604,9 @@
         </div>
         <button type="submit" class="booking-btn">Check Availability</button>
     </form>
-</div>
+        </div>
+    </div>
+</section>
 
 {{-- ABOUT --}}
 <section class="about-section" id="about">

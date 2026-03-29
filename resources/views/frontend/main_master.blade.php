@@ -99,33 +99,58 @@
         /* ── Top Bar ── */
         .top-bar {
             position:fixed; top:0; left:0; right:0; z-index:400;
-            background:transparent;
-            height:56px;
+            background:#0057b7;
+            height:48px;
             display:flex; align-items:center; justify-content:space-between;
-            padding:0 48px;
-            font-family:var(--f-body); font-size:11.5px; font-weight:400;
-            letter-spacing:.05em; color:rgba(255,255,255,.5);
+            padding:0 36px;
+            font-family:var(--f-body); font-size:12px; font-weight:400;
+            letter-spacing:.03em; color:rgba(255,255,255,.85);
             border-bottom:1px solid rgba(255,255,255,.12);
             transition: transform .3s var(--ease), background .4s var(--ease);
         }
         .top-bar.hidden { transform:translateY(-100%); }
-        .top-bar a { color:rgba(255,255,255,.6); text-decoration:none; transition:color .2s; }
-        .top-bar a:hover { color:var(--brand-pale); }
-        .top-bar-left  { display:flex; gap:18px; align-items:center; }
+        .top-bar a { color:rgba(255,255,255,.9); text-decoration:none; transition:color .2s; }
+        .top-bar a:hover { color:var(--white); }
+        .top-bar-left  { display:flex; gap:14px; align-items:center; }
+        .tb-icon { width:13px; height:13px; vertical-align:-2px; margin-right:3px; opacity:.8; }
         .top-bar-center { position:absolute; left:50%; transform:translateX(-50%); }
         .tb-logo-link { display:flex; align-items:center; gap:10px; text-decoration:none; }
-        .tb-logo-img { height:38px; width:auto; }
+        .tb-logo-img { height:42px; width:auto; }
         .tb-brand { display:flex; flex-direction:column; line-height:1; }
         .tb-brand-name { font-family:var(--f-head); font-size:20px; font-weight:400; color:var(--white); letter-spacing:.04em; }
         .tb-brand-sub { font-family:var(--f-body); font-size:7.5px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:rgba(255,255,255,.45); margin-top:2px; }
-        .tb-stars { color:var(--gold); font-size:12px; letter-spacing:3px; margin-right:6px; }
+        .tb-stars { color:var(--gold); font-size:14px; letter-spacing:3px; }
         .tb-name  { font-family:var(--f-head); font-size:12.5px; color:rgba(255,255,255,.7); letter-spacing:.06em; }
-        .top-bar-right { display:flex; gap:14px; align-items:center; }
-        .tb-sep { width:1px; height:13px; background:rgba(255,255,255,.15); }
+        .top-bar-right { display:flex; gap:12px; align-items:center; }
+        .top-bar-right .nav-auth {
+            font-family:var(--f-body); font-size:13px; font-weight:500;
+            letter-spacing:.08em; text-transform:uppercase;
+            color:var(--white); text-decoration:none;
+            transition:all .25s; padding:6px 4px;
+        }
+        .top-bar-right .nav-auth:hover { opacity:.75; }
+        .top-bar-right .nav-join {
+            font-family:var(--f-body); font-size:12px; font-weight:600; letter-spacing:.1em;
+            text-transform:uppercase; color:var(--white);
+            background:transparent; padding:7px 18px;
+            text-decoration:none; border-radius:3px; border:1.5px solid rgba(255,255,255,.6);
+            transition:all .25s;
+        }
+        .top-bar-right .nav-join:hover { background:rgba(255,255,255,.15); border-color:var(--white); }
+        .top-bar-right .nav-cta {
+            font-family:var(--f-body); font-size:12px; font-weight:700; letter-spacing:.1em;
+            text-transform:uppercase; color:#034ea2;
+            background:var(--white); padding:8px 22px;
+            text-decoration:none; border-radius:3px; border:1.5px solid var(--white);
+            transition:all .25s; margin-left:2px;
+        }
+        .top-bar-right .nav-cta:hover { background:var(--brand-pale); border-color:var(--brand-pale); transform:translateY(-1px); box-shadow:0 4px 14px rgba(0,0,0,.18); }
+        .tb-right-sep { width:1px; height:18px; background:rgba(255,255,255,.2); }
+        .tb-sep { width:1px; height:15px; background:rgba(255,255,255,.2); }
 
         /* ── Nav ── */
         nav#mainNav {
-            position:fixed; top:56px; left:0; right:0; z-index:300;
+            position:fixed; top:48px; left:0; right:0; z-index:300;
             height:48px; display:flex; align-items:center; justify-content:center;
             padding:0 48px;
             background:transparent;
@@ -151,15 +176,15 @@
 
         .nav-links { display:flex; list-style:none; gap:32px; align-items:center; }
         .nav-links a {
-            font-family:var(--f-body); font-size:11px; font-weight:500;
-            letter-spacing:.16em; text-transform:uppercase;
-            color:rgba(255,255,255,.85); text-decoration:none;
+            font-family:var(--f-body); font-size:1rem; font-weight:400;
+            letter-spacing:.12em; text-transform:uppercase; line-height:1.4;
+            color:var(--white); text-decoration:none;
             position:relative; padding-bottom:3px; transition:color .25s;
         }
         .nav-links a::after { content:''; position:absolute; bottom:0; left:0; width:0; height:2px; background:var(--white); transition:width .3s var(--ease); }
         .nav-links a:hover { color:var(--white); }
         .nav-links a:hover::after,.nav-links a.active::after { width:100%; }
-        nav#mainNav.scrolled .nav-links a { color:rgba(255,255,255,.85); }
+        nav#mainNav.scrolled .nav-links a { color:var(--white); }
         nav#mainNav.scrolled .nav-links a:hover,
         nav#mainNav.scrolled .nav-links a.active { color:var(--white); }
         nav#mainNav.scrolled .nav-links a::after { background:var(--white); }
@@ -322,23 +347,24 @@
 {{-- TOP BAR --}}
 <div class="top-bar" id="topBar">
     <div class="top-bar-left">
-        <a href="tel:+250794191115">+250 794 191 115</a>
+        <a href="tel:+250794191115"><svg class="tb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.81.36 1.6.68 2.34a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.74.32 1.53.55 2.34.68A2 2 0 0122 16.92z"/></svg> +250 794 191 115</a>
         <div class="tb-sep"></div>
-        <a href="mailto:hotellucernakabgayi@gmail.com">hotellucernakabgayi@gmail.com</a>
+        <a href="https://maps.google.com/?q=Lucerna+Kabgayi+Hotel,+Muhanga,+Rwanda" target="_blank" rel="noopener"><svg class="tb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> View Map</a>
         <div class="tb-sep"></div>
-        <span>Muhanga, Kabgayi · Rwanda</span>
+        <a href="mailto:hotellucernakabgayi@gmail.com"><svg class="tb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> hotellucernakabgayi@gmail.com</a>
     </div>
     <div class="top-bar-center">
         <a href="{{ route('home') }}" class="tb-logo-link">
             <img src="{{ asset('logo.png') }}" alt="Lucerna Kabgayi Hôtel" class="tb-logo-img">
-            <div class="tb-brand">
+            {{-- <div class="tb-brand">
                 <span class="tb-brand-name">Lucerna Kabgayi</span>
                 <span class="tb-brand-sub">Hôtel · Rwanda</span>
-            </div>
+            </div> --}}
         </a>
     </div>
     <div class="top-bar-right">
         <span class="tb-stars">★★★</span>
+        <div class="tb-right-sep"></div>
         @auth
             <a href="{{ url('/dashboard') }}" class="nav-auth nav-auth-user">
                 @if(Auth::user()->photo)
@@ -347,9 +373,12 @@
                 {{ Auth::user()->name }}
             </a>
         @else
-            <a href="{{ route('login') }}" class="nav-auth">Login</a>
+            <a href="{{ route('login') }}" class="nav-auth">
+                <svg class="tb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Login
+            </a>
             <a href="{{ route('register') }}" class="nav-join">Join</a>
         @endauth
+        <div class="tb-right-sep"></div>
         <a href="{{ route('home') }}#booking" class="nav-cta">Book Now</a>
     </div>
 </div>

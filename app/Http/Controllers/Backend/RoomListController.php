@@ -28,6 +28,7 @@ class RoomListController extends Controller
                 'room_numbers.*',
                 'room_numbers.id as id',
                 'room_types.name',
+                'room_types.type as room_type_type',
                 'bookings.id as booking_id',
                 'bookings.check_in',
                 'bookings.check_out',

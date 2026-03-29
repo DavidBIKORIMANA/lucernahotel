@@ -1,384 +1,363 @@
 @extends('admin.admin_dashboard')
 @section('admin')
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
-<div class="page-content">
-    <div class="container">
-        <div class="main-body">
-            <div class="row">
-                <div class="card">
-    <div class="card-body">
-        <ul class="nav nav-tabs nav-primary" role="tablist">
-            <li class="nav-item" role="presentation">
-                <a class="nav-link active" data-bs-toggle="tab" href="#primaryhome" role="tab" aria-selected="true">
-                    <div class="d-flex align-items-center">
-                        <div class="tab-icon"><i class="bx bx-home font-18 me-1"></i>
-                        </div>
-                        <div class="tab-title">Manage Room </div>
-                    </div>
-                </a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" data-bs-toggle="tab" href="#primaryprofile" role="tab" aria-selected="false" tabindex="-1">
-                    <div class="d-flex align-items-center">
-                        <div class="tab-icon"><i class="bx bx-user-pin font-18 me-1"></i>
-                        </div>
-                        <div class="tab-title">Room Number</div>
-                    </div>
-                </a>
-            </li>
-					</ul>
-        <div class="tab-content py-3">
-            <div class="tab-pane fade active show" id="primaryhome" role="tabpanel">
+@push('styles')
+<style>
+  .page-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+  .page-top-left{display:flex;flex-direction:column;gap:4px;}
+  .page-title{font-family:var(--font-display);font-size:26px;font-weight:500;color:var(--text-1);}
+  .page-title span{color:var(--gold);}
+  .page-breadcrumb-custom{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-3);}
+  .page-breadcrumb-custom a{color:var(--text-3);text-decoration:none;transition:color var(--transition);}
+  .page-breadcrumb-custom a:hover{color:var(--gold);}
+  .bc-sep{color:var(--text-3);opacity:.5;}
 
-                <div class="col-xl-12 mx-auto">
+  /* Tabs */
+  .rm-tabs{display:flex;gap:2px;margin-bottom:24px;background:var(--bg-card);border:1px solid var(--border2);border-radius:12px;padding:4px;backdrop-filter:blur(6px);overflow-x:auto;}
+  .rm-tab{padding:10px 20px;border-radius:9px;font-size:13px;font-weight:500;color:var(--text-3);cursor:pointer;transition:all var(--transition);white-space:nowrap;border:none;background:transparent;font-family:var(--font-ui);}
+  .rm-tab:hover{color:var(--text-1);background:rgba(255,255,255,.06);}
+  .rm-tab.active{background:var(--gold);color:#042a5e;font-weight:600;}
+  .rm-tab-content{display:none;}
+  .rm-tab-content.active{display:block;}
 
-                    <div class="card">
-                        <div class="card-body p-4">
-                            <h5 class="mb-4">Update Room </h5>
+  /* Cards */
+  .rm-card{background:var(--bg-card);border:1px solid var(--border2);border-radius:var(--radius);padding:28px 32px;backdrop-filter:blur(6px);margin-bottom:20px;}
+  .rm-card h5{font-family:var(--font-display);font-size:20px;font-weight:500;color:var(--text-1);margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border2);}
 
-                            <form class="row g-3" action="{{ route('update.room',$editData->id) }}" method="post" enctype="multipart/form-data">
-                                @csrf
-                                <div class="col-md-4">
-                                    <label for="input1" class="form-label">Room Type Name </label>
-                                    <input type="text" name="roomtype_id" class="form-control" id="input1" value="{{ $editData['type']['name'] }}" >
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="input2" class="form-label">Total Adult</label>
-                                    <input type="text" name="total_adult" class="form-control" id="input2"  value="{{ $editData->total_adult }}">
-                                </div>
+  /* Fields */
+  .form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .form-grid.cols-2{grid-template-columns:1fr 1fr;}
+  .form-grid.cols-1{grid-template-columns:1fr;}
+  .field{margin-bottom:0;}
+  .field.span-2{grid-column:span 2;}
+  .field.span-3{grid-column:span 3;}
+  .field label{display:block;font-size:12px;font-weight:500;color:var(--text-3);margin-bottom:6px;letter-spacing:.3px;}
+  .field input,.field select,.field textarea{width:100%;padding:10px 14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius-sm);color:#fff;font-family:var(--font-ui);font-size:13px;outline:none;transition:border-color var(--transition),background var(--transition);}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);background:rgba(255,255,255,.12);}
+  .field input::placeholder,.field textarea::placeholder{color:rgba(255,255,255,.35);}
+  .field select option{background:#0e1422;color:#fff;}
+  .field textarea{min-height:100px;resize:vertical;}
 
-                                <div class="col-md-4">
-                                    <label for="input2" class="form-label">Total Child </label>
-                                    <input type="text" name="total_child" class="form-control" id="input2" value="{{ $editData->total_child }}">
-                                </div>
+  /* Image preview */
+  .img-preview-wrap{display:flex;align-items:center;gap:12px;margin-top:10px;}
+  .img-preview{width:80px;height:60px;object-fit:cover;border-radius:8px;border:1px solid var(--border2);}
+  .gallery-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
+  .gallery-thumb{position:relative;width:80px;height:60px;border-radius:8px;overflow:hidden;border:1px solid var(--border2);}
+  .gallery-thumb img{width:100%;height:100%;object-fit:cover;}
+  .gallery-thumb .del-badge{position:absolute;top:2px;right:2px;width:20px;height:20px;background:var(--danger);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;text-decoration:none;transition:transform .15s;}
+  .gallery-thumb .del-badge:hover{transform:scale(1.15);}
 
+  /* Facility tags */
+  .facility-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .facility-row select{flex:1;}
+  .icon-btn-sm{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid;cursor:pointer;font-size:14px;transition:background var(--transition),transform .15s;flex-shrink:0;background:transparent;}
+  .icon-btn-sm:hover{transform:translateY(-1px);}
+  .icon-btn-sm.add{color:var(--success);border-color:rgba(76,175,125,.3);}
+  .icon-btn-sm.add:hover{background:rgba(76,175,125,.15);}
+  .icon-btn-sm.remove{color:var(--danger);border-color:rgba(224,82,82,.3);}
+  .icon-btn-sm.remove:hover{background:rgba(224,82,82,.15);}
 
-                                <div class="col-md-6">
-                                    <label for="input3" class="form-label">Main Image </label>
-                                    <input type="file" name="image" class="form-control" id="image"  >
+  /* Room Numbers Table */
+  .rn-table{width:100%;border-collapse:collapse;margin-top:16px;}
+  .rn-table th{padding:10px 16px;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);font-weight:600;border-bottom:1px solid var(--border2);text-align:left;}
+  .rn-table td{padding:12px 16px;font-size:13px;color:var(--text-2);border-bottom:1px solid rgba(255,255,255,.04);}
+  .rn-table tr:hover td{background:rgba(255,255,255,.04);}
+  .status-dot{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;}
+  .status-dot::before{content:'';width:7px;height:7px;border-radius:50%;}
+  .status-dot.active::before{background:var(--success);}
+  .status-dot.active{color:var(--success);}
+  .status-dot.inactive::before{background:var(--danger);}
+  .status-dot.inactive{color:var(--danger);}
 
-                                    <img id="showImage" src="{{ (!empty($editData->image)) ? url('upload/roomimg/'.$editData->image) : url('upload/no_image.jpg') }}" alt="Admin" class="bg-primary" width="70" height="50">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="input4" class="form-label">Gallery Image </label>
-                                    <input type="file" name="multi_img[]" class="form-control" multiple id="multiImg" accept="image/jpeg, image/jpg, image/gif, image/png" >
+  .rn-action{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;border:1px solid;transition:background var(--transition);}
+  .rn-action.edit{color:var(--warning);border-color:rgba(232,155,58,.2);background:rgba(232,155,58,.06);}
+  .rn-action.edit:hover{background:rgba(232,155,58,.15);}
+  .rn-action.delete{color:var(--danger);border-color:rgba(224,82,82,.2);background:rgba(224,82,82,.06);}
+  .rn-action.delete:hover{background:rgba(224,82,82,.15);}
 
-                                    @foreach ($multiimgs as $item)
+  /* Inline add form */
+  .rn-add-form{display:none;background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:10px;padding:16px 20px;margin-bottom:16px;}
+  .rn-add-form.show{display:block;}
+  .rn-add-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;}
 
-                                    <img src="{{ (!empty($item->multi_img)) ? url('upload/roomimg/multi_img/'.$item->multi_img) : url('upload/no_image.jpg') }}" alt="Admin" class="bg-primary" width="60">
+  /* Buttons */
+  .btn-gold{padding:10px 28px;border-radius:10px;background:var(--gold);color:#042a5e;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:background var(--transition),transform .15s;}
+  .btn-gold:hover{background:var(--gold-light);transform:translateY(-1px);}
+  .btn-outline{padding:10px 20px;border-radius:10px;background:transparent;color:var(--text-2);font-size:13px;font-weight:500;border:1px solid var(--border2);cursor:pointer;transition:background var(--transition);text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+  .btn-outline:hover{background:var(--bg-hover);color:var(--text-1);}
 
-                                      <a href="{{ route('multi.image.delete',$item->id) }}"><i class="lni lni-close"></i> </a>
+  @media(max-width:900px){.form-grid{grid-template-columns:1fr;}.field.span-2,.field.span-3{grid-column:span 1;}.rn-add-grid{grid-template-columns:1fr;}}
+</style>
+@endpush
 
-                                    @endforeach
-
-
-                                    <div class="row" id="preview_img"></div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="input1" class="form-label">Room Price  </label>
-                                    <input type="text" name="price" class="form-control" id="input1" value="{{ $editData->price }}" >
-                                </div>
-
-                                <!-- <div class="col-md-3">
-                                    <label for="input2" class="form-label">Size </label>
-                                    <input type="text" name="size" class="form-control" id="input2"  value="{{ $editData->size }}">
-                                </div> -->
-
-                                <div class="col-md-3">
-                                    <label for="input2" class="form-label">Discount ( % )</label>
-                                    <input type="text" name="discount" class="form-control" id="input2"  value="{{ $editData->discount }}">
-                                </div>
-
-                                <div class="col-md-3">
-                                    <label for="input2" class="form-label">Room Capacity </label>
-                                    <input type="text" name="room_capacity" class="form-control" id="input2" value="{{ $editData->room_capacity }}">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="input7" class="form-label">Room Package </label>
-                                    <select name="view" id="input7" class="form-select">
-                                        <option selected="">Choose...</option>
-                                        <!-- <option value="Sea View" {{ $editData->view == 'Sea View'?'selected':''}}>Sea View </option> -->
-                                        <!-- <option value="Hill View" {{ $editData->view == 'Hill View'?'selected':''}}>Hill View </option> -->
-                                        <option value="Complimentary Breakfast" >Complimentary Breakfast</option>
-                                        <option value="Minibar" > Minibar</option>
-                                        <option value="Free Wi-Fi" >Free Wi-Fi</option>
-                                        <option value="Smart Meeting room" >Smart Meeting room</option>
-                                        <option value="Laundry & Dry Cleaning" >Laundry & Dry Cleaning</option>
-
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="input7" class="form-label">Bed Style</label>
-                                    <select name="bed_style" id="input7" class="form-select">
-                                        <option selected="">Choose...</option>
-                                        <option value="Queen Bed" {{ $editData->bed_style == 'Queen Bed'?'selected':''}}> Queen Bed </option>
-                                        <option value="Twin Bed" {{ $editData->bed_style == 'Twin Bed'?'selected':''}}>Twin Bed </option>
-                                        <option value="King Bed" {{ $editData->bed_style == 'King Bed'?'selected':''}}>King Bed </option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <label for="input11" class="form-label">Short Description </label>
-                                    <textarea name="short_desc" class="form-control" id="input11" placeholder="description ..." rows="3">{{ $editData->short_desc }}</textarea>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <label for="input11" class="form-label"> Description </label>
-                                    <textarea name="description" class="form-control" id="myeditorinstance" >{!! $editData->description !!}</textarea>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-md-12 mb-3">
-                                       @forelse ($basic_facility as $item)
-                                       <div class="basic_facility_section_remove" id="basic_facility_section_remove">
-                                          <div class="row add_item">
-                                             <div class="col-md-8">
-                                                <label for="facility_name" class="form-label"> Room Facilities </label>
-                                                <select name="facility_name[]" id="facility_name" class="form-control">
-                                                    <option value="">Select Facility</option>
-                                                    <option value="32/42 inch LED TV"  {{$item->facility_name == 'Complimentary Breakfast'?'selected':''}}> 32/42 inch LED TV</option>
-                                                    <option value="Smoke alarms"  {{$item->facility_name == 'Smoke alarms'?'selected':''}}>Smoke alarms</option>
-                                                    <option value="Work Desk"  {{$item->facility_name == 'Work Desk'?'selected':''}}>Work Desk</option>
-                                                    <option value="Safety box" {{$item->facility_name == 'Safety box'?'selected':''}} >Safety box</option>
-                                                    <option value="Rain Shower" {{$item->facility_name == 'Rain Shower'?'selected':''}} >Rain Shower</option>
-                                                    <option value="Slippers" {{$item->facility_name == 'Slippers'?'selected':''}} >Slippers</option>
-                                                    <option value="Hair dryer" {{$item->facility_name == 'Hair dryer'?'selected':''}} >Hair dryer</option>
-                                                    <option value="Wake-up service"  {{$item->facility_name == 'Wake-up service'?'selected':''}}>Wake-up service</option>
-                                                    <option value="Electronic door lock"  {{$item->facility_name == 'Electronic door lock'?'selected':''}}>Electronic door lock</option>
-                                                </select>
-                                             </div>
-                                             <div class="col-md-4">
-                                                <div class="form-group" style="padding-top: 30px;">
-                                                      <a class="btn btn-success addeventmore"><i class="lni lni-circle-plus"></i></a>
-                                                      <span class="btn btn-danger btn-sm removeeventmore"><i class="lni lni-circle-minus"></i></span>
-                                                </div>
-                                             </div>
-                                          </div>
-                                       </div>
-                                       @empty
-                                       <div class="basic_facility_section_remove" id="basic_facility_section_remove">
-                                                <div class="row add_item">
-                                                    <div class="col-md-6">
-                                                        <label for="basic_facility_name" class="form-label">Room Facilities </label>
-                                                       <select name="facility_name[]" id="basic_facility_name" class="form-control">
-                                                                <option value="">Select Facility</option>
-                                                                <option value="Complimentary Breakfast">Complimentary Breakfast</option>
-                                                                <option value="32/42 inch LED TV" > 32/42 inch LED TV</option>
-                                                                <option value="Smoke alarms" >Smoke alarms</option>
-                                                                <option value="Minibar"> Minibar</option>
-                                                                <option value="Work Desk" >Work Desk</option>
-                                                                <option value="Free Wi-Fi">Free Wi-Fi</option>
-                                                                <option value="Safety box" >Safety box</option>
-                                                                <option value="Rain Shower" >Rain Shower</option>
-                                                                <option value="Slippers" >Slippers</option>
-                                                                <option value="Hair dryer" >Hair dryer</option>
-                                                                <option value="Wake-up service" >Wake-up service</option>
-                                                                <option value="Laundry & Dry Cleaning" >Laundry & Dry Cleaning</option>
-                                                                <option value="Electronic door lock" >Electronic door lock</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group" style="padding-top: 30px;">
-                                                            <a class="btn btn-success addeventmore"><i class="lni lni-circle-plus"></i></a>
-                                                            <span class="btn btn-danger removeeventmore"><i class="lni lni-circle-minus"></i></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                        </div>
-                                        @endforelse
-                                    </div>
-                                </div>
-                                <br>
-                                <div class="col-md-12">
-                                    <div class="d-md-flex d-grid align-items-center gap-3">
-                                        <button type="submit" class="btn btn-primary px-4">Save Changes</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-             {{-- // End primaryhome --}}
-             <div class="tab-pane fade" id="primaryprofile" role="tabpanel">
-                 <div class="card">
-                    <div class="card-body">
-                        <a class="card-title btn btn-primary float-right" onclick="addRoomNo()" id="addRoomNo" >
-                            Add New
-                        </a>
-                        <div class="roomnoHide" id="roomnoHide">
-                            <form action="{{ route('store.room.no',$editData->id) }}" method="post">
-                                @csrf
-
-                                <input type="hidden" name="room_type_id" value="{{ $editData->roomtype_id }}" >
-
-                                <div class="row">
-                                <div class="col-md-4">
-                                    <label for="input2" class="form-label">Room No </label>
-                                    <input type="text" name="room_no" class="form-control" id="input2" >
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label for="input7" class="form-label">Status </label>
-                                    <select name="status" id="input7" class="form-select">
-                                        <option selected="">Select Status...</option>
-                                        <option value="Active">Active </option>
-                                        <option value="Inactive">Inactive  </option>
-
-                                    </select>
-                                </div>
-
-                                <div class="col-md-4">
-
-                                    <button type="submit" class="btn btn-success" style="margin-top: 28px;">Save</button>
-
-                                </div>
-                            </div>
-                            </form>
-                        </div>
-                        <table class="table mb-0 table-striped" id="roomview">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Room Number</th>
-                                    <th scope="col">Status</th>
-                                    <!-- <th scope="col">Action</th> -->
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($allroomNo as $item)
-
-                                <tr>
-                                    <td>{{ $item->room_no }}</td>
-                                    <td>{{ $item->status }}</td>
-                                    <td>
-                                    <a href="{{ route('edit.roomno',$item->id) }}" class="btn btn-warning px-3 radius-30"> Edit</a>
-                                    <a href="{{ route('delete.roomno',$item->id) }}" class="btn btn-danger px-3 radius-30" id="delete"> Delete</a>
-
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            {{-- // end PrimaryProfile --}}
-        </div>
+<!-- Page Top -->
+<div class="page-top">
+  <div class="page-top-left">
+    @php $isHall = ($editData->type->type ?? '') === 'Hall'; @endphp
+    <div class="page-title">Edit <span>{{ $isHall ? 'Hall' : 'Room' }}</span></div>
+    <div class="page-breadcrumb-custom">
+      <a href="{{ route('admin.dashboard') }}">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="width:13px;height:13px;"><path d="M3 22V9l9-7 9 7v13"/><path d="M9 22V12h6v10"/></svg>
+      </a>
+      <span class="bc-sep">/</span>
+      <a href="{{ route('room.type.list') }}">Room Types</a>
+      <span class="bc-sep">/</span>
+      <span>{{ $editData->type->name ?? 'Edit' }} ({{ $isHall ? 'Hall' : 'Room' }})</span>
     </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function(){
-        $('#image').change(function(e){
-            var reader = new FileReader();
-            reader.onload = function(e){
-                $('#showImage').attr('src',e.target.result);
-            }
-            reader.readAsDataURL(e.target.files['0']);
-        });
-    });
-</script>
 
+<!-- Tabs -->
+<div class="rm-tabs">
+  <button class="rm-tab active" onclick="switchTab(this,'tab-details')">{{ $isHall ? 'Hall' : 'Room' }} Details</button>
+  <button class="rm-tab" onclick="switchTab(this,'tab-images')">Photos & Gallery</button>
+  <button class="rm-tab" onclick="switchTab(this,'tab-facilities')">Facilities</button>
+  <button class="rm-tab" onclick="switchTab(this,'tab-roomnos')">{{ $isHall ? 'Hall' : 'Room' }} Numbers</button>
+</div>
 
-        <!--------===Show MultiImage ========------->
-<script>
-    $(document).ready(function(){
-     $('#multiImg').on('change', function(){ //on file input change
-        if (window.File && window.FileReader && window.FileList && window.Blob) //check File API supported browser
-        {
-            var data = $(this)[0].files; //this file data
+<form action="{{ route('update.room', $editData->id) }}" method="post" enctype="multipart/form-data" id="roomForm">
+  @csrf
 
-            $.each(data, function(index, file){ //loop though each file
-                if(/(\.|\/)(gif|jpe?g|png)$/i.test(file.type)){ //check supported file type
-                    var fRead = new FileReader(); //new filereader
-                    fRead.onload = (function(file){ //trigger function on successful read
-                    return function(e) {
-                        var img = $('<img/>').addClass('thumb').attr('src', e.target.result) .width(100)
-                    .height(80); //create image element
-                        $('#preview_img').append(img); //append image to output element
-                    };
-                    })(file);
-                    fRead.readAsDataURL(file); //URL representing the file's data.
-                }
-            });
-
-        }else{
-            alert("Your browser doesn't support File API!"); //if File API is absent
-        }
-     });
-    });
- </script>
-
-
-<!--========== Start of add Basic Plan Facilities ==============-->
-<div style="visibility: hidden">
-    <div class="whole_extra_item_add" id="whole_extra_item_add">
-       <div class="basic_facility_section_remove" id="basic_facility_section_remove">
-          <div class="container mt-2">
-             <div class="row">
-                <div class="form-group col-md-6">
-                   <label for="basic_facility_name">Room Facilities</label>
-                   <select name="facility_name[]" id="basic_facility_name" class="form-control">
-                        <option value="">Select Facility</option>
-                        <option value="Complimentary Breakfast">Complimentary Breakfast</option>
-                        <option value="32/42 inch LED TV" > 32/42 inch LED TV</option>
-                        <option value="Smoke alarms" >Smoke alarms</option>
-                        <option value="Minibar"> Minibar</option>
-                        <option value="Work Desk" >Work Desk</option>
-                        <option value="Free Wi-Fi">Free Wi-Fi</option>
-                        <option value="Safety box" >Safety box</option>
-                        <option value="Rain Shower" >Rain Shower</option>
-                        <option value="Slippers" >Slippers</option>
-                        <option value="Hair dryer" >Hair dryer</option>
-                        <option value="Wake-up service" >Wake-up service</option>
-                        <option value="Laundry & Dry Cleaning" >Laundry & Dry Cleaning</option>
-                        <option value="Electronic door lock" >Electronic door lock</option>
-                   </select>
-                </div>
-                <div class="form-group col-md-6" style="padding-top: 20px">
-                   <span class="btn btn-success addeventmore"><i class="lni lni-circle-plus"></i></span>
-                   <span class="btn btn-danger removeeventmore"><i class="lni lni-circle-minus"></i></span>
-                </div>
-             </div>
-          </div>
-       </div>
+  <!-- Tab 1: Room Details -->
+  <div class="rm-tab-content active" id="tab-details">
+    <div class="rm-card">
+      <h5>{{ $isHall ? 'Hall' : 'Room' }} Information</h5>
+      <div class="form-grid">
+        <div class="field">
+          <label>{{ $isHall ? 'Hall' : 'Room' }} Type</label>
+          <input type="text" value="{{ ($editData->type->name ?? '') }} ({{ $isHall ? 'Hall' : 'Room' }})" disabled>
+        </div>
+        <div class="field">
+          <label>Room Capacity</label>
+          <input type="number" name="room_capacity" value="{{ $editData->room_capacity }}" placeholder="Max guests" min="1">
+        </div>
+        <div class="field">
+          <label>Total Children Allowed</label>
+          <input type="number" name="total_child" value="{{ $editData->total_child }}" placeholder="0" min="0">
+        </div>
+        <div class="field">
+          <label>Price per Night ($)</label>
+          <input type="number" name="price" value="{{ $editData->price }}" step="0.01" min="0" placeholder="0.00">
+        </div>
+        <div class="field">
+          <label>Discount (%)</label>
+          <input type="number" name="discount" value="{{ $editData->discount }}" min="0" max="100" placeholder="0">
+        </div>
+        @if(!$isHall)
+        <div class="field">
+          <label>Bed Style</label>
+          <select name="bed_style">
+            <option value="">Choose…</option>
+            <option value="Queen Bed" {{ $editData->bed_style == 'Queen Bed' ? 'selected' : '' }}>Queen Bed</option>
+            <option value="Twin Bed" {{ $editData->bed_style == 'Twin Bed' ? 'selected' : '' }}>Twin Bed</option>
+            <option value="King Bed" {{ $editData->bed_style == 'King Bed' ? 'selected' : '' }}>King Bed</option>
+          </select>
+        </div>
+        @endif
+        <div class="field span-3">
+          <label>{{ $isHall ? 'Hall Package' : 'Room Package' }}</label>
+          <select name="view">
+            <option value="">Choose…</option>
+            <option value="Complimentary Breakfast" {{ $editData->view == 'Complimentary Breakfast' ? 'selected' : '' }}>Complimentary Breakfast</option>
+            <option value="Minibar" {{ $editData->view == 'Minibar' ? 'selected' : '' }}>Minibar</option>
+            <option value="Free Wi-Fi" {{ $editData->view == 'Free Wi-Fi' ? 'selected' : '' }}>Free Wi-Fi</option>
+            <option value="Smart Meeting room" {{ $editData->view == 'Smart Meeting room' ? 'selected' : '' }}>Smart Meeting Room</option>
+            <option value="Laundry & Dry Cleaning" {{ $editData->view == 'Laundry & Dry Cleaning' ? 'selected' : '' }}>Laundry & Dry Cleaning</option>
+          </select>
+        </div>
+        <div class="field span-3">
+          <label>Short Description</label>
+          <textarea name="short_desc" rows="3" placeholder="Brief overview…">{{ $editData->short_desc }}</textarea>
+        </div>
+        <div class="field span-3">
+          <label>Full Description</label>
+          <textarea name="description" id="myeditorinstance" rows="6">{!! $editData->description !!}</textarea>
+        </div>
+      </div>
     </div>
- </div>
+  </div>
 
-<script type="text/javascript">
-$(document).ready(function(){
-var counter = 0;
-$(document).on("click",".addeventmore",function(){
-     var whole_extra_item_add = $("#whole_extra_item_add").html();
-     $(this).closest(".add_item").append(whole_extra_item_add);
-     counter++;
-});
-$(document).on("click",".removeeventmore",function(event){
-     $(this).closest("#basic_facility_section_remove").remove();
-     counter -= 1
-});
-});
-</script>
-<!--========== End of Basic Plan Facilities ==============-->
+  <!-- Tab 2: Photos & Gallery -->
+  <div class="rm-tab-content" id="tab-images">
+    <div class="rm-card">
+      <h5>Main Photo</h5>
+      <div class="form-grid cols-1">
+        <div class="field">
+          <label>{{ $isHall ? 'Hall' : 'Room' }} Main Image</label>
+          <input type="file" name="image" id="mainImage" accept="image/*">
+          <div class="img-preview-wrap">
+            <img id="showImage" src="{{ (!empty($editData->image)) ? url('upload/roomimg/'.$editData->image) : url('upload/no_image.jpg') }}" class="img-preview" alt="Main">
+            <span style="font-size:11px;color:var(--text-3);">Recommended: 550 × 850px</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rm-card">
+      <h5>Gallery Photos</h5>
+      <div class="form-grid cols-1">
+        <div class="field">
+          <label>Add Gallery Images</label>
+          <input type="file" name="multi_img[]" id="multiImg" multiple accept="image/*">
+          <div class="gallery-grid" id="preview_img">
+            @foreach ($multiimgs as $item)
+            <div class="gallery-thumb">
+              <img src="{{ (!empty($item->multi_img)) ? url('upload/roomimg/multi_img/'.$item->multi_img) : url('upload/no_image.jpg') }}" alt="Gallery">
+              <a href="{{ route('multi.image.delete', $item->id) }}" class="del-badge" title="Delete">×</a>
+            </div>
+            @endforeach
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<!--========== Start Room Number Add ==============-->
+  <!-- Tab 3: Facilities -->
+  <div class="rm-tab-content" id="tab-facilities">
+    <div class="rm-card">
+      <h5>{{ $isHall ? 'Hall' : 'Room' }} Facilities</h5>
+      <div id="facilitiesContainer">
+        @forelse ($basic_facility as $item)
+        <div class="facility-row">
+          <select name="facility_name[]">
+            <option value="">Select Facility</option>
+            @foreach(['Complimentary Breakfast','32/42 inch LED TV','Smoke alarms','Minibar','Work Desk','Free Wi-Fi','Safety box','Rain Shower','Slippers','Hair dryer','Wake-up service','Laundry & Dry Cleaning','Electronic door lock'] as $fac)
+            <option value="{{ $fac }}" {{ $item->facility_name == $fac ? 'selected' : '' }}>{{ $fac }}</option>
+            @endforeach
+          </select>
+          <span class="icon-btn-sm add" onclick="addFacility()">+</span>
+          <span class="icon-btn-sm remove" onclick="removeFacility(this)">−</span>
+        </div>
+        @empty
+        <div class="facility-row">
+          <select name="facility_name[]">
+            <option value="">Select Facility</option>
+            @foreach(['Complimentary Breakfast','32/42 inch LED TV','Smoke alarms','Minibar','Work Desk','Free Wi-Fi','Safety box','Rain Shower','Slippers','Hair dryer','Wake-up service','Laundry & Dry Cleaning','Electronic door lock'] as $fac)
+            <option value="{{ $fac }}">{{ $fac }}</option>
+            @endforeach
+          </select>
+          <span class="icon-btn-sm add" onclick="addFacility()">+</span>
+          <span class="icon-btn-sm remove" onclick="removeFacility(this)">−</span>
+        </div>
+        @endforelse
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Button (visible on all tabs) -->
+  <div style="margin-top:8px;margin-bottom:24px;">
+    <button type="submit" class="btn-gold">Save Changes</button>
+  </div>
+</form>
+
+<!-- Tab 4: Room Numbers (separate, not inside the form) -->
+<div class="rm-tab-content" id="tab-roomnos">
+  <div class="rm-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h5 style="margin-bottom:0;border:none;padding-bottom:0;">{{ $isHall ? 'Hall' : 'Room' }} Numbers</h5>
+      <button class="btn-outline" onclick="document.getElementById('rnAddForm').classList.toggle('show')" type="button">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:14px;height:14px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Room No.
+      </button>
+    </div>
+
+    <div class="rn-add-form" id="rnAddForm">
+      <form action="{{ route('store.room.no', $editData->id) }}" method="post">
+        @csrf
+        <input type="hidden" name="room_type_id" value="{{ $editData->roomtype_id }}">
+        <div class="rn-add-grid">
+          <div class="field">
+            <label>{{ $isHall ? 'Hall' : 'Room' }} Number</label>
+            <input type="text" name="room_no" placeholder="e.g. 101" required>
+          </div>
+          <div class="field">
+            <label>Status</label>
+            <select name="status" required>
+              <option value="">Select…</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-gold" style="height:42px;">Save</button>
+        </div>
+      </form>
+    </div>
+
+    <table class="rn-table">
+      <thead>
+        <tr>
+          <th>Room No.</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @forelse ($allroomNo as $item)
+        <tr>
+          <td style="font-weight:600;color:var(--text-1);">{{ $item->room_no }}</td>
+          <td><span class="status-dot {{ strtolower($item->status) }}">{{ $item->status }}</span></td>
+          <td>
+            <a href="{{ route('edit.roomno', $item->id) }}" class="rn-action edit">Edit</a>
+            <a href="{{ route('delete.roomno', $item->id) }}" class="rn-action delete" id="delete">Delete</a>
+          </td>
+        </tr>
+        @empty
+        <tr>
+          <td colspan="3" style="text-align:center;color:var(--text-3);padding:24px;">No room numbers added yet.</td>
+        </tr>
+        @endforelse
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@push('scripts')
 <script>
-$('#roomnoHide').hide();
-$('#roomview').show();
+function switchTab(btn, tabId) {
+  document.querySelectorAll('.rm-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.rm-tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
 
-function addRoomNo(){
-    $('#roomnoHide').show();
-    $('#roomview').hide();
-    $('#addRoomNo').hide();
+// Main image preview
+document.getElementById('mainImage')?.addEventListener('change', function(e) {
+  if (this.files[0]) {
+    const reader = new FileReader();
+    reader.onload = ev => document.getElementById('showImage').src = ev.target.result;
+    reader.readAsDataURL(this.files[0]);
+  }
+});
+
+// Multi image preview
+document.getElementById('multiImg')?.addEventListener('change', function() {
+  const container = document.getElementById('preview_img');
+  Array.from(this.files).forEach(file => {
+    if (/image/i.test(file.type)) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const div = document.createElement('div');
+        div.className = 'gallery-thumb';
+        div.innerHTML = '<img src="' + e.target.result + '" alt="New">';
+        container.appendChild(div);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+});
+
+// Facilities add/remove
+function addFacility() {
+  const row = document.querySelector('.facility-row');
+  const clone = row.cloneNode(true);
+  clone.querySelector('select').value = '';
+  document.getElementById('facilitiesContainer').appendChild(clone);
+}
+function removeFacility(btn) {
+  const container = document.getElementById('facilitiesContainer');
+  if (container.querySelectorAll('.facility-row').length > 1) {
+    btn.closest('.facility-row').remove();
+  }
 }
 </script>
-
-<!--========== End Room Number Add ==============-->
-
-
+@endpush
 @endsection
