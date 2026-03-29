@@ -114,8 +114,7 @@
                         <table>
                             <tr>
                                 <td class="title">
-                                    <!-- <img src="{{asset('frontend/assets/img/logos/logo.jpeg')}}" style="width: 50%; max-width: 300px"
-                                    /> -->
+                                    <img src="{{ public_path('logo.png') }}" style="width: 50%; max-width: 300px" />
                                 </td>
 
                                 <td>
@@ -172,12 +171,10 @@
                 <tr class="item">
                     <td>{{ $editData->room->type->name }}</td>
                     <td>{{ $editData->number_of_rooms }}</td>
-                    <td>$ {{ $editData->actual_price }}</td>
-                    <td>
-                        <span class="badge bg-primary">{{ $editData->check_in }}</span>  /<br> 
-                        <span class="badge bg-warning text-dark">{{ $editData->check_out }}</span></td>
+                    <td>{{ number_format($editData->actual_price) }} RWF</td>
+                    <td>{{ $editData->check_in }} / {{ $editData->check_out }}</td>
                     <td>{{ $editData->total_night }}</td>
-                    <td>$ {{ $editData->actual_price *  $editData->number_of_rooms }}</td>
+                    <td>{{ number_format($editData->actual_price * $editData->number_of_rooms) }} RWF</td>
                 </tr>
 
 
@@ -187,7 +184,7 @@
                     <td></td>
                     <td></td>
                     <td>Subtotal</td>
-                    <td>$ {{ $editData->subtotal }}</td>
+                    <td>{{ number_format($editData->subtotal) }} RWF</td>
                 </tr>
                 <tr class="total">
                     <td></td>
@@ -195,7 +192,7 @@
                     <td></td>
                     <td></td>
                     <td>Discount</td>
-                    <td>$ {{ $editData->discount }}</td>
+                    <td>{{ number_format($editData->discount) }} RWF</td>
                 </tr>
                 <tr class="total">
                     <td></td>
@@ -203,7 +200,7 @@
                     <td></td>
                     <td></td>
                     <td>Grand Total</td>
-                    <td>$ {{ $editData->total_price }}</td>
+                    <td>{{ number_format($editData->total_price) }} RWF</td>
                 </tr>
             </table>
             <br>

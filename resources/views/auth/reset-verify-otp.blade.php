@@ -56,8 +56,29 @@
         .auth-resend:disabled{color:var(--mid);cursor:not-allowed;text-decoration:none;}
         .auth-email-highlight{font-weight:600;color:var(--navy);}
         @media(max-width:960px){
-            .auth-hero{display:none;}
-            .auth-form-panel{width:100%;max-width:480px;margin:0 auto;padding:32px 24px;}
+            .auth-wrapper{flex-direction:column;}
+            .auth-hero{min-height:220px;max-height:260px;}
+            .auth-hero-top{padding:20px 24px;}
+            .auth-hero-logo{height:30px;}
+            .auth-hero-nav{padding:0 24px;gap:16px;}
+            .auth-hero-nav a{font-size:12px;}
+            .auth-hero-content{padding:0 24px 24px;}
+            .auth-hero-title{font-size:24px;margin-bottom:8px;}
+            .auth-hero-sub{font-size:13px;line-height:1.6;}
+            .auth-hero-stars{font-size:13px;letter-spacing:3px;margin-bottom:8px;}
+            .auth-form-panel{width:100%;padding:32px 24px;}
+        }
+        @media(max-width:480px){
+            .auth-hero{min-height:180px;max-height:200px;}
+            .auth-hero-top{padding:16px 16px;}
+            .auth-hero-nav{padding:0 16px;}
+            .auth-hero-content{padding:0 16px 16px;}
+            .auth-hero-title{font-size:20px;}
+            .auth-hero-sub{font-size:12px;}
+            .auth-form-panel{padding:24px 16px;}
+            .auth-form-title{font-size:26px;}
+            .otp-inputs{gap:6px;}
+            .otp-box{width:42px;height:50px;font-size:22px;}
         }
     </style>
 </head>

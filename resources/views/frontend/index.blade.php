@@ -742,7 +742,7 @@
         <p class="hero-sub">Rooted in Catholic hospitality. Elevated by world-class luxury.</p>
         <div class="hero-actions">
             <a href="#booking" class="btn-blue">
-                <span>Reserve Now</span>
+                <span>Book Now</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
             <a href="#about" class="btn-outline-w">Explore</a>

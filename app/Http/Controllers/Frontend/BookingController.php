@@ -293,6 +293,11 @@ class BookingController extends Controller
         if ($request->status == 3 && !$booking->checked_out_at) {
             $booking->checked_out_at = now();
         }
+        // Handle confirmation
+        if ($request->status == 1 && !$booking->confirmed_at) {
+            $booking->confirmed_at = now();
+            $booking->confirmed_by = Auth::id();
+        }
         // Handle cancellation
         if ($request->status == 4) {
             $booking->cancelled_at = now();
@@ -308,6 +313,18 @@ class BookingController extends Controller
         }
 
         $booking->save();
+
+        // Sync payment transaction status with payment_status
+        $transaction = PaymentTransaction::where('booking_id', $id)->latest()->first();
+        if ($transaction) {
+            if ($request->payment_status == 1 && $transaction->status !== 'success') {
+                $transaction->verify(Auth::id());
+            } elseif ($request->payment_status == 0 && $transaction->status === 'success') {
+                $transaction->update(['status' => 'pending', 'verified_by' => null, 'verified_at' => null]);
+            } elseif ($request->payment_status == 2) {
+                $transaction->update(['status' => 'refunded']);
+            }
+        }
 
         ActivityLog::record('booking_status_updated', $booking, [
             'status' => $request->status,
@@ -540,7 +557,7 @@ class BookingController extends Controller
 
      public function DownloadInvoice($id){
 
-        $editData = Booking::with('room')->find($id);
+        $editData = Booking::with('room.type')->find($id);
         // return view('backend.booking.booking_invoice',compact('editData'));
         
         $pdf = Pdf::loadView('backend.booking.booking_invoice',compact('editData'))->setPaper('a4')->setOption([
@@ -563,7 +580,7 @@ class BookingController extends Controller
 
      public function UserInvoice($id){
 
-        $editData = Booking::with('room')->find($id);
+        $editData = Booking::with('room.type')->find($id);
         $pdf = Pdf::loadView('backend.booking.booking_invoice',compact('editData'))->setPaper('a4')->setOption([
             'tempDir' => public_path(),
             'chroot' => public_path(),

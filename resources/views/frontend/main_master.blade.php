@@ -228,17 +228,17 @@
         .ud-header { padding:14px 16px; border-bottom:1px solid #edf0f4; }
         .ud-header-name { font-family:var(--f-body); font-size:14px; font-weight:600; color:var(--ink); }
         .ud-header-email { font-family:var(--f-body); font-size:12px; color:var(--mid); margin-top:1px; }
-        .ud-link {
+        .user-dropdown .ud-link {
             display:flex; align-items:center; gap:10px; padding:10px 16px;
             font-family:var(--f-body); font-size:13px; font-weight:500; color:var(--ink);
             text-decoration:none; transition:background .15s;
         }
-        .ud-link:hover { background:#f4f6fa; }
-        .ud-link svg { width:16px; height:16px; color:var(--mid); flex-shrink:0; }
+        .user-dropdown .ud-link:hover { background:#f4f6fa; color:var(--ink); }
+        .user-dropdown .ud-link svg { width:16px; height:16px; color:var(--mid); flex-shrink:0; }
         .ud-sep { height:1px; background:#edf0f4; margin:2px 0; }
-        .ud-link.logout { color:#dc2626; }
-        .ud-link.logout:hover { background:#fef2f2; }
-        .ud-link.logout svg { color:#dc2626; }
+        .user-dropdown .ud-link.logout { color:#dc2626; }
+        .user-dropdown .ud-link.logout:hover { background:#fef2f2; color:#dc2626; }
+        .user-dropdown .ud-link.logout svg { color:#dc2626; }
         .nav-join {
             font-family:var(--f-body); font-size:10.5px; font-weight:600; letter-spacing:.1em;
             text-transform:uppercase; color:var(--white);
@@ -500,7 +500,7 @@
     <div class="footer-cta-strip">
         <div class="footer-cta-text">Begin Your Journey at Lucerna Kabgayi</div>
         <a href="{{ route('home') }}#booking" class="btn-blue" style="background:var(--navy-deep);flex-shrink:0;">
-            <span>Reserve Now</span>
+            <span>Book Now</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
     </div>

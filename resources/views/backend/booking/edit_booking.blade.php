@@ -193,10 +193,10 @@
 
     <div style="clear: both"></div>
     <div style="margin-top: 40px; margin-bottom:20px;">
-        @if ($datenow >= $editData->check_in && true) 
-        <a href="javascript::void(0)" class="btn btn-primary assign_room"> Assign Room</a>
+        @if (!in_array($editData->status, [4, 5]))
+        <a href="javascript:void(0)" class="btn btn-primary assign_room"> Assign Room</a>
         @else
-        <p class="my-1 text-danger">Invalid Date, Kindly check Date in</p>
+        <p class="my-1 text-danger">Cannot assign rooms to cancelled/denied bookings</p>
         @endif
     </div>
     @php
@@ -261,9 +261,7 @@
           </div>
 
           <div class="col-md-12" style="margin-top: 20px;">
-            @if ($datenow < $editData->check_in) 
-            <button type="submit" class="btn btn-primary">Update</button> 
-            @endif
+            <button type="submit" class="btn btn-primary">Update</button>
             <a href="{{ route('download.invoice',$editData->id) }}" class="btn btn-warning px-3 radius-10"><i class="lni lni-download"></i> Download Invoice</a>
           </div>
 
@@ -340,30 +338,25 @@
                   
                 </div>
             </div>
-    <div class="card-body"> 
+    <div class="card-body">
     <ul class="list-group list-group-flush">
-        <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center border-top">Name <span class="badge bg-success rounded-pill">{{ $editData['user']['name'] }}</span>
+        <li class="list-group-item d-flex justify-content-between align-items-center" style="background:transparent;color:var(--text-2);border-color:var(--border3);">Name <span class="badge bg-success rounded-pill">{{ $editData['user']['name'] }}</span>
         </li>
-        <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Email <span class="badge bg-danger rounded-pill">{{ $editData['user']['email'] }} </span>
+        <li class="list-group-item d-flex justify-content-between align-items-center" style="background:transparent;color:var(--text-2);border-color:var(--border3);">Email <span class="badge bg-danger rounded-pill">{{ $editData['user']['email'] }} </span>
         </li>
-        <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Phone <span class="badge bg-primary rounded-pill">{{ $editData['user']['phone'] }}</span>
+        <li class="list-group-item d-flex justify-content-between align-items-center" style="background:transparent;color:var(--text-2);border-color:var(--border3);">Phone <span class="badge bg-primary rounded-pill">{{ $editData['user']['phone'] }}</span>
         </li>
-        <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Identity <span class="badge bg-primary rounded-pill">{{ $editData->nid}}</span>
+        <li class="list-group-item d-flex justify-content-between align-items-center" style="background:transparent;color:var(--text-2);border-color:var(--border3);">Identity <span class="badge bg-primary rounded-pill">{{ $editData->nid}}</span>
         </li>
-        <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Country <span class="badge bg-warning text-dark rounded-pill">{{ $editData->country }}</span>
+        <li class="list-group-item d-flex justify-content-between align-items-center" style="background:transparent;color:var(--text-2);border-color:var(--border3);">Country <span class="badge bg-warning rounded-pill" style="color:var(--bg-void)!important;">{{ $editData->country }}</span>
         </li>
-
-        <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center border-top">State <span class="badge bg-success rounded-pill">{{ $editData->state }}</span>
+        <li class="list-group-item d-flex justify-content-between align-items-center" style="background:transparent;color:var(--text-2);border-color:var(--border3);">State <span class="badge bg-success rounded-pill">{{ $editData->state }}</span>
         </li>
-        <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Zip Code <span class="badge bg-danger rounded-pill"> {{ $editData->zip_code }} </span>
+        <li class="list-group-item d-flex justify-content-between align-items-center" style="background:transparent;color:var(--text-2);border-color:var(--border3);">Zip Code <span class="badge bg-danger rounded-pill"> {{ $editData->zip_code }} </span>
         </li>
-        <li class="list-group-item d-flex bg-transparent justify-content-between align-items-center">Address <span class="badge bg-danger rounded-pill"> {{ $editData->address }} </span>
+        <li class="list-group-item d-flex justify-content-between align-items-center" style="background:transparent;color:var(--text-2);border-color:var(--border3);">Address <span class="badge bg-info rounded-pill"> {{ $editData->address }} </span>
         </li>
-
-
     </ul>
-
-
     </div>
 
            </div>
