@@ -32,8 +32,9 @@ Route::get('/dashboard', function () {
    $BookingA = Booking::where('user_id', $id)->where('payment_status', 1)->get();
    $BookingP = Booking::where('user_id', $id)->where('payment_status', 0)->get();
    $BookingT = Booking::where('user_id', $id)->get();
+   $recentBookings = Booking::with('room.type')->where('user_id', $id)->orderBy('id','desc')->take(5)->get();
 
-   return view('frontend.dashboard.user_dashboard',compact('BookingA','BookingP','BookingT'));
+   return view('frontend.dashboard.user_dashboard',compact('BookingA','BookingP','BookingT','recentBookings'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -102,6 +103,10 @@ Route::middleware(['auth','roles:admin'])->group(function(){
       Route::post('/booking/deny/{id}', 'DenyBooking')->name('booking.deny');
       Route::post('/booking/verify-payment/{id}', 'VerifyPayment')->name('booking.verify.payment');
       Route::get('/booking/payment-proof/{id}', 'ViewPaymentProof')->name('booking.payment.proof');
+      Route::get('/booking/checkin/{id}', 'CheckInBooking')->name('booking.checkin');
+      Route::get('/booking/checkout/{id}', 'CheckOutBooking')->name('booking.checkout');
+      Route::post('/booking/cancel/{id}', 'CancelBooking')->name('booking.cancel');
+      Route::post('/booking/mark-payment/{id}', 'MarkPayment')->name('booking.mark.payment');
    });
    /// Admin Room List All Route 
    Route::controller(RoomListController::class)->group(function(){
@@ -235,6 +240,7 @@ Route::middleware(['auth'])->group(function(){
       Route::get('/checkout/', 'Checkout')->name('checkout');
       Route::post('/booking/store/', 'BookingStore')->name('user_booking_store');
       Route::post('/checkout/store/', 'CheckoutStore')->name('checkout.store');
+      Route::get('/booking/confirmation/{id}', 'BookingConfirmation')->name('booking.confirmation');
       Route::match(['get', 'post'],'/stripe_pay', [BookingController::class, 'stripe_pay'])->name('stripe_pay');
       // booking Update 
       Route::post('/update/booking/status/{id}', 'UpdateBookingStatus')->name('update.booking.status');
@@ -246,6 +252,7 @@ Route::middleware(['auth'])->group(function(){
       ////////// User Booking Route
       Route::get('/user/booking', 'UserBooking')->name('user.booking');
       Route::get('/user/invoice/{id}', 'UserInvoice')->name('user.invoice');
+      Route::post('/user/booking/cancel/{id}', 'UserCancelBooking')->name('user.cancel.booking');
    });
    /// User Review Route
    Route::controller(ReviewController::class)->group(function(){

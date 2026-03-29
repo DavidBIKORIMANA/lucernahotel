@@ -34,7 +34,7 @@ class BookingController extends Controller
 
         if (Session::has('book_date')) {
            $book_data = Session::get('book_date');
-           $room = Room::find($book_data['room_id']);
+           $room = Room::with('type')->find($book_data['room_id']);
 
            $toDate = Carbon::parse($book_data['check_in']);
            $fromDate = Carbon::parse($book_data['check_out']);
@@ -238,17 +238,31 @@ class BookingController extends Controller
 
         Session::forget('book_date');
 
+        // Send confirmation email to guest
+        try {
+            Mail::to($data->email)->send(new BookConfirm($data->toArray()));
+        } catch (\Exception $e) {
+            // Log email failure but don't block the booking
+            \Log::error('Booking confirmation email failed: '.$e->getMessage());
+        }
+
+        // Notify admins
+        Notification::send($user, new BookingComplete($request->name));
+
         $notification = array(
-            'message' => 'Booking Added Successfully',
+            'message' => 'Booking confirmed! A confirmation email has been sent to '.$data->email,
             'alert-type' => 'success'
         ); 
 
-        Notification::send($user, new BookingComplete($request->name));
-
-        return redirect('/')->with($notification);  
+        return redirect()->route('booking.confirmation', $data->id)->with($notification);  
 
     }// End Method 
 
+
+    public function BookingConfirmation($id){
+        $booking = Booking::with('room.type')->where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        return view('frontend.checkout.confirmation', compact('booking'));
+    }// End Method
 
 
     public function BookingList(){
@@ -541,7 +555,7 @@ class BookingController extends Controller
 
      public function UserBooking(){
         $id = Auth::user()->id;
-        $allData = Booking::where('user_id',$id)->orderBy('id','desc')->get();
+        $allData = Booking::with('room.type')->where('user_id',$id)->orderBy('id','desc')->get();
         return view('frontend.dashboard.user_booking',compact('allData'));
 
      }// End Method 
@@ -559,6 +573,28 @@ class BookingController extends Controller
      }// End Method 
 
 
+     public function UserCancelBooking(Request $request, $id){
+        $booking = Booking::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+
+        if (!in_array($booking->status, [0, 1])) {
+            return redirect()->back()->with([
+                'message' => 'This booking cannot be cancelled',
+                'alert-type' => 'error'
+            ]);
+        }
+
+        $booking->cancel($request->cancellation_reason);
+        ActivityLog::record('booking_cancelled_by_guest', $booking, [
+            'reason' => $request->cancellation_reason,
+        ]);
+
+        return redirect()->back()->with([
+            'message' => 'Booking cancelled successfully',
+            'alert-type' => 'warning'
+        ]);
+     }// End Method
+
+
      public function MarkAsRead(Request $request , $notificationId){
 
         $user = Auth::user();
@@ -572,6 +608,89 @@ class BookingController extends Controller
 
      }// End Method 
 
+
+     // ===== CHECK IN BOOKING =====
+     public function CheckInBooking($id){
+        $booking = Booking::findOrFail($id);
+
+        if ($booking->status != 1) {
+            return redirect()->back()->with([
+                'message' => 'Booking must be confirmed before check-in',
+                'alert-type' => 'error'
+            ]);
+        }
+
+        $booking->checkIn();
+        ActivityLog::record('booking_checked_in', $booking);
+
+        return redirect()->back()->with([
+            'message' => 'Guest Checked In Successfully',
+            'alert-type' => 'success'
+        ]);
+     } // End Method
+
+
+     // ===== CHECK OUT BOOKING =====
+     public function CheckOutBooking($id){
+        $booking = Booking::findOrFail($id);
+
+        if ($booking->status != 2) {
+            return redirect()->back()->with([
+                'message' => 'Guest must be checked in before check-out',
+                'alert-type' => 'error'
+            ]);
+        }
+
+        $booking->checkOut();
+        ActivityLog::record('booking_checked_out', $booking);
+
+        return redirect()->back()->with([
+            'message' => 'Guest Checked Out Successfully',
+            'alert-type' => 'success'
+        ]);
+     } // End Method
+
+
+     // ===== CANCEL BOOKING (from list) =====
+     public function CancelBooking(Request $request, $id){
+        $booking = Booking::findOrFail($id);
+
+        if (in_array($booking->status, [3, 4, 5])) {
+            return redirect()->back()->with([
+                'message' => 'This booking cannot be cancelled',
+                'alert-type' => 'error'
+            ]);
+        }
+
+        $booking->cancel($request->cancellation_reason);
+        ActivityLog::record('booking_cancelled', $booking, [
+            'reason' => $request->cancellation_reason,
+        ]);
+
+        return redirect()->back()->with([
+            'message' => 'Booking Cancelled Successfully',
+            'alert-type' => 'warning'
+        ]);
+     } // End Method
+
+
+     // ===== MARK PAYMENT (quick action from list) =====
+     public function MarkPayment(Request $request, $id){
+        $booking = Booking::findOrFail($id);
+        $booking->payment_status = $request->payment_status;
+        $booking->save();
+
+        ActivityLog::record('payment_status_updated', $booking, [
+            'payment_status' => $request->payment_status,
+        ]);
+
+        $statusLabels = [0 => 'Unpaid', 1 => 'Paid', 2 => 'Refunded', 3 => 'Partial'];
+
+        return redirect()->back()->with([
+            'message' => 'Payment marked as ' . ($statusLabels[$request->payment_status] ?? 'Updated'),
+            'alert-type' => 'success'
+        ]);
+     } // End Method
 
 
 }

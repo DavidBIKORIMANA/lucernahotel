@@ -211,6 +211,34 @@
         .nav-auth-user { display:flex; align-items:center; gap:6px; }
         .nav-auth-user img { width:26px; height:26px; border-radius:50%; object-fit:cover; border:2px solid rgba(255,255,255,.3); }
         nav#mainNav.scrolled .nav-auth-user img { border-color:rgba(255,255,255,.4); }
+
+        /* User dropdown */
+        .user-dropdown-wrap { position:relative; }
+        .user-dropdown-toggle { cursor:pointer; user-select:none; }
+        .user-dropdown-toggle svg.dd-chevron { width:12px; height:12px; margin-left:2px; opacity:.6; transition:transform .2s; }
+        .user-dropdown-wrap.open .dd-chevron { transform:rotate(180deg); }
+        .user-dropdown {
+            position:absolute; top:calc(100% + 10px); right:0; min-width:200px;
+            background:var(--white); border-radius:8px; box-shadow:0 12px 40px rgba(0,0,0,.18);
+            opacity:0; visibility:hidden; transform:translateY(-6px);
+            transition:all .2s var(--ease); z-index:500; overflow:hidden;
+        }
+        .user-dropdown-wrap.open .user-dropdown { opacity:1; visibility:visible; transform:translateY(0); }
+        .user-dropdown::before { content:''; position:absolute; top:-6px; right:16px; width:12px; height:12px; background:var(--white); transform:rotate(45deg); box-shadow:-2px -2px 4px rgba(0,0,0,.04); }
+        .ud-header { padding:14px 16px; border-bottom:1px solid #edf0f4; }
+        .ud-header-name { font-family:var(--f-body); font-size:14px; font-weight:600; color:var(--ink); }
+        .ud-header-email { font-family:var(--f-body); font-size:12px; color:var(--mid); margin-top:1px; }
+        .ud-link {
+            display:flex; align-items:center; gap:10px; padding:10px 16px;
+            font-family:var(--f-body); font-size:13px; font-weight:500; color:var(--ink);
+            text-decoration:none; transition:background .15s;
+        }
+        .ud-link:hover { background:#f4f6fa; }
+        .ud-link svg { width:16px; height:16px; color:var(--mid); flex-shrink:0; }
+        .ud-sep { height:1px; background:#edf0f4; margin:2px 0; }
+        .ud-link.logout { color:#dc2626; }
+        .ud-link.logout:hover { background:#fef2f2; }
+        .ud-link.logout svg { color:#dc2626; }
         .nav-join {
             font-family:var(--f-body); font-size:10.5px; font-weight:600; letter-spacing:.1em;
             text-transform:uppercase; color:var(--white);
@@ -245,13 +273,13 @@
         .btn-outline-w:hover { border-color:var(--white); background:rgba(255,255,255,.1); }
 
         /* ── Section Typography ── */
-        .eyebrow { font-family:var(--f-body); font-size:10px; font-weight:600; letter-spacing:.24em; text-transform:uppercase; color:var(--brand); display:block; margin-bottom:8px; }
+        .eyebrow { font-family:var(--f-body); font-size:16px; font-weight:600; letter-spacing:.24em; text-transform:uppercase; color:var(--brand); display:block; margin-bottom:10px; }
         .eyebrow.light { color:var(--brand-pale); }
         .eyebrow.gold  { color:var(--gold); }
-        .h-section { font-family:var(--f-head); font-size:clamp(28px,3.2vw,48px); font-weight:400; line-height:1.15; color:var(--navy); margin-bottom:14px; }
+        .h-section { font-family:var(--f-head); font-size:clamp(32px,3.8vw,56px); font-weight:400; line-height:1.12; color:var(--navy); margin-bottom:16px; }
         .h-section em { font-style:italic; font-weight:400; }
         .h-section.on-dark { color:var(--white); }
-        .lead { font-family:var(--f-body); font-size:14.5px; font-weight:400; line-height:1.8; color:var(--mid); }
+        .lead { font-family:var(--f-body); font-size:16px; font-weight:400; line-height:1.8; color:var(--mid); }
         .lead.on-dark { color:rgba(255,255,255,.6); }
 
         /* ── Divider ── */
@@ -276,24 +304,24 @@
         .footer-cta-strip { background:var(--brand); padding:22px 48px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
         .footer-cta-text { font-family:var(--f-head); font-size:19px; font-weight:400; font-style:italic; color:var(--white); }
         .footer-main { padding:52px 48px 36px; display:grid; grid-template-columns:2fr 1fr 1fr 1.3fr; gap:44px; border-bottom:1px solid rgba(255,255,255,.05); }
-        .footer-brand-name { font-family:var(--f-head); font-size:17px; font-weight:400; color:var(--white); margin-bottom:2px; }
-        .footer-brand-sub  { font-family:var(--f-body); font-size:9px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--brand-pale); margin-bottom:14px; }
-        .footer-tagline    { font-family:var(--f-body); font-size:12.5px; line-height:1.8; color:rgba(255,255,255,.3); max-width:265px; margin-bottom:20px; }
+        .footer-brand-name { font-family:var(--f-head); font-size:22px; font-weight:400; color:var(--white); margin-bottom:3px; }
+        .footer-brand-sub  { font-family:var(--f-body); font-size:12px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--brand-pale); margin-bottom:14px; }
+        .footer-tagline    { font-family:var(--f-body); font-size:14.5px; line-height:1.8; color:rgba(255,255,255,.38); max-width:280px; margin-bottom:20px; }
         .footer-social { display:flex; gap:8px; }
         .footer-social a { width:32px; height:32px; border-radius:50%; border:1px solid rgba(255,255,255,.1); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.35); text-decoration:none; font-size:11px; transition:all .25s; }
         .footer-social a:hover { border-color:var(--brand); color:var(--brand-pale); background:rgba(12,77,162,.1); }
-        .footer-col-title { font-family:var(--f-body); font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--white); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.05); }
+        .footer-col-title { font-family:var(--f-body); font-size:13px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--white); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.05); }
         .footer-col ul { list-style:none; }
-        .footer-col ul li { margin-bottom:9px; }
-        .footer-col ul li a { font-family:var(--f-body); font-size:12.5px; color:rgba(255,255,255,.36); text-decoration:none; transition:color .2s,padding-left .2s; }
+        .footer-col ul li { margin-bottom:10px; }
+        .footer-col ul li a { font-family:var(--f-body); font-size:14.5px; color:rgba(255,255,255,.42); text-decoration:none; transition:color .2s,padding-left .2s; }
         .footer-col ul li a:hover { color:var(--brand-pale); padding-left:4px; }
-        .footer-contact-item { display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; }
-        .footer-contact-icon { color:var(--brand); font-size:12px; flex-shrink:0; margin-top:2px; }
-        .footer-contact-label { font-family:var(--f-body); font-size:8.5px; font-weight:600; letter-spacing:.15em; text-transform:uppercase; color:rgba(255,255,255,.25); margin-bottom:1px; }
-        .footer-contact-val { font-family:var(--f-body); font-size:12.5px; color:rgba(255,255,255,.42); text-decoration:none; transition:color .2s; }
+        .footer-contact-item { display:flex; gap:10px; align-items:flex-start; margin-bottom:13px; }
+        .footer-contact-icon { color:var(--brand); font-size:14px; flex-shrink:0; margin-top:2px; }
+        .footer-contact-label { font-family:var(--f-body); font-size:11px; font-weight:600; letter-spacing:.15em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:2px; }
+        .footer-contact-val { font-family:var(--f-body); font-size:14.5px; color:rgba(255,255,255,.48); text-decoration:none; transition:color .2s; }
         .footer-contact-val:hover { color:var(--brand-pale); }
         .footer-bar { padding:16px 48px; display:flex; justify-content:space-between; align-items:center; }
-        .footer-copy { font-family:var(--f-body); font-size:11px; color:rgba(255,255,255,.18); }
+        .footer-copy { font-family:var(--f-body); font-size:12.5px; color:rgba(255,255,255,.22); }
 
         ::-webkit-scrollbar { width:4px; }
         ::-webkit-scrollbar-track { background:var(--off-white); }
@@ -331,6 +359,24 @@
             .footer-cta-strip { flex-direction:column; text-align:center; padding:18px 14px; }
             .footer-bar { padding:12px 14px; flex-direction:column; gap:5px; text-align:center; }
         }
+        @media(max-width:480px){
+            .top-bar { padding:6px 10px; font-size:10px; min-height:38px; }
+            .tb-logo-img { height:26px; }
+            .tb-brand-name { font-size:14px; }
+            nav#mainNav { height:44px; padding:0 10px; }
+            .nav-links { width:240px; padding:60px 18px 18px; }
+            .nav-links a { font-size:11px; padding:10px 0; }
+            .footer-main { padding:24px 10px 18px; }
+            .footer-cta-strip { padding:14px 10px; }
+            .footer-cta-strip .btn-blue { font-size:10.5px; padding:10px 20px; width:100%; text-align:center; justify-content:center; }
+            .footer-bar { padding:10px 10px; font-size:10px; }
+        }
+        @media(max-width:360px){
+            .top-bar { padding:5px 8px; }
+            .tb-logo-img { height:22px; }
+            nav#mainNav { height:40px; }
+            .nav-links { width:220px; }
+        }
 
         @yield('styles')
     </style>
@@ -366,12 +412,47 @@
         <span class="tb-stars">★★★</span>
         <div class="tb-right-sep"></div>
         @auth
-            <a href="{{ url('/dashboard') }}" class="nav-auth nav-auth-user">
-                @if(Auth::user()->photo)
-                    <img src="{{ asset(Auth::user()->photo) }}" alt="{{ Auth::user()->name }}">
-                @endif
-                {{ Auth::user()->name }}
-            </a>
+            <div class="user-dropdown-wrap" id="userDropdown">
+                <a href="javascript:void(0)" class="nav-auth nav-auth-user user-dropdown-toggle" id="userDropdownToggle">
+                    @if(Auth::user()->photo)
+                        <img src="{{ asset(Auth::user()->photo) }}" alt="{{ Auth::user()->name }}">
+                    @else
+                        <svg class="tb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    @endif
+                    {{ Auth::user()->name }}
+                    <svg class="dd-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </a>
+                <div class="user-dropdown">
+                    <div class="ud-header">
+                        <div class="ud-header-name">{{ Auth::user()->name }}</div>
+                        <div class="ud-header-email">{{ Auth::user()->email }}</div>
+                    </div>
+                    <a href="{{ url('/dashboard') }}" class="ud-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        Dashboard
+                    </a>
+                    <a href="{{ route('user.profile') }}" class="ud-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        My Profile
+                    </a>
+                    <a href="{{ route('user.booking') }}" class="ud-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        My Bookings
+                    </a>
+                    <a href="{{ route('user.change.password') }}" class="ud-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                        Change Password
+                    </a>
+                    <div class="ud-sep"></div>
+                    <form method="POST" action="{{ route('logout') }}" id="topBarLogoutForm">
+                        @csrf
+                        <a href="javascript:void(0)" class="ud-link logout" onclick="document.getElementById('topBarLogoutForm').submit();">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                            Logout
+                        </a>
+                    </form>
+                </div>
+            </div>
         @else
             <a href="{{ route('login') }}" class="nav-auth">
                 <svg class="tb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Login
@@ -437,21 +518,25 @@
         <div class="footer-col">
             <div class="footer-col-title">Explore</div>
             <ul>
-                <li><a href="{{ route('home') }}#rooms">Rooms &amp; Suites</a></li>
-                <li><a href="{{ route('home') }}#dining">Restaurant &amp; Bar</a></li>
-                <li><a href="{{ route('home') }}#meetings">Events &amp; Meetings</a></li>
-                <li><a href="{{ route('home') }}#amenities">Amenities</a></li>
-                <li><a href="{{ route('home') }}#about">Our Story</a></li>
+                <li><a href="{{ route('home') }}">Home</a></li>
+                <li><a href="{{ route('home') }}#about">About</a></li>
+                <li><a href="{{ route('home') }}#rooms">Rooms</a></li>
+                <li><a href="{{ route('home') }}#dining">Dining</a></li>
+                <li><a href="{{ route('home') }}#meetings">Events</a></li>
+                <li><a href="{{ route('home') }}#contact">Contact</a></li>
             </ul>
         </div>
         <div class="footer-col">
             <div class="footer-col-title">Services</div>
             <ul>
-                <li><a href="#">Airport Transfers</a></li>
-                <li><a href="#">Private Events</a></li>
-                <li><a href="#">Conference Facilities</a></li>
-                <li><a href="#">Safari Packages</a></li>
-                <li><a href="#">Gift Vouchers</a></li>
+                <li><a href="{{ route('home') }}#amenities">Outdoor Garden</a></li>
+                <li><a href="{{ route('home') }}#amenities">Fresh Linen Provided</a></li>
+                <li><a href="{{ route('home') }}#amenities">Business Center</a></li>
+                <li><a href="{{ route('home') }}#amenities">Meeting Space</a></li>
+                <li><a href="{{ route('home') }}#amenities">Restaurant &amp; Bar</a></li>
+                <li><a href="{{ route('home') }}#amenities">Fitness Center</a></li>
+                <li><a href="{{ route('home') }}#amenities">On-Site Laundry</a></li>
+                <li><a href="{{ route('home') }}#amenities">24-Hour Front Desk</a></li>
             </ul>
         </div>
         <div class="footer-col">
@@ -472,7 +557,7 @@
     </div>
     <div class="footer-bar">
         <div class="footer-copy">&copy; {{ date('Y') }} Lucerna Kabgayi Hôtel. All rights reserved.</div>
-        <div class="footer-copy">Crafted with Faith &amp; Hospitality · Rwanda</div>
+        <div class="footer-copy">Designed by IBABA Creative Space Ltd</div>
     </div>
 </footer>
 
@@ -490,6 +575,12 @@
     /* Mobile */
     var tog=document.getElementById('navToggle'),lnk=document.getElementById('navLinks');
     if(tog) tog.addEventListener('click',function(){ lnk.classList.toggle('open'); });
+    /* User dropdown */
+    var udWrap=document.getElementById('userDropdown'),udTog=document.getElementById('userDropdownToggle');
+    if(udTog){
+        udTog.addEventListener('click',function(e){ e.preventDefault(); udWrap.classList.toggle('open'); });
+        document.addEventListener('click',function(e){ if(udWrap && !udWrap.contains(e.target)) udWrap.classList.remove('open'); });
+    }
     /* Reveal */
     document.addEventListener('DOMContentLoaded',function(){
         var ob=new IntersectionObserver(function(e){ e.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('visible'); ob.unobserve(x.target); } }); },{threshold:.07});

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OtpMail;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -10,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -36,24 +38,30 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::insert([
+        $otp = random_int(100000, 999999);
+
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'otp' => $otp,
+            'otp_expires_at' => now()->addMinutes(10),
         ]);
-        $credentials = $request->only('email', 'password');
-        Auth::attempt($credentials);
-        $request->session()->regenerate();
-        $notification = array(
-                'message' => 'Registered Successfully',
-                'alert-type' => 'success'
-            );
-        return redirect()->route('dashboard')->with($notification);
 
-        event(new Registered($user));
+        Mail::to($user->email)->send(new OtpMail((string)$otp, 'verify', $user->name));
 
         Auth::login($user);
+        $request->session()->regenerate();
 
-        return redirect(RouteServiceProvider::HOME);
+        // Store redirect target if present
+        $redirect = $request->input('redirect');
+        if ($redirect && str_starts_with($redirect, url('/'))) {
+            session(['url.intended' => $redirect]);
+        }
+
+        return redirect()->route('verification.otp')->with([
+            'message' => 'A verification code has been sent to your email.',
+            'alert-type' => 'info',
+        ]);
     }
 }

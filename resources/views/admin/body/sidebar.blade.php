@@ -36,7 +36,7 @@
         </a>
         <a class="nav-item {{ request()->routeIs('add.room.list') ? 'active' : '' }}" href="{{ route('add.room.list') }}" style="padding-left:8px;font-size:13px;" onclick="event.stopPropagation();">
           <svg class="nav-icon" style="width:14px;height:14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg>
-          <span class="nav-text">Add Room</span>
+          <span class="nav-text">Add Reservation</span>
         </a>
         <a class="nav-item {{ request()->routeIs('all.seasons') || request()->routeIs('add.season') || request()->routeIs('edit.season') ? 'active' : '' }}" href="{{ route('all.seasons') }}" style="padding-left:8px;font-size:13px;" onclick="event.stopPropagation();">
           <svg class="nav-icon" style="width:14px;height:14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/></svg>

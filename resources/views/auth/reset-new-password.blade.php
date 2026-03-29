@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password — {{ config('app.name') }}</title>
+    <title>New Password — {{ config('app.name') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ asset('frontend/assets/img/favicon.png') }}">
@@ -43,11 +43,14 @@
         .auth-btn-primary:hover{box-shadow:0 6px 20px rgba(3,78,162,.3);transform:translateY(-1px);}
         .auth-error{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;font-size:13px;padding:10px 14px;border-radius:4px;margin-bottom:16px;}
         .auth-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;font-size:13px;padding:10px 14px;border-radius:4px;margin-bottom:16px;}
-        .auth-footer-text{text-align:center;font-size:14px;color:var(--mid);margin-top:24px;}
-        .auth-footer-text a{color:var(--brand);font-weight:600;text-decoration:none;transition:color .2s;}
-        .auth-footer-text a:hover{text-decoration:underline;}
         .otp-icon{width:64px;height:64px;border-radius:50%;background:rgba(12,77,162,.06);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
         .otp-icon svg{width:28px;height:28px;stroke:var(--brand);}
+        .pw-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--mid);padding:2px;display:flex;}
+        .pw-toggle:hover{color:var(--brand);}
+        .pw-toggle svg{width:18px;height:18px;}
+        .auth-field-pw{position:relative;}
+        .pw-strength{height:3px;border-radius:2px;margin-top:6px;background:#e2e8f0;overflow:hidden;}
+        .pw-strength-bar{height:100%;border-radius:2px;transition:width .3s,background .3s;width:0;}
         @media(max-width:960px){
             .auth-hero{display:none;}
             .auth-form-panel{width:100%;max-width:480px;margin:0 auto;padding:32px 24px;}
@@ -73,8 +76,8 @@
         </div>
         <div class="auth-hero-content">
             <span class="auth-hero-stars">★★★</span>
-            <h2 class="auth-hero-title">Forgot Your Password?</h2>
-            <p class="auth-hero-sub">No worries — enter your email address and we'll send you a verification code to reset your password securely.</p>
+            <h2 class="auth-hero-title">Create New Password</h2>
+            <p class="auth-hero-sub">Choose a strong, unique password to keep your account safe and secure.</p>
         </div>
     </div>
 
@@ -85,15 +88,11 @@
         </a>
 
         <div class="otp-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M15 7a2 2 0 0 1 2 2m4 0a6 6 0 0 1-7.743 5.743L11 17H9v2H7v2H4a1 1 0 0 1-1-1v-2.586a1 1 0 0 1 .293-.707l5.964-5.964A6 6 0 1 1 21 9z"/></svg>
         </div>
 
-        <h1 class="auth-form-title" style="text-align:center;">Reset Password</h1>
-        <p class="auth-form-sub" style="text-align:center;">Enter the email address associated with your account and we'll send you a one-time code.</p>
-
-        @if(session('status'))
-            <div class="auth-success">{{ session('status') }}</div>
-        @endif
+        <h1 class="auth-form-title" style="text-align:center;">Set New Password</h1>
+        <p class="auth-form-sub" style="text-align:center;">Your identity has been verified. Enter your new password below.</p>
 
         @if ($errors->any())
             <div class="auth-error">
@@ -103,23 +102,58 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('password.email') }}">
+        <form method="POST" action="{{ route('password.otp.store') }}">
             @csrf
-            <div class="auth-field">
-                <label class="auth-label" for="email">Email Address</label>
-                <input id="email" class="auth-input" type="email" name="email" value="{{ old('email') }}" placeholder="you@example.com" required autofocus>
+            <div class="auth-field auth-field-pw">
+                <label class="auth-label" for="password">New Password</label>
+                <input id="password" class="auth-input" type="password" name="password" placeholder="Min 8 characters" required autofocus>
+                <button type="button" class="pw-toggle" onclick="togglePw('password', this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <div class="pw-strength"><div class="pw-strength-bar" id="pwBar"></div></div>
+            </div>
+
+            <div class="auth-field auth-field-pw">
+                <label class="auth-label" for="password_confirmation">Confirm Password</label>
+                <input id="password_confirmation" class="auth-input" type="password" name="password_confirmation" placeholder="Repeat your password" required>
+                <button type="button" class="pw-toggle" onclick="togglePw('password_confirmation', this)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
             </div>
 
             <button type="submit" class="auth-btn auth-btn-primary">
-                Send Verification Code
+                Reset Password
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </button>
         </form>
-
-        <div class="auth-footer-text">
-            Remember your password? <a href="{{ route('login') }}">Sign In</a>
-        </div>
     </div>
 </div>
+
+<script>
+function togglePw(id, btn){
+    var inp = document.getElementById(id);
+    var show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    btn.innerHTML = show
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+}
+
+(function(){
+    var pw = document.getElementById('password');
+    var bar = document.getElementById('pwBar');
+    pw.addEventListener('input', function(){
+        var v = pw.value, score = 0;
+        if(v.length >= 8) score++;
+        if(/[A-Z]/.test(v)) score++;
+        if(/[0-9]/.test(v)) score++;
+        if(/[^A-Za-z0-9]/.test(v)) score++;
+        var colors = ['#e53e3e','#ed8936','#ecc94b','#48bb78'];
+        var widths = ['25%','50%','75%','100%'];
+        bar.style.width = v.length > 0 ? widths[score-1] || '10%' : '0';
+        bar.style.background = v.length > 0 ? (colors[score-1] || '#e53e3e') : '#e2e8f0';
+    });
+})();
+</script>
 </body>
 </html>

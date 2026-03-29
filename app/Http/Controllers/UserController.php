@@ -5,12 +5,28 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Room;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function Index(){
-        return view('frontend.index');
+        $rooms = Room::with('type')
+            ->where('status', 1)
+            ->whereHas('type', fn($q) => $q->where('type', 'Room'))
+            ->latest()
+            ->limit(9)
+            ->get();
+
+        $halls = Room::with('type')
+            ->where('status', 1)
+            ->whereHas('type', fn($q) => $q->where('type', 'Hall'))
+            ->latest()
+            ->get();
+
+        $roomTypes = \App\Models\RoomType::where('status','active')->orderBy('sort_order')->get();
+
+        return view('frontend.index', compact('rooms', 'halls', 'roomTypes'));
     }// End Method 
 
     public function UserProfile(){

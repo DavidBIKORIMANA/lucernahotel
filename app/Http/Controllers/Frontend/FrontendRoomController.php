@@ -18,7 +18,7 @@ class FrontendRoomController extends Controller
 {
     public function AllFrontendRoomList(){
 
-        $rooms = Room::latest()->get();
+        $rooms = Room::with('type')->latest()->get();
         return view('frontend.room.all_rooms',compact('rooms'));
     } // End Method 
 
@@ -29,7 +29,7 @@ class FrontendRoomController extends Controller
         $multiImage = MultiImage::where('rooms_id',$id)->get();
         $facility = Facility::where('rooms_id',$id)->get();
 
-        $otherRooms = Room::where('id','!=', $id)->orderBy('id','DESC')->limit(2)->get();
+        $otherRooms = Room::with('type')->where('id','!=', $id)->orderBy('id','DESC')->limit(2)->get();
         return view('frontend.room.room_details',compact('roomdetails','multiImage','facility','otherRooms'));
 
     } // End Method 
@@ -60,7 +60,13 @@ class FrontendRoomController extends Controller
 
         $check_date_booking_ids = RoomBookedDate::whereIn('book_date',$dt_array)->distinct()->pluck('booking_id')->toArray();
 
-        $rooms = Room::withCount('room_numbers')->where('status',1)->get();
+        $query = Room::with('type')->withCount('room_numbers')->where('status',1);
+
+        if ($request->filled('room_type')) {
+            $query->where('roomtype_id', $request->room_type);
+        }
+
+        $rooms = $query->get();
 
         return view('frontend.room.search_room',compact('rooms','check_date_booking_ids'));
 
@@ -69,11 +75,11 @@ class FrontendRoomController extends Controller
 
     public function SearchRoomDetails(Request $request,$id){
         $request->flash();
-        $roomdetails = Room::find($id);
+        $roomdetails = Room::with('type')->find($id);
         $multiImage = MultiImage::where('rooms_id',$id)->get();
         $facility = Facility::where('rooms_id',$id)->get();
 
-        $otherRooms = Room::where('id','!=', $id)->orderBy('id','DESC')->limit(2)->get();
+        $otherRooms = Room::with('type')->where('id','!=', $id)->orderBy('id','DESC')->limit(2)->get();
         $room_id = $id;
         return view('frontend.room.search_room_details',compact('roomdetails','multiImage','facility','otherRooms','room_id'));
 
@@ -142,10 +148,10 @@ class FrontendRoomController extends Controller
         $check_date_booking_ids = RoomBookedDate::whereIn('book_date',$dt_array)->distinct()->pluck('booking_id')->toArray();
 
         if ($request->get('idcode') == 2) {
-            $rooms = Room::withCount('room_numbers')->join('room_types', 'room_types.id', '=', 'rooms.roomtype_id')->where('rooms.status',1)->where('room_types.type','Hall')->get();
+            $rooms = Room::with('type')->withCount('room_numbers')->join('room_types', 'room_types.id', '=', 'rooms.roomtype_id')->where('rooms.status',1)->where('room_types.type','Hall')->get();
             return view('frontend.room.search_hall_top',compact('rooms','check_date_booking_ids'));
         }else{
-            $rooms = Room::withCount('room_numbers')->join('room_types', 'room_types.id', '=', 'rooms.roomtype_id')->where('rooms.status',1)->where('room_types.type','Room')->get();
+            $rooms = Room::with('type')->withCount('room_numbers')->join('room_types', 'room_types.id', '=', 'rooms.roomtype_id')->where('rooms.status',1)->where('room_types.type','Room')->get();
             return view('frontend.room.search_room_top',compact('rooms','check_date_booking_ids'));
         }
 

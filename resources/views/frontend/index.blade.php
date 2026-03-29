@@ -75,8 +75,8 @@
 }
 .hstat { padding:18px 32px; text-align:center; border-right:1px solid rgba(255,255,255,.1); }
 .hstat:last-child { border-right:none; }
-.hstat-num { font-family:var(--f-head); font-size:26px; font-weight:400; color:var(--white); line-height:1; margin-bottom:4px; }
-.hstat-lbl { font-family:var(--f-body); font-size:9.5px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--brand-pale); }
+.hstat-num { font-family:var(--f-head); font-size:28px; font-weight:400; color:var(--white); line-height:1; margin-bottom:4px; }
+.hstat-lbl { font-family:var(--f-body); font-size:11px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--brand-pale); }
 
 /* ══════════════════════════════
    BOOKING BAR
@@ -93,7 +93,7 @@
     margin-bottom:28px;
 }
 .booking-section-title {
-    font-family:var(--f-head); font-size:28px; font-weight:400;
+    font-family:var(--f-head); font-size:32px; font-weight:400;
     font-style:italic; color:var(--navy);
 }
 .booking-section-sub {
@@ -117,12 +117,12 @@
 }
 .bfield:hover,.bfield:focus-within { background:rgba(12,77,162,.04); }
 .bfield label {
-    font-family:var(--f-body); font-size:10px; font-weight:700;
+    font-family:var(--f-body); font-size:12px; font-weight:700;
     letter-spacing:.2em; text-transform:uppercase; color:var(--brand);
     margin-bottom:6px; display:block;
 }
 .bfield input,.bfield select {
-    font-family:var(--f-head); font-size:17px; font-weight:400;
+    font-family:var(--f-head); font-size:19px; font-weight:400;
     color:var(--navy); background:transparent; border:none; outline:none;
     appearance:none; width:100%; cursor:pointer;
 }
@@ -130,7 +130,7 @@
 .bfield select option { background:var(--white); }
 .booking-btn {
     background:var(--brand); border:none; padding:0 52px;
-    font-family:var(--f-body); font-size:13px; font-weight:700;
+    font-family:var(--f-body); font-size:15px; font-weight:700;
     letter-spacing:.14em; text-transform:uppercase; color:var(--white);
     cursor:pointer; white-space:nowrap; transition:all .3s;
     min-width:210px;
@@ -194,8 +194,8 @@
 }
 .mv-card:hover { background:var(--white); box-shadow:0 6px 24px rgba(12,36,64,.07); transform:translateY(-2px); }
 .mv-icon { color:var(--brand); margin-bottom:10px; }
-.mv-label { font-family:var(--f-head); font-size:16px; font-weight:600; font-style:italic; color:var(--navy); margin-bottom:6px; }
-.mv-text  { font-family:var(--f-body); font-size:13px; line-height:1.7; color:var(--mid); }
+.mv-label { font-family:var(--f-head); font-size:19px; font-weight:600; font-style:italic; color:var(--navy); margin-bottom:6px; }
+.mv-text  { font-family:var(--f-body); font-size:14.5px; line-height:1.7; color:var(--mid); }
 
 .about-values { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:26px; }
 .about-val {
@@ -203,43 +203,145 @@
     border-left:3px solid var(--brand); transition:all .25s;
 }
 .about-val:hover { background:var(--cream); border-color:var(--navy); }
-.av-name { font-family:var(--f-head); font-size:14.5px; font-weight:400; font-style:italic; color:var(--navy); margin-bottom:3px; }
-.av-text { font-family:var(--f-body); font-size:12.5px; color:var(--soft); line-height:1.55; }
+.av-name { font-family:var(--f-head); font-size:19.5px; font-weight:400; font-style:italic; color:var(--navy); margin-bottom:4px; }
+.av-text { font-family:var(--f-body); font-size:14px; color:var(--soft); line-height:1.6; }
 
 /* ══════════════════════════════
    ROOMS
 ══════════════════════════════ */
 .rooms-section {
-    background:var(--navy); padding:72px 48px;
+    background: linear-gradient(139deg,#0c62c3 14.24%,#034ea2 75.61%); padding:48px 48px;
     position:relative;
 }
 .rooms-section::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:var(--brand); }
 .rooms-inner { max-width:1280px; margin:0 auto; }
-.rooms-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:36px; }
+.rooms-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px; }
 
 .rooms-grid {
-    display:grid; grid-template-columns:1.2fr 1fr 1fr;
-    grid-template-rows:auto auto; gap:14px;
+    display:grid; grid-template-columns:repeat(2,1fr);
+    gap:18px;
 }
-.room-card { position:relative; overflow:hidden; background:var(--navy); cursor:pointer; }
-.room-card-featured { grid-row:span 2; }
-.room-img { width:100%; height:288px; object-fit:cover; display:block; transition:transform .75s var(--ease),filter .5s; }
-.room-card-featured .room-img { height:100%; min-height:590px; }
-.room-card:hover .room-img { transform:scale(1.05); filter:brightness(.78); }
+.room-card {
+    display:flex; overflow:hidden; background:var(--navy);
+    cursor:pointer; text-decoration:none; height:300px;
+    transition:all .4s var(--ease);
+}
+.room-card:hover { box-shadow:0 16px 48px rgba(0,0,0,.25); transform:translateY(-3px); }
+.room-card-img { width:48%; flex-shrink:0; overflow:hidden; position:relative; }
+.room-img { width:100%; height:100%; object-fit:cover; object-position:center center; display:block; transition:transform .75s var(--ease); }
+.room-card:hover .room-img { transform:scale(1.06); }
 .room-info {
-    position:absolute; bottom:0; left:0; right:0;
-    padding:52px 20px 20px;
-    background:linear-gradient(to top,rgba(7,22,38,.95) 0%,transparent 100%);
-    transition:padding .3s;
+    flex:1; padding:28px 28px; display:flex; flex-direction:column; justify-content:center;
+    position:relative;
 }
-.room-card:hover .room-info { padding-bottom:26px; }
-.room-type { font-family:var(--f-body); font-size:9px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--brand-pale); margin-bottom:5px; }
-.room-name { font-family:var(--f-head); font-size:21px; font-weight:400; font-style:italic; color:var(--white); margin-bottom:8px; }
-.room-footer { display:flex; justify-content:space-between; align-items:center; }
-.room-price { font-family:var(--f-head); font-size:19px; font-weight:400; color:var(--brand-pale); }
-.room-price span { font-family:var(--f-body); font-size:10px; color:rgba(255,255,255,.32); margin-left:2px; }
-.room-arrow { width:32px; height:32px; border:1px solid rgba(12,77,162,.4); display:flex; align-items:center; justify-content:center; color:var(--brand-pale); font-size:14px; opacity:0; transition:all .3s; }
+.room-type {
+    font-family:var(--f-body); font-size:11px; font-weight:600;
+    letter-spacing:.25em; text-transform:uppercase;
+    color:var(--brand-pale); margin-bottom:8px;
+}
+.room-name {
+    font-family:var(--f-head); font-size:28px; font-weight:400;
+    font-style:italic; color:var(--white); margin-bottom:10px;
+}
+.room-short-desc {
+    font-family:var(--f-body); font-size:13px; color:rgba(255,255,255,.5);
+    line-height:1.7; margin-bottom:14px;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.room-meta {
+    display:flex; gap:16px; margin-bottom:16px; flex-wrap:wrap;
+}
+.room-meta-item {
+    font-family:var(--f-body); font-size:11px; color:rgba(255,255,255,.45);
+    display:flex; align-items:center; gap:4px;
+}
+.room-meta-item svg { width:13px; height:13px; stroke:var(--brand-pale); flex-shrink:0; }
+.room-meta-item strong { color:rgba(255,255,255,.7); font-weight:600; }
+.room-footer { display:flex; justify-content:space-between; align-items:center; margin-top:auto; }
+.room-price { font-family:var(--f-head); font-size:24px; font-weight:600; color:var(--brand-pale); }
+.room-price span { font-family:var(--f-body); font-size:13px; color:rgba(255,255,255,.3); margin-left:2px; }
+.room-arrow { width:32px; height:32px; border:1px solid rgba(12,77,162,.3); display:flex; align-items:center; justify-content:center; color:var(--brand-pale); font-size:14px; opacity:0; transition:all .3s; }
 .room-card:hover .room-arrow { opacity:1; background:rgba(12,77,162,.12); }
+
+/* ══════════════════════════════
+   HALLS — Events & Conferences
+══════════════════════════════ */
+.halls-section {
+    background:var(--navy); padding:64px 48px;
+    position:relative; overflow:hidden;
+}
+.halls-section::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:4px;
+    background:linear-gradient(90deg,var(--brand),var(--gold));
+}
+.halls-inner { max-width:1280px; margin:0 auto; }
+.halls-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:28px; }
+.halls-scroll-wrap { position:relative; }
+.halls-scroll {
+    display:flex; flex-direction:column; gap:20px;
+}
+.hall-card {
+    display:flex; overflow:hidden; background:#0a1e36;
+    text-decoration:none; height:320px;
+    transition:all .4s var(--ease);
+}
+.hall-card.single { max-width:900px; margin:0 auto; }
+.hall-card:hover { box-shadow:0 16px 48px rgba(0,0,0,.3); transform:translateY(-3px); }
+.hall-card-img {
+    width:50%; flex-shrink:0; overflow:hidden; position:relative;
+}
+.hall-img {
+    width:100%; height:100%; object-fit:cover; object-position:center center; display:block;
+    transition:transform .75s var(--ease);
+}
+.hall-card:hover .hall-img { transform:scale(1.06); }
+.hall-card-body {
+    flex:1; padding:32px 36px; display:flex; flex-direction:column; justify-content:center;
+    position:relative;
+}
+.hall-label {
+    font-family:var(--f-body); font-size:11px; font-weight:600;
+    letter-spacing:.25em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:8px;
+}
+.hall-name {
+    font-family:var(--f-head); font-size:30px; font-weight:400;
+    font-style:italic; color:var(--white); margin-bottom:10px;
+}
+.hall-desc {
+    font-family:var(--f-body); font-size:14px; color:rgba(255,255,255,.55);
+    line-height:1.7; margin-bottom:16px;
+}
+.hall-meta {
+    display:flex; gap:20px; margin-bottom:18px; flex-wrap:wrap;
+}
+.hall-meta-item {
+    font-family:var(--f-body); font-size:12px; color:rgba(255,255,255,.45);
+    display:flex; align-items:center; gap:5px;
+}
+.hall-meta-item svg { width:14px; height:14px; stroke:var(--gold); flex-shrink:0; }
+.hall-meta-item strong { color:rgba(255,255,255,.75); font-weight:600; }
+.hall-price {
+    font-family:var(--f-head); font-size:24px; font-weight:600; color:var(--brand-pale);
+}
+.hall-price span { font-family:var(--f-body); font-size:13px; color:rgba(255,255,255,.3); margin-left:2px; }
+.hall-arrow {
+    position:absolute; top:20px; right:20px;
+    width:36px; height:36px; border:1px solid rgba(255,255,255,.12);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--white); font-size:16px;
+    opacity:0; transition:all .3s;
+}
+.hall-card:hover .hall-arrow { opacity:1; background:rgba(255,255,255,.08); }
+/* Scroll indicators */
+.halls-scroll-hint {
+    display:flex; justify-content:center; gap:8px; margin-top:18px;
+}
+.halls-dot {
+    width:24px; height:3px; border-radius:2px;
+    background:rgba(255,255,255,.15); transition:all .3s;
+}
+.halls-dot.active { width:40px; background:var(--brand-pale); }
 
 /* ══════════════════════════════
    AMENITIES (Marriott-style grid)
@@ -261,8 +363,8 @@
 .amenity-card:hover .amenity-icon-wrap { background:var(--brand); }
 .amenity-icon { font-size:20px; color:var(--brand); transition:color .35s; }
 .amenity-card:hover .amenity-icon { color:var(--white); }
-.amenity-name { font-family:var(--f-head); font-size:17px; font-weight:400; font-style:italic; color:var(--navy); margin-bottom:10px; }
-.amenity-desc { font-family:var(--f-body); font-size:13px; line-height:1.7; color:var(--soft); }
+.amenity-name { font-family:var(--f-head); font-size:24px; font-weight:400; font-style:italic; color:var(--navy); margin-bottom:12px; }
+.amenity-desc { font-family:var(--f-body); font-size:14.5px; line-height:1.7; color:var(--soft); }
 
 /* ══════════════════════════════
    FEATURED AMENITIES ON-SITE (Marriott screenshot style)
@@ -274,7 +376,7 @@
 .featured-amenities-inner { max-width:1280px; margin:0 auto; }
 .fa-header { margin-bottom:32px; }
 .fa-title {
-    font-family:var(--f-body); font-size:11px; font-weight:700;
+    font-family:var(--f-body); font-size:16px; font-weight:700;
     letter-spacing:.22em; text-transform:uppercase;
     color:var(--ink); margin-bottom:0;
 }
@@ -285,7 +387,7 @@
     border:1px solid rgba(12,36,64,.08);
 }
 .fa-item {
-    padding:20px 22px; display:flex; align-items:flex-start; gap:12px;
+    padding:24px 24px; display:flex; align-items:flex-start; gap:14px;
     border-right:1px solid rgba(12,36,64,.08);
     border-bottom:1px solid rgba(12,36,64,.08);
     transition:background .2s;
@@ -293,19 +395,19 @@
 .fa-item:hover { background:rgba(12,77,162,.03); }
 .fa-item:nth-child(4n) { border-right:none; }
 .fa-item-icon {
-    width:28px; height:28px; flex-shrink:0;
+    width:34px; height:34px; flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
-    color:var(--brand); font-size:16px; margin-top:1px;
+    color:var(--brand); font-size:18px; margin-top:1px;
 }
-.fa-item-icon svg { width:20px; height:20px; stroke:var(--brand); fill:none; stroke-width:1.5; }
+.fa-item-icon svg { width:24px; height:24px; stroke:var(--brand); fill:none; stroke-width:1.5; }
 .fa-item-text { flex:1; }
 .fa-item-name {
-    font-family:var(--f-body); font-size:13px; font-weight:600; color:var(--ink);
+    font-family:var(--f-body); font-size:18px; font-weight:600; color:var(--ink);
     text-decoration:none; transition:color .2s;
     display:block;
 }
 .fa-item-name:hover,.fa-item-name.linked { color:var(--brand); text-decoration:underline; cursor:pointer; }
-.fa-item-note { font-family:var(--f-body); font-size:11.5px; color:var(--soft); margin-top:1px; }
+.fa-item-note { font-family:var(--f-body); font-size:15px; color:var(--soft); margin-top:3px; }
 
 /* ══════════════════════════════
    HOTEL INFORMATION (Marriott style)
@@ -316,19 +418,19 @@
 }
 .hotel-info-inner { max-width:1280px; margin:0 auto; }
 .hi-section-title {
-    font-family:var(--f-body); font-size:11px; font-weight:700;
+    font-family:var(--f-body); font-size:16px; font-weight:700;
     letter-spacing:.22em; text-transform:uppercase;
     color:var(--ink); margin-bottom:28px;
     padding-bottom:12px; border-bottom:2px solid rgba(12,77,162,.1);
 }
 .hi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
-.hi-group-title { font-family:var(--f-body); font-size:10.5px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--mid); margin-bottom:14px; }
+.hi-group-title { font-family:var(--f-body); font-size:14px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--mid); margin-bottom:14px; }
 .hi-row { display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; }
-.hi-row-icon { width:20px; height:20px; flex-shrink:0; color:var(--brand); margin-top:1px; }
-.hi-row-icon svg { width:18px; height:18px; stroke:var(--brand); fill:none; stroke-width:1.5; }
+.hi-row-icon { width:22px; height:22px; flex-shrink:0; color:var(--brand); margin-top:2px; }
+.hi-row-icon svg { width:20px; height:20px; stroke:var(--brand); fill:none; stroke-width:1.5; }
 .hi-row-body { flex:1; }
-.hi-row-title { font-family:var(--f-body); font-size:13px; font-weight:600; color:var(--ink); margin-bottom:1px; }
-.hi-row-detail { font-family:var(--f-body); font-size:12px; color:var(--soft); line-height:1.55; }
+.hi-row-title { font-family:var(--f-body); font-size:17px; font-weight:600; color:var(--ink); margin-bottom:2px; }
+.hi-row-detail { font-family:var(--f-body); font-size:15px; color:var(--soft); line-height:1.6; }
 
 /* ══════════════════════════════
    DINING
@@ -347,9 +449,9 @@
 .dining-item { display:flex; justify-content:space-between; align-items:center; padding:13px 0; border-bottom:1px solid rgba(255,255,255,.06); transition:padding .25s; }
 .dining-item:last-child { border-bottom:none; }
 .dining-item:hover { padding-left:5px; }
-.dining-item-name { font-family:var(--f-head); font-size:17px; font-weight:400; font-style:italic; color:rgba(255,255,255,.85); transition:color .25s; }
+.dining-item-name { font-family:var(--f-head); font-size:20px; font-weight:400; font-style:italic; color:rgba(255,255,255,.85); transition:color .25s; }
 .dining-item:hover .dining-item-name { color:var(--brand-pale); }
-.dining-item-time { font-family:var(--f-body); font-size:10.5px; font-weight:500; color:var(--brand-pale); white-space:nowrap; }
+.dining-item-time { font-family:var(--f-body); font-size:12px; font-weight:500; color:var(--brand-pale); white-space:nowrap; }
 
 /* ══════════════════════════════
    EVENTS
@@ -366,8 +468,8 @@
 .events-features { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:20px 0 28px; }
 .events-feat { padding:16px 14px; border:1px solid rgba(12,36,64,.09); border-left:3px solid var(--brand); transition:all .25s; }
 .events-feat:hover { border-color:var(--brand); background:rgba(12,77,162,.03); transform:translateX(3px); }
-.ef-name { font-family:var(--f-head); font-size:14.5px; font-weight:400; font-style:italic; color:var(--navy); margin-bottom:3px; }
-.ef-desc { font-family:var(--f-body); font-size:12px; color:var(--soft); line-height:1.5; }
+.ef-name { font-family:var(--f-head); font-size:17px; font-weight:400; font-style:italic; color:var(--navy); margin-bottom:4px; }
+.ef-desc { font-family:var(--f-body); font-size:13.5px; color:var(--soft); line-height:1.55; }
 
 /* ══════════════════════════════
    TESTIMONIALS
@@ -393,10 +495,10 @@
 .testi-card:hover { background:rgba(255,255,255,.07); border-color:rgba(12,77,162,.38); transform:translateY(-3px); }
 .testi-card:hover::before { transform:scaleX(1); }
 .testi-quote { font-family:var(--f-head); font-size:44px; font-weight:400; color:var(--brand); line-height:.6; margin-bottom:16px; opacity:.45; }
-.testi-text { font-family:var(--f-head); font-size:15.5px; font-weight:400; font-style:italic; line-height:1.75; color:rgba(255,255,255,.62); margin-bottom:20px; }
-.testi-stars { font-size:12px; letter-spacing:3px; color:var(--gold); margin-bottom:12px; }
-.testi-author { font-family:var(--f-body); font-size:12.5px; font-weight:600; color:var(--white); }
-.testi-location { font-family:var(--f-body); font-size:10.5px; color:var(--brand-pale); margin-top:2px; }
+.testi-text { font-family:var(--f-head); font-size:17px; font-weight:400; font-style:italic; line-height:1.75; color:rgba(255,255,255,.62); margin-bottom:20px; }
+.testi-stars { font-size:13px; letter-spacing:3px; color:var(--gold); margin-bottom:12px; }
+.testi-author { font-family:var(--f-body); font-size:14px; font-weight:600; color:var(--white); }
+.testi-location { font-family:var(--f-body); font-size:12px; color:var(--brand-pale); margin-top:2px; }
 
 /* ══════════════════════════════
    CONTACT
@@ -406,9 +508,9 @@
 .contact-left .lead { margin-bottom:32px; }
 .contact-details { display:flex; flex-direction:column; gap:18px; }
 .cd-item { display:flex; gap:13px; align-items:flex-start; }
-.cd-icon { width:38px; height:38px; flex-shrink:0; background:var(--brand); display:flex; align-items:center; justify-content:center; color:var(--white); font-size:13px; border-radius:2px; }
-.cd-label { font-family:var(--f-body); font-size:8.5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--brand); margin-bottom:3px; }
-.cd-val { font-family:var(--f-head); font-size:15px; font-weight:400; font-style:italic; color:var(--navy); }
+.cd-icon { width:42px; height:42px; flex-shrink:0; background:var(--brand); display:flex; align-items:center; justify-content:center; color:var(--white); font-size:15px; border-radius:2px; }
+.cd-label { font-family:var(--f-body); font-size:12px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--brand); margin-bottom:3px; }
+.cd-val { font-family:var(--f-head); font-size:19px; font-weight:400; font-style:italic; color:var(--navy); }
 .cd-val a { color:inherit; text-decoration:none; transition:color .2s; }
 .cd-val a:hover { color:var(--brand); }
 .map-wrap { margin-top:24px; overflow:hidden; }
@@ -418,22 +520,22 @@
     background:var(--white); border-top:4px solid var(--brand);
     padding:40px 34px; box-shadow:0 4px 28px rgba(12,36,64,.06);
 }
-.cfc-title { font-family:var(--f-head); font-size:22px; font-weight:400; font-style:italic; color:var(--navy); margin-bottom:24px; }
+.cfc-title { font-family:var(--f-head); font-size:26px; font-weight:400; font-style:italic; color:var(--navy); margin-bottom:24px; }
 .contact-form { display:flex; flex-direction:column; gap:15px; }
-.form-field label { display:block; font-family:var(--f-body); font-size:8.5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--brand); margin-bottom:5px; }
+.form-field label { display:block; font-family:var(--f-body); font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--brand); margin-bottom:5px; }
 .form-field input,.form-field textarea {
     width:100%; background:var(--off-white); border:1px solid rgba(12,36,64,.1);
     border-radius:2px; outline:none;
-    font-family:var(--f-head); font-size:14.5px; font-weight:400; font-style:italic;
-    color:var(--navy); padding:10px 12px; transition:border-color .2s,background .2s;
+    font-family:var(--f-head); font-size:16px; font-weight:400; font-style:italic;
+    color:var(--navy); padding:11px 13px; transition:border-color .2s,background .2s;
 }
 .form-field input:focus,.form-field textarea:focus { border-color:var(--brand); background:var(--white); box-shadow:0 0 0 3px rgba(12,77,162,.07); }
 .form-field textarea { resize:none; height:88px; }
 .form-field input::placeholder,.form-field textarea::placeholder { color:rgba(12,35,64,.28); font-style:italic; }
 .form-row { display:grid; grid-template-columns:1fr 1fr; gap:15px; }
 .form-submit {
-    width:100%; background:var(--brand); border:none; padding:14px;
-    font-family:var(--f-body); font-size:11.5px; font-weight:600; letter-spacing:.14em;
+    width:100%; background:var(--brand); border:none; padding:15px;
+    font-family:var(--f-body); font-size:13px; font-weight:600; letter-spacing:.14em;
     text-transform:uppercase; color:var(--white); cursor:pointer; border-radius:2px;
     margin-top:4px; transition:background .25s,transform .25s;
 }
@@ -445,15 +547,13 @@
 @media(max-width:1200px){
     .about-section,.rooms-section,.amenities-section,.featured-amenities,
     .hotel-info-section,.events-section,.testi-section .testi-inner,
-    .contact-section { padding-left:28px; padding-right:28px; }
+    .contact-section,.halls-section { padding-left:28px; padding-right:28px; }
     .dining-content { padding:52px 36px; }
     .hero-stat { padding:16px 20px; }
     .about-img-badge { right:-10px; }
 }
 @media(max-width:1024px){
     .rooms-grid { grid-template-columns:1fr 1fr; }
-    .room-card-featured { grid-row:span 1; }
-    .room-card-featured .room-img { min-height:288px; }
     .amenities-grid { grid-template-columns:repeat(2,1fr); }
     .fa-grid { grid-template-columns:repeat(2,1fr); }
     .fa-item:nth-child(2n) { border-right:none; }
@@ -475,25 +575,151 @@
     .booking-section-header { flex-direction:column; align-items:flex-start; gap:4px; margin-bottom:20px; }
     .booking-bar-inner { flex-direction:column; }
     .bfield { border-right:none; border-bottom:1px solid rgba(12,77,162,.07); padding:18px 20px; }
-    .booking-btn { padding:20px; }
+    .booking-btn { padding:20px; min-width:0; width:100%; }
     .about-inner,.events-inner,.contact-inner { grid-template-columns:1fr; gap:32px; }
     .about-img-main { height:300px; }
     .about-img-badge { display:none; }
     .mv-grid,.about-values,.events-features { grid-template-columns:1fr; }
     .rooms-grid { grid-template-columns:1fr; }
+    .room-card { height:260px; }
+    .room-card-img { width:42%; }
+    .room-info { padding:22px 20px; }
+    .room-name { font-size:22px; }
     .amenities-grid { grid-template-columns:1fr; }
     .fa-grid { grid-template-columns:1fr; }
     .fa-item:nth-child(n) { border-right:none; }
     .hi-grid { grid-template-columns:1fr; }
     .dining-section { grid-template-columns:1fr; }
     .dining-img { min-height:260px; }
+    .dining-content { padding:40px 24px; }
     .contact-form-card { padding:26px 18px; }
     .form-row { grid-template-columns:1fr; }
     .about-section,.rooms-section,.amenities-section,.featured-amenities,
-    .hotel-info-section,.events-section,.contact-section { padding:48px 14px; }
+    .hotel-info-section,.events-section,.contact-section,.halls-section { padding:48px 14px; }
+    .hall-card { height:240px; }
+    .hall-card-img { width:40%; }
+    .hall-card-body { padding:24px 20px; }
+    .hall-name { font-size:26px; }
     .testi-inner { padding:0 14px; }
     .testi-card { flex:0 0 250px; padding:24px 18px; }
     .events-img { height:260px; }
+    .events-badge { bottom:-14px; right:14px; padding:14px 20px; }
+    .eb-num { font-size:28px; }
+}
+
+/* ── Small phones ── */
+@media(max-width:480px){
+    .hero { height:70vh; min-height:360px; }
+    .hero-content { padding:0 14px 50px; }
+    .hero-title { font-size:clamp(24px,8vw,34px); margin-bottom:12px; }
+    .hero-eyebrow { font-size:10px; letter-spacing:.22em; margin-bottom:10px; }
+    .hero-sub { font-size:13px; max-width:280px; margin-bottom:22px; }
+    .hero-actions { gap:8px; }
+    .hero-dots { bottom:80px; }
+    .hero-dot { width:20px; }
+    .hero-dot.active { width:36px; }
+    .hero-stats { grid-template-columns:1fr 1fr; }
+    .hstat { padding:10px 8px; }
+    .hstat-num { font-size:20px; }
+    .hstat-lbl { font-size:8px; letter-spacing:.1em; }
+    .booking-section { padding:24px 10px 32px; }
+    .bfield { padding:14px 16px; }
+    .bfield label { font-size:10px; letter-spacing:.14em; }
+    .bfield input,.bfield select { font-size:17px; }
+    .booking-btn { padding:16px; font-size:13px; letter-spacing:.1em; }
+    .about-section,.rooms-section,.amenities-section,.featured-amenities,
+    .hotel-info-section,.events-section,.contact-section,.halls-section { padding:36px 10px; }
+    .hall-card { height:auto; flex-direction:column; }
+    .hall-card-img { width:100%; height:220px; }
+    .hall-card-body { padding:24px 20px; }
+    .hall-name { font-size:22px; }
+    .hall-desc { font-size:13px; }
+    .about-img-main { height:220px; }
+    .h-section { font-size:clamp(24px,6.5vw,36px); margin-bottom:10px; }
+    .eyebrow { font-size:12px; letter-spacing:.18em; }
+    .lead { font-size:14px; line-height:1.7; }
+    .bar { width:28px; height:2px; }
+    .mv-card { padding:16px 14px; }
+    .mv-label { font-size:16px; }
+    .mv-text { font-size:13px; }
+    .about-val { padding:12px 14px; }
+    .av-name { font-size:16px; }
+    .av-text { font-size:12.5px; }
+    .room-card { height:auto; flex-direction:column; }
+    .room-card-img { width:100%; height:240px; }
+    .room-img { height:100%; }
+    .room-info { padding:20px 16px; }
+    .room-name { font-size:20px; }
+    .room-price { font-size:19px; }
+    .amenity-card { padding:24px 16px; }
+    .amenity-icon-wrap { width:48px; height:48px; }
+    .amenity-name { font-size:19px; }
+    .amenity-desc { font-size:13px; }
+    .fa-item { padding:14px 16px; gap:10px; }
+    .fa-item-name { font-size:13px; }
+    .fa-item-note { font-size:11.5px; }
+    .hi-row-title { font-size:13px; }
+    .hi-row-detail { font-size:12px; }
+    .dining-img { min-height:200px; }
+    .dining-content { padding:32px 16px; }
+    .dining-item-name { font-size:17px; }
+    .dining-item-time { font-size:10.5px; }
+    .events-img { height:200px; }
+    .events-feat { padding:12px 10px; }
+    .ef-name { font-size:15px; }
+    .ef-desc { font-size:12px; }
+    .testi-section { padding:48px 0; }
+    .testi-inner { padding:0 10px; }
+    .testi-card { flex:0 0 220px; padding:20px 14px; }
+    .testi-quote { font-size:36px; margin-bottom:12px; }
+    .testi-text { font-size:15px; margin-bottom:16px; }
+    .testi-author { font-size:12.5px; }
+    .testi-location { font-size:10.5px; }
+    .contact-section { padding:36px 10px; }
+    .contact-inner { gap:24px; }
+    .contact-details { gap:14px; }
+    .cd-icon { width:32px; height:32px; font-size:11px; }
+    .cd-val { font-size:15px; }
+    .cd-label { font-size:9px; }
+    .map-wrap iframe { height:180px; }
+    .contact-form-card { padding:20px 14px; }
+    .cfc-title { font-size:22px; margin-bottom:18px; }
+    .form-field label { font-size:9px; }
+    .form-field input,.form-field textarea { font-size:15px; padding:9px 10px; }
+    .form-submit { padding:13px; font-size:12px; }
+    .btn-blue { font-size:10.5px; padding:10px 22px; letter-spacing:.1em; }
+    .btn-outline-w { font-size:10.5px; padding:9px 20px; letter-spacing:.1em; }
+}
+
+/* ── Very small phones (320-360px) ── */
+@media(max-width:360px){
+    .hero { min-height:300px; }
+    .hero-title { font-size:22px; }
+    .hero-sub { font-size:12px; max-width:240px; }
+    .hero-eyebrow { font-size:9px; }
+    .hero-stats { grid-template-columns:1fr 1fr; }
+    .hstat { padding:8px 6px; }
+    .hstat-num { font-size:17px; }
+    .hstat-lbl { font-size:7px; }
+    .booking-section { padding:20px 8px 28px; }
+    .bfield { padding:12px 12px; }
+    .bfield input,.bfield select { font-size:14px; }
+    .about-section,.rooms-section,.amenities-section,.featured-amenities,
+    .hotel-info-section,.events-section,.contact-section,.halls-section { padding:28px 8px; }
+    .hall-card-img { height:180px; }
+    .hall-name { font-size:20px; }
+    .hall-card-body { padding:20px 16px; }
+    .about-img-main { height:180px; }
+    .h-section { font-size:clamp(22px,5.5vw,28px); }
+    .room-card-img { height:200px; }
+    .amenity-card { padding:20px 12px; }
+    .testi-card { flex:0 0 200px; padding:16px 12px; }
+    .testi-text { font-size:14px; }
+    .dining-content { padding:24px 12px; }
+    .contact-form-card { padding:16px 10px; }
+    .map-wrap iframe { height:150px; }
+    .cd-val { font-size:14px; }
+    .cd-val a { word-break:break-all; }
 }
 
 @endsection
@@ -575,7 +801,6 @@
 
         <div class="booking-bar">
     <form method="GET" action="{{ route('booking.search') }}" class="booking-bar-inner" id="bookingForm">
-        @csrf
         <div class="bfield">
             <label for="check_in">Check In</label>
             <input type="text" id="check_in" name="check_in" placeholder="Select date" autocomplete="off" readonly required>
@@ -594,12 +819,12 @@
             </select>
         </div>
         <div class="bfield">
-            <label for="room_type">Room Type</label>
+            <label for="room_type">Category</label>
             <select id="room_type" name="room_type">
-                <option value="">Any Category</option>
-                <option value="deluxe">Deluxe Room</option>
-                <option value="junior_suite">Junior Suite</option>
-                <option value="executive_suite">Executive Suite</option>
+                <option value="">All Categories</option>
+                @foreach($roomTypes as $type)
+                <option value="{{ $type->id }}">{{ $type->name }}</option>
+                @endforeach
             </select>
         </div>
         <button type="submit" class="booking-btn">Check Availability</button>
@@ -670,29 +895,105 @@
             <a href="{{ route('froom.all') }}" class="btn-outline-w reveal" style="flex-shrink:0">View All Rooms</a>
         </div>
         <div class="rooms-grid">
-            <div class="room-card room-card-featured reveal">
-                <img class="room-img" src="{{ asset('frontend/assets/img/room_1.jpg') }}" alt="Executive Suite" loading="lazy">
-                <div class="room-info"><div class="room-type">Signature</div><div class="room-name">Executive Suite</div><div class="room-footer"><div class="room-price">$240 <span>/ night</span></div><div class="room-arrow">→</div></div></div>
+            @forelse($rooms as $room)
+            @php $delay = ['','d1','d2'][$loop->index % 3]; @endphp
+            <a href="{{ url('/room/details/'.$room->id) }}" class="room-card reveal {{ $delay }}" style="text-decoration:none">
+                <div class="room-card-img">
+                    <img class="room-img" src="{{ asset('upload/roomimg/'.$room->image) }}" alt="{{ $room->type->name ?? 'Room' }}" loading="lazy">
+                </div>
+                <div class="room-info">
+                    <div class="room-type">Room</div>
+                    <div class="room-name">{{ $room->type->name ?? 'Room' }}</div>
+                    @if($room->short_desc)
+                    <div class="room-short-desc">{{ $room->short_desc }}</div>
+                    @endif
+                    <div class="room-meta">
+                        @if($room->room_capacity)
+                        <span class="room-meta-item">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                            <strong>{{ $room->room_capacity }}</strong> Guests
+                        </span>
+                        @endif
+                        @if($room->size)
+                        <span class="room-meta-item">
+                            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+                            {{ $room->size }}
+                        </span>
+                        @endif
+                        @if($room->bed_style)
+                        <span class="room-meta-item">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v-2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/></svg>
+                            {{ $room->bed_style }}
+                        </span>
+                        @endif
+                    </div>
+                    <div class="room-footer">
+                        <div class="room-price">RwF {{ number_format($room->price, 0) }} <span>/ night</span></div>
+                        <div class="room-arrow">→</div>
+                    </div>
+                </div>
+            </a>
+            @empty
+            <p style="color:rgba(255,255,255,.5);grid-column:1/-1;text-align:center;padding:40px 0;">Rooms coming soon.</p>
+            @endforelse
+        </div>
+    </div>
+</section>
+
+{{-- HALLS — Events & Conferences --}}
+@if($halls->count())
+<section class="halls-section" id="halls">
+    <div class="halls-inner">
+        <div class="halls-header">
+            <div>
+                <span class="eyebrow light reveal">Events &amp; Conferences</span>
+                <h2 class="h-section on-dark reveal d1">Where Great <em>Moments</em> Unfold</h2>
+                <p class="lead on-dark reveal d2" style="max-width:460px">World-class halls for conferences, weddings, and landmark celebrations.</p>
             </div>
-            <div class="room-card reveal d1">
-                <img class="room-img" src="{{ asset('frontend/assets/img/room_2.jpg') }}" alt="Deluxe Room" loading="lazy">
-                <div class="room-info"><div class="room-type">Deluxe</div><div class="room-name">Deluxe Room</div><div class="room-footer"><div class="room-price">$95 <span>/ night</span></div><div class="room-arrow">→</div></div></div>
-            </div>
-            <div class="room-card reveal d2">
-                <img class="room-img" src="{{ asset('frontend/assets/img/room_3.jpg') }}" alt="Garden Suite" loading="lazy">
-                <div class="room-info"><div class="room-type">Junior Suite</div><div class="room-name">Garden Suite</div><div class="room-footer"><div class="room-price">$155 <span>/ night</span></div><div class="room-arrow">→</div></div></div>
-            </div>
-            <div class="room-card reveal d1">
-                <img class="room-img" src="{{ asset('frontend/assets/img/room_4.jpg') }}" alt="Classic Room" loading="lazy">
-                <div class="room-info"><div class="room-type">Classic</div><div class="room-name">Classic Room</div><div class="room-footer"><div class="room-price">$72 <span>/ night</span></div><div class="room-arrow">→</div></div></div>
-            </div>
-            <div class="room-card reveal d2">
-                <img class="room-img" src="{{ asset('frontend/assets/img/room_5.jpg') }}" alt="Family Suite" loading="lazy">
-                <div class="room-info"><div class="room-type">Family</div><div class="room-name">Family Suite</div><div class="room-footer"><div class="room-price">$185 <span>/ night</span></div><div class="room-arrow">→</div></div></div>
+        </div>
+        <div class="halls-scroll-wrap">
+            <div class="halls-scroll">
+                @foreach($halls as $hall)
+                <a href="{{ url('/room/details/'.$hall->id) }}" class="hall-card{{ $halls->count() === 1 ? ' single' : '' }} reveal {{ ['','d1'][$loop->index % 2] }}" style="text-decoration:none">
+                    <div class="hall-card-img">
+                        <img class="hall-img" src="{{ asset('upload/roomimg/'.$hall->image) }}" alt="{{ $hall->type->name ?? 'Hall' }}" loading="lazy">
+                    </div>
+                    <div class="hall-card-body">
+                        <div class="hall-label">Hall</div>
+                        <div class="hall-name">{{ $hall->type->name ?? 'Hall' }}</div>
+                        @if($hall->short_desc)
+                        <div class="hall-desc">{{ Str::limit($hall->short_desc, 120) }}</div>
+                        @endif
+                        <div class="hall-meta">
+                            @if($hall->room_capacity)
+                            <span class="hall-meta-item">
+                                <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                <strong>{{ $hall->room_capacity }}</strong> Guests
+                            </span>
+                            @endif
+                            @if($hall->size)
+                            <span class="hall-meta-item">
+                                <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+                                {{ $hall->size }}
+                            </span>
+                            @endif
+                            @if($hall->bed_style)
+                            <span class="hall-meta-item">
+                                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                {{ $hall->bed_style }}
+                            </span>
+                            @endif
+                        </div>
+                        <div class="hall-price">RwF {{ number_format($hall->price, 0) }} <span>/ event</span></div>
+                    </div>
+                    <div class="hall-arrow">→</div>
+                </a>
+                @endforeach
             </div>
         </div>
     </div>
 </section>
+@endif
 
 {{-- AMENITIES --}}
 <section class="amenities-section" id="amenities">
@@ -1044,6 +1345,19 @@
             toString:    function(d){ return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
         });
     });
+
+    /* ── Halls scroll dots ── */
+    var hs=document.querySelector('.halls-scroll'), hDots=document.querySelectorAll('.halls-dot');
+    if(hs && hDots.length>1){
+        hs.addEventListener('scroll',function(){
+            var cards=hs.querySelectorAll('.hall-card'), sw=hs.scrollLeft+hs.offsetWidth/2;
+            cards.forEach(function(c,i){
+                if(c.offsetLeft<=sw && c.offsetLeft+c.offsetWidth>sw){
+                    hDots.forEach(function(d,j){ d.classList.toggle('active',j===i); });
+                }
+            });
+        },{passive:true});
+    }
 
 })();
 </script>

@@ -58,6 +58,16 @@
 
         .auth-error{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;font-size:13px;padding:10px 14px;border-radius:4px;margin-bottom:16px;}
 
+        .auth-hero-top{position:relative;z-index:2;padding:36px 48px;}
+        .auth-hero-logo{height:38px;filter:brightness(10);transition:opacity .2s;}
+        .auth-hero-logo:hover{opacity:.85;}
+
+        .auth-hero-nav{position:relative;z-index:2;padding:0 48px;display:flex;gap:24px;flex-wrap:wrap;}
+        .auth-hero-nav a{font-family:var(--f-body);font-size:13px;font-weight:500;color:rgba(255,255,255,.7);text-decoration:none;transition:color .2s;letter-spacing:.02em;}
+        .auth-hero-nav a:hover{color:var(--white);}
+        .auth-hero-nav a::after{content:'';display:block;width:0;height:1.5px;background:var(--gold);transition:width .3s;margin-top:2px;}
+        .auth-hero-nav a:hover::after{width:100%;}
+
         @media(max-width:960px){
             .auth-hero{display:none;}
             .auth-form-panel{width:100%;max-width:480px;margin:0 auto;padding:32px 24px;}
@@ -69,6 +79,18 @@
     <div class="auth-hero">
         <img src="{{ asset('frontend/assets/img/home-one.jpg') }}" alt="{{ config('app.name') }}">
         <div class="auth-hero-overlay"></div>
+        <div class="auth-hero-top">
+            <a href="{{ route('home') }}">
+                <img class="auth-hero-logo" src="{{ asset('frontend/assets/img/logos/logo.jpeg') }}" alt="{{ config('app.name') }}">
+            </a>
+        </div>
+        <div class="auth-hero-nav">
+            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route('froom.all') }}">Rooms</a>
+            <a href="{{ route('show.gallery') }}">Gallery</a>
+            <a href="{{ route('blog.list') }}">Blog</a>
+            <a href="{{ route('contact.us') }}">Contact</a>
+        </div>
         <div class="auth-hero-content">
             <span class="auth-hero-stars">★★★</span>
             <h2 class="auth-hero-title">Welcome Back to {{ config('app.name') }}</h2>
@@ -95,6 +117,9 @@
 
         <form method="POST" action="{{ route('login') }}">
             @csrf
+            @if(request('redirect'))
+            <input type="hidden" name="redirect" value="{{ request('redirect') }}">
+            @endif
             <div class="auth-field">
                 <label class="auth-label" for="login">Email / Name / Phone</label>
                 <input class="auth-input" type="text" name="login" id="login" placeholder="Enter your email, name or phone" required autofocus>
@@ -115,7 +140,7 @@
             <button type="submit" class="auth-btn auth-btn-primary">Sign In</button>
         </form>
 
-        <p class="auth-footer-text">Don't have an account? <a href="{{ route('register') }}">Create one</a></p>
+        <p class="auth-footer-text">Don't have an account? <a href="{{ route('register') }}{{ request('redirect') ? '?redirect='.urlencode(request('redirect')) : '' }}">Create one</a></p>
     </div>
 </div>
 </body>

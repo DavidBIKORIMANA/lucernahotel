@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password — {{ config('app.name') }}</title>
+    <title>Verify Code — {{ config('app.name') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ asset('frontend/assets/img/favicon.png') }}">
@@ -46,8 +46,15 @@
         .auth-footer-text{text-align:center;font-size:14px;color:var(--mid);margin-top:24px;}
         .auth-footer-text a{color:var(--brand);font-weight:600;text-decoration:none;transition:color .2s;}
         .auth-footer-text a:hover{text-decoration:underline;}
+        .otp-inputs{display:flex;gap:10px;justify-content:center;margin-bottom:24px;}
+        .otp-box{width:52px;height:60px;text-align:center;font-family:'Courier New',monospace;font-size:26px;font-weight:700;color:var(--brand);border:2px solid #dde2ea;border-radius:8px;background:var(--off-white);outline:none;transition:all .2s;}
+        .otp-box:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(12,77,162,.12);background:var(--white);}
         .otp-icon{width:64px;height:64px;border-radius:50%;background:rgba(12,77,162,.06);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
         .otp-icon svg{width:28px;height:28px;stroke:var(--brand);}
+        .auth-resend{display:inline-flex;align-items:center;gap:4px;font-family:var(--f-body);font-size:13px;font-weight:500;color:var(--brand);text-decoration:none;transition:color .2s;background:none;border:none;cursor:pointer;padding:0;}
+        .auth-resend:hover{color:var(--brand-dark);text-decoration:underline;}
+        .auth-resend:disabled{color:var(--mid);cursor:not-allowed;text-decoration:none;}
+        .auth-email-highlight{font-weight:600;color:var(--navy);}
         @media(max-width:960px){
             .auth-hero{display:none;}
             .auth-form-panel{width:100%;max-width:480px;margin:0 auto;padding:32px 24px;}
@@ -73,23 +80,25 @@
         </div>
         <div class="auth-hero-content">
             <span class="auth-hero-stars">★★★</span>
-            <h2 class="auth-hero-title">Forgot Your Password?</h2>
-            <p class="auth-hero-sub">No worries — enter your email address and we'll send you a verification code to reset your password securely.</p>
+            <h2 class="auth-hero-title">One Step Away</h2>
+            <p class="auth-hero-sub">Enter the verification code we sent to your email to continue resetting your password.</p>
         </div>
     </div>
 
     <div class="auth-form-panel">
-        <a href="{{ route('login') }}" class="auth-back">
+        <a href="{{ route('password.request') }}" class="auth-back">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            Back to Login
+            Change Email
         </a>
 
         <div class="otp-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z"/></svg>
         </div>
 
-        <h1 class="auth-form-title" style="text-align:center;">Reset Password</h1>
-        <p class="auth-form-sub" style="text-align:center;">Enter the email address associated with your account and we'll send you a one-time code.</p>
+        <h1 class="auth-form-title" style="text-align:center;">Enter Code</h1>
+        <p class="auth-form-sub" style="text-align:center;">
+            We've sent a 6-digit code to <span class="auth-email-highlight">{{ session('reset_email', '') }}</span>
+        </p>
 
         @if(session('status'))
             <div class="auth-success">{{ session('status') }}</div>
@@ -103,23 +112,91 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('password.email') }}">
+        <form method="POST" action="{{ route('password.otp.check') }}" id="otpForm">
             @csrf
-            <div class="auth-field">
-                <label class="auth-label" for="email">Email Address</label>
-                <input id="email" class="auth-input" type="email" name="email" value="{{ old('email') }}" placeholder="you@example.com" required autofocus>
+            <input type="hidden" name="otp" id="otpHidden">
+
+            <div class="otp-inputs">
+                <input type="text" class="otp-box" maxlength="1" data-index="0" inputmode="numeric" autofocus>
+                <input type="text" class="otp-box" maxlength="1" data-index="1" inputmode="numeric">
+                <input type="text" class="otp-box" maxlength="1" data-index="2" inputmode="numeric">
+                <input type="text" class="otp-box" maxlength="1" data-index="3" inputmode="numeric">
+                <input type="text" class="otp-box" maxlength="1" data-index="4" inputmode="numeric">
+                <input type="text" class="otp-box" maxlength="1" data-index="5" inputmode="numeric">
             </div>
 
-            <button type="submit" class="auth-btn auth-btn-primary">
-                Send Verification Code
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </button>
+            <button type="submit" class="auth-btn auth-btn-primary">Verify Code</button>
         </form>
 
-        <div class="auth-footer-text">
-            Remember your password? <a href="{{ route('login') }}">Sign In</a>
+        <div class="auth-footer-text" style="margin-top:20px;">
+            Didn't receive the code?
+            <form method="POST" action="{{ route('password.otp.resend') }}" style="display:inline;">
+                @csrf
+                <button type="submit" class="auth-resend" id="resendBtn">Resend Code</button>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+(function(){
+    var boxes = document.querySelectorAll('.otp-box');
+    var hidden = document.getElementById('otpHidden');
+    var form = document.getElementById('otpForm');
+
+    function updateHidden(){
+        var otp = '';
+        boxes.forEach(function(b){ otp += b.value; });
+        hidden.value = otp;
+    }
+
+    boxes.forEach(function(box, i){
+        box.addEventListener('input', function(){
+            this.value = this.value.replace(/\D/g, '').slice(0,1);
+            updateHidden();
+            if(this.value && i < 5) boxes[i+1].focus();
+            if(hidden.value.length === 6) form.submit();
+        });
+        box.addEventListener('keydown', function(e){
+            if(e.key === 'Backspace' && !this.value && i > 0){
+                boxes[i-1].focus();
+                boxes[i-1].value = '';
+                updateHidden();
+            }
+        });
+        box.addEventListener('paste', function(e){
+            e.preventDefault();
+            var data = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0,6);
+            for(var j=0; j<data.length && j<6; j++){
+                boxes[j].value = data[j];
+            }
+            updateHidden();
+            if(data.length >= 6){ boxes[5].focus(); form.submit(); }
+            else if(data.length > 0) boxes[Math.min(data.length, 5)].focus();
+        });
+    });
+
+    var btn = document.getElementById('resendBtn');
+    var cooldown = 60;
+    var timer;
+    function startCooldown(){
+        btn.disabled = true;
+        var remaining = cooldown;
+        btn.textContent = 'Resend in ' + remaining + 's';
+        timer = setInterval(function(){
+            remaining--;
+            btn.textContent = 'Resend in ' + remaining + 's';
+            if(remaining <= 0){
+                clearInterval(timer);
+                btn.disabled = false;
+                btn.textContent = 'Resend Code';
+            }
+        }, 1000);
+    }
+    @if(session('status'))
+    startCooldown();
+    @endif
+})();
+</script>
 </body>
 </html>

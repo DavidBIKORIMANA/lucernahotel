@@ -46,6 +46,12 @@ class AuthenticatedSessionController extends Controller
             $url = '/dashboard';
         }
 
+        // Honor redirect param from booking flow (validate it's an internal path)
+        $redirect = $request->input('redirect');
+        if ($redirect && str_starts_with($redirect, url('/'))) {
+            return redirect($redirect)->with($notification);
+        }
+
         return redirect()->intended($url)->with($notification);
     }
 
