@@ -1,6 +1,4 @@
-@extends('frontend.main_master')
-
-@section('styles')
+<?php $__env->startSection('styles'); ?>
 <style>
 /* ───── Design Tokens ───── */
 :root {
@@ -564,10 +562,10 @@
     .rd-lb-close { top: 12px; right: 14px; font-size: 30px; width: 40px; height: 40px; }
 }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('main')
-@php
+<?php $__env->startSection('main'); ?>
+<?php
     $images = [asset('upload/roomimg/'.$roomdetails->image)];
     foreach($multiImage as $mi) { $images[] = asset('upload/roomimg/multi_img/'.$mi->multi_img); }
     $isHall = (strtolower($roomdetails->type->name ?? '') === 'hall' || ($roomdetails->room_capacity >= 50));
@@ -576,87 +574,87 @@
     $discountedPrice = $roomdetails->discount > 0
         ? $roomdetails->price - ($roomdetails->price * $roomdetails->discount / 100)
         : $roomdetails->price;
-@endphp
+?>
 
 <div class="rd-page">
-    {{-- ── Title Bar ── --}}
+    
     <div class="rd-title-bar">
-        <h1>{{ $roomdetails->type->name }}</h1>
+        <h1><?php echo e($roomdetails->type->name); ?></h1>
     </div>
 
-    {{-- ── Two-Column Layout ── --}}
+    
     <div class="rd-columns">
 
-        {{-- ═══ LEFT COLUMN ═══ --}}
+        
         <div class="rd-left">
-            {{-- Gallery --}}
+            
             <div class="rd-gallery-wrap" id="gallery-main">
-                <span class="rd-badge"><span id="curr-idx">1</span> / {{ count($images) }}</span>
+                <span class="rd-badge"><span id="curr-idx">1</span> / <?php echo e(count($images)); ?></span>
                 <button class="rd-nav-btn rd-prev" id="btn-prev" aria-label="Previous">&#10094;</button>
                 <button class="rd-nav-btn rd-next" id="btn-next" aria-label="Next">&#10095;</button>
                 <button class="rd-view-gallery-btn" id="view-gallery-btn">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
                     VIEW GALLERY
                 </button>
-                <img id="main-feat-img" src="{{ $images[0] }}" alt="{{ $roomdetails->type->name }}">
+                <img id="main-feat-img" src="<?php echo e($images[0]); ?>" alt="<?php echo e($roomdetails->type->name); ?>">
             </div>
             <div class="rd-thumb-strip" id="thumb-strip">
-                @foreach($images as $i => $src)
-                <div class="rd-thumb-item {{ $i === 0 ? 'is-active' : '' }}" data-index="{{ $i }}">
-                    <img src="{{ $src }}" alt="Photo {{ $i + 1 }}" loading="lazy">
+                <?php $__currentLoopData = $images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $src): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <div class="rd-thumb-item <?php echo e($i === 0 ? 'is-active' : ''); ?>" data-index="<?php echo e($i); ?>">
+                    <img src="<?php echo e($src); ?>" alt="Photo <?php echo e($i + 1); ?>" loading="lazy">
                 </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
 
-            {{-- Description --}}
+            
             <div class="rd-section">
                 <span class="rd-section-title">Description</span>
-                <div class="rd-desc-text">{!! $roomdetails->description !!}</div>
+                <div class="rd-desc-text"><?php echo $roomdetails->description; ?></div>
             </div>
 
-            {{-- Details Grid --}}
-            @if($roomdetails->view || $roomdetails->size || $roomdetails->room_capacity || $roomdetails->bed_style)
+            
+            <?php if($roomdetails->view || $roomdetails->size || $roomdetails->room_capacity || $roomdetails->bed_style): ?>
             <div class="rd-details-grid">
-                @if($roomdetails->view)
+                <?php if($roomdetails->view): ?>
                 <div class="rd-detail-item">
                     <div class="rd-detail-label">View:</div>
-                    <div class="rd-detail-value">{{ $roomdetails->view }}</div>
+                    <div class="rd-detail-value"><?php echo e($roomdetails->view); ?></div>
                 </div>
-                @endif
-                @if($roomdetails->size)
+                <?php endif; ?>
+                <?php if($roomdetails->size): ?>
                 <div class="rd-detail-item">
                     <div class="rd-detail-label">Size:</div>
-                    <div class="rd-detail-value">{{ $roomdetails->size }}</div>
+                    <div class="rd-detail-value"><?php echo e($roomdetails->size); ?></div>
                 </div>
-                @endif
-                @if($roomdetails->room_capacity)
+                <?php endif; ?>
+                <?php if($roomdetails->room_capacity): ?>
                 <div class="rd-detail-item">
                     <div class="rd-detail-label">Occupancy:</div>
-                    <div class="rd-detail-value">Up to {{ $roomdetails->room_capacity }} {{ $roomdetails->room_capacity > 1 ? 'guests' : 'guest' }}</div>
+                    <div class="rd-detail-value">Up to <?php echo e($roomdetails->room_capacity); ?> <?php echo e($roomdetails->room_capacity > 1 ? 'guests' : 'guest'); ?></div>
                 </div>
-                @endif
-                @if($roomdetails->bed_style)
+                <?php endif; ?>
+                <?php if($roomdetails->bed_style): ?>
                 <div class="rd-detail-item">
                     <div class="rd-detail-label">Bedding:</div>
-                    <div class="rd-detail-value">{{ $roomdetails->bed_style }}</div>
+                    <div class="rd-detail-value"><?php echo e($roomdetails->bed_style); ?></div>
                 </div>
-                @endif
+                <?php endif; ?>
             </div>
-            @endif
+            <?php endif; ?>
 
-            {{-- Facilities --}}
-            @if($facility->count())
+            
+            <?php if($facility->count()): ?>
             <div class="rd-section">
                 <ul class="rd-facilities-list">
-                    @foreach($facility as $fac)
-                    <li>{{ $fac->facility_name }}</li>
-                    @endforeach
+                    <?php $__currentLoopData = $facility; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fac): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <li><?php echo e($fac->facility_name); ?></li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </ul>
             </div>
-            @endif
+            <?php endif; ?>
 
-            {{-- See More Details --}}
-            @if($roomdetails->short_desc || $roomdetails->amenities)
+            
+            <?php if($roomdetails->short_desc || $roomdetails->amenities): ?>
             <div class="rd-see-more">
                 <button class="rd-see-more-btn" id="see-more-btn">
                     See More Details
@@ -664,175 +662,177 @@
                 </button>
                 <div class="rd-more-content" id="more-content">
                     <div class="rd-more-inner rd-desc-text">
-                        @if($roomdetails->short_desc)
-                        <p>{{ $roomdetails->short_desc }}</p>
-                        @endif
-                        @if(is_array($roomdetails->amenities) && count($roomdetails->amenities))
+                        <?php if($roomdetails->short_desc): ?>
+                        <p><?php echo e($roomdetails->short_desc); ?></p>
+                        <?php endif; ?>
+                        <?php if(is_array($roomdetails->amenities) && count($roomdetails->amenities)): ?>
                         <ul style="margin-top:12px;">
-                            @foreach($roomdetails->amenities as $amenity)
-                            <li>{{ $amenity }}</li>
-                            @endforeach
+                            <?php $__currentLoopData = $roomdetails->amenities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $amenity): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li><?php echo e($amenity); ?></li>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </ul>
-                        @endif
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
-            @endif
+            <?php endif; ?>
         </div>
 
-        {{-- ═══ RIGHT COLUMN — Booking ═══ --}}
+        
         <div class="rd-right">
-            {{-- Rate Banner --}}
+            
             <div class="rd-rate-banner">
                 <div class="rd-rate-banner-price">
-                    @if($roomdetails->discount > 0)
-                        <span class="rd-rate-old">$ {{ number_format($roomdetails->price, 0) }}</span>
-                        $ {{ number_format($discountedPrice, 0) }}
-                    @else
-                        $ {{ number_format($roomdetails->price, 0) }}
-                    @endif
+                    <?php if($roomdetails->discount > 0): ?>
+                        <span class="rd-rate-old">$ <?php echo e(number_format($roomdetails->price, 0)); ?></span>
+                        $ <?php echo e(number_format($discountedPrice, 0)); ?>
+
+                    <?php else: ?>
+                        $ <?php echo e(number_format($roomdetails->price, 0)); ?>
+
+                    <?php endif; ?>
                 </div>
-                <div class="rd-rate-banner-unit">/ {{ $unitLabel }}</div>
+                <div class="rd-rate-banner-unit">/ <?php echo e($unitLabel); ?></div>
             </div>
 
-            {{-- Booking Form --}}
+            
             <div class="rd-book-body">
-                <form action="{{ route('user_booking_store', $roomdetails->id) }}" method="post" id="bk_form">
-                    @csrf
-                    <input type="hidden" name="room_id" value="{{ $roomdetails->id }}">
-                    <input type="hidden" id="room_price" value="{{ $roomdetails->price }}">
-                    <input type="hidden" id="discount_p" value="{{ $roomdetails->discount }}">
-                    <input type="hidden" id="total_adult" value="{{ $roomdetails->total_adult }}">
+                <form action="<?php echo e(route('user_booking_store', $roomdetails->id)); ?>" method="post" id="bk_form">
+                    <?php echo csrf_field(); ?>
+                    <input type="hidden" name="room_id" value="<?php echo e($roomdetails->id); ?>">
+                    <input type="hidden" id="room_price" value="<?php echo e($roomdetails->price); ?>">
+                    <input type="hidden" id="discount_p" value="<?php echo e($roomdetails->discount); ?>">
+                    <input type="hidden" id="total_adult" value="<?php echo e($roomdetails->total_adult); ?>">
                     <input type="hidden" name="available_room" id="available_room">
 
                     <div class="rd-date-row">
                         <div class="rd-field">
                             <label>Check In</label>
                             <input type="text" name="check_in" id="check_in" required autocomplete="off"
-                                   placeholder="Select date" value="{{ old('check_in') }}">
+                                   placeholder="Select date" value="<?php echo e(old('check_in')); ?>">
                         </div>
                         <div class="rd-field">
                             <label>Check Out</label>
                             <input type="text" name="check_out" id="check_out" required autocomplete="off"
-                                   placeholder="Select date" value="{{ old('check_out') }}">
+                                   placeholder="Select date" value="<?php echo e(old('check_out')); ?>">
                         </div>
                     </div>
 
                     <div style="display:none">
                         <select name="persion" id="nmbr_person">
-                            @for($i = 1; $i <= 4; $i++)
-                            <option {{ old('persion') == $i ? 'selected' : '' }} value="0{{ $i }}">0{{ $i }}</option>
-                            @endfor
+                            <?php for($i = 1; $i <= 4; $i++): ?>
+                            <option <?php echo e(old('persion') == $i ? 'selected' : ''); ?> value="0<?php echo e($i); ?>">0<?php echo e($i); ?></option>
+                            <?php endfor; ?>
                         </select>
                     </div>
 
                     <div class="rd-field">
-                        <label>Number of {{ $entityLabel }}s</label>
+                        <label>Number of <?php echo e($entityLabel); ?>s</label>
                         <select name="number_of_rooms" id="select_room" class="number_of_rooms">
-                            @for($i = 1; $i <= 5; $i++)
-                            <option value="0{{ $i }}">0{{ $i }}</option>
-                            @endfor
+                            <?php for($i = 1; $i <= 5; $i++): ?>
+                            <option value="0<?php echo e($i); ?>">0<?php echo e($i); ?></option>
+                            <?php endfor; ?>
                         </select>
                     </div>
 
                     <div class="rd-avail-msg available_room"></div>
 
-                    {{-- Pricing Breakdown --}}
+                    
                     <div class="rd-pricing-table" id="pricing_table" style="display:none">
                         <div class="rd-pricing-row">
-                            <span>Rate / {{ $unitLabel }}</span>
-                            <span>$ {{ number_format($roomdetails->price, 0) }}</span>
+                            <span>Rate / <?php echo e($unitLabel); ?></span>
+                            <span>$ <?php echo e(number_format($roomdetails->price, 0)); ?></span>
                         </div>
                         <div class="rd-pricing-row">
                             <span>Nights</span>
                             <span class="t_nights">0</span>
                         </div>
                         <div class="rd-pricing-row">
-                            <span>{{ $entityLabel }}s</span>
+                            <span><?php echo e($entityLabel); ?>s</span>
                             <span class="t_rooms">1</span>
                         </div>
                         <div class="rd-pricing-row">
                             <span>Subtotal</span>
                             <span class="t_subtotal">$ 0</span>
                         </div>
-                        @if($roomdetails->discount > 0)
+                        <?php if($roomdetails->discount > 0): ?>
                         <div class="rd-pricing-row">
-                            <span>Discount ({{ $roomdetails->discount }}%)</span>
+                            <span>Discount (<?php echo e($roomdetails->discount); ?>%)</span>
                             <span class="t_discount" style="color:#22c55e">-$ 0</span>
                         </div>
-                        @endif
+                        <?php endif; ?>
                         <div class="rd-pricing-total">
                             <span>Total</span>
                             <span class="t_g_total">$ 0</span>
                         </div>
                     </div>
 
-                    @auth
+                    <?php if(auth()->guard()->check()): ?>
                     <button type="submit" class="rd-btn-book" id="book_now_btn" disabled>Book Now</button>
-                    @else
-                    <a href="{{ route('login') }}?redirect={{ urlencode(url()->full()) }}" class="rd-btn-book">Login to Book</a>
-                    @endauth
+                    <?php else: ?>
+                    <a href="<?php echo e(route('login')); ?>?redirect=<?php echo e(urlencode(url()->full())); ?>" class="rd-btn-book">Login to Book</a>
+                    <?php endif; ?>
                 </form>
             </div>
 
-            {{-- Reviews summary --}}
-            @if($roomdetails->approved_reviews && $roomdetails->approved_reviews->count())
-            @php $avgRating = round($roomdetails->approved_reviews->avg('rating'), 1); @endphp
+            
+            <?php if($roomdetails->approved_reviews && $roomdetails->approved_reviews->count()): ?>
+            <?php $avgRating = round($roomdetails->approved_reviews->avg('rating'), 1); ?>
             <div class="rd-reviews-card">
                 <div class="rd-rate-name" style="margin-bottom: 8px;">Guest Reviews</div>
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-                    <span style="font-size:28px;font-weight:700;color:var(--rd-blue);font-family:var(--rd-sans);">{{ $avgRating }}</span>
-                    <span style="font-size:13px;color:#888;font-family:var(--rd-sans);">/ 5 — {{ $roomdetails->approved_reviews->count() }} {{ Str::plural('review', $roomdetails->approved_reviews->count()) }}</span>
+                    <span style="font-size:28px;font-weight:700;color:var(--rd-blue);font-family:var(--rd-sans);"><?php echo e($avgRating); ?></span>
+                    <span style="font-size:13px;color:#888;font-family:var(--rd-sans);">/ 5 — <?php echo e($roomdetails->approved_reviews->count()); ?> <?php echo e(Str::plural('review', $roomdetails->approved_reviews->count())); ?></span>
                 </div>
                 <div style="display:flex;gap:3px;">
-                    @for($s = 1; $s <= 5; $s++)
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="{{ $s <= round($avgRating) ? '#d0aa48' : '#ddd' }}"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    @endfor
+                    <?php for($s = 1; $s <= 5; $s++): ?>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="<?php echo e($s <= round($avgRating) ? '#d0aa48' : '#ddd'); ?>"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <?php endfor; ?>
                 </div>
             </div>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
 
-    {{-- ── Other Rooms ── --}}
-    @if($otherRooms->count())
+    
+    <?php if($otherRooms->count()): ?>
     <div class="rd-other-section">
-        <div class="rd-other-title">Other {{ $entityLabel }}s You May Like</div>
+        <div class="rd-other-title">Other <?php echo e($entityLabel); ?>s You May Like</div>
         <div class="rd-other-grid">
-            @foreach($otherRooms as $item)
-            <a class="rd-other-card" href="{{ url('room/details/'.$item->id) }}">
+            <?php $__currentLoopData = $otherRooms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <a class="rd-other-card" href="<?php echo e(url('room/details/'.$item->id)); ?>">
                 <div class="rd-other-card-img">
-                    <img src="{{ asset('upload/roomimg/'.$item->image) }}" alt="{{ $item->type->name ?? 'Room' }}" loading="lazy">
+                    <img src="<?php echo e(asset('upload/roomimg/'.$item->image)); ?>" alt="<?php echo e($item->type->name ?? 'Room'); ?>" loading="lazy">
                 </div>
                 <div class="rd-other-card-body">
-                    <div class="rd-other-card-name">{{ $item->type->name ?? 'Room' }}</div>
-                    <div class="rd-other-card-price">$ {{ number_format($item->price, 0) }} / {{ $isHall ? 'event' : 'night' }}</div>
+                    <div class="rd-other-card-name"><?php echo e($item->type->name ?? 'Room'); ?></div>
+                    <div class="rd-other-card-price">$ <?php echo e(number_format($item->price, 0)); ?> / <?php echo e($isHall ? 'event' : 'night'); ?></div>
                     <div class="rd-other-card-meta">
-                        @if($item->room_capacity) Up to {{ $item->room_capacity }} guests @endif
-                        @if($item->bed_style) &middot; {{ $item->bed_style }} @endif
+                        <?php if($item->room_capacity): ?> Up to <?php echo e($item->room_capacity); ?> guests <?php endif; ?>
+                        <?php if($item->bed_style): ?> &middot; <?php echo e($item->bed_style); ?> <?php endif; ?>
                     </div>
                 </div>
             </a>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
-    @endif
+    <?php endif; ?>
 </div>
 
-{{-- ══ Full-Screen Lightbox ══ --}}
+
 <div id="lightbox" class="rd-lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
-    <span class="rd-lb-badge"><span id="lb-idx">1</span> / {{ count($images) }}</span>
+    <span class="rd-lb-badge"><span id="lb-idx">1</span> / <?php echo e(count($images)); ?></span>
     <button class="rd-lb-close" id="lb-close" aria-label="Close lightbox">&times;</button>
     <button class="rd-lb-nav rd-lb-prev" id="lb-prev" aria-label="Previous">&#10094;</button>
     <button class="rd-lb-nav rd-lb-next" id="lb-next" aria-label="Next">&#10095;</button>
     <img id="lb-img" src="" alt="Zoomed photo">
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    var photos = @json($images);
+    var photos = <?php echo json_encode($images, 15, 512) ?>;
     var idx = 0;
     var lbOpen = false;
 
@@ -926,7 +926,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ════════════════════════════════════ */
     var ciField = document.getElementById('check_in');
     var coField = document.getElementById('check_out');
-    var roomIdVal = "{{ $roomdetails->id }}";
+    var roomIdVal = "<?php echo e($roomdetails->id); ?>";
 
     new Pikaday({ field: ciField, format: 'YYYY-MM-DD', minDate: new Date(), onSelect: function(){ checkDates(); } });
     new Pikaday({ field: coField, format: 'YYYY-MM-DD', minDate: new Date(), onSelect: function(){ checkDates(); } });
@@ -940,7 +940,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function getAvailability(check_in, check_out, room_id){
-        var url = "{{ route('check_room_availability') }}" +
+        var url = "<?php echo e(route('check_room_availability')); ?>" +
             '?room_id=' + encodeURIComponent(room_id) +
             '&check_in=' + encodeURIComponent(check_in) +
             '&check_out=' + encodeURIComponent(check_out);
@@ -950,7 +950,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(function(data){
                 var el = document.querySelector('.available_room');
                 el.classList.add('success');
-                el.innerHTML = '&#10003; ' + data.available_room + ' {{ $entityLabel }}(s) available';
+                el.innerHTML = '&#10003; ' + data.available_room + ' <?php echo e($entityLabel); ?>(s) available';
                 document.getElementById('available_room').value = data.available_room;
                 var btn = document.getElementById('book_now_btn');
                 if (btn) btn.disabled = false;
@@ -981,9 +981,10 @@ document.addEventListener('DOMContentLoaded', function () {
         var selectRoom = parseInt(document.getElementById('select_room').value);
         if (selectRoom > avRoom){
             e.preventDefault();
-            alert('Sorry, only ' + avRoom + ' {{ $entityLabel }}(s) available. Please select fewer.');
+            alert('Sorry, only ' + avRoom + ' <?php echo e($entityLabel); ?>(s) available. Please select fewer.');
         }
     });
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('frontend.main_master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\workspace\htdocs\lucerna\resources\views/frontend/room/room_details.blade.php ENDPATH**/ ?>
