@@ -1,13 +1,13 @@
-@extends('frontend.main_master')
+﻿@extends('frontend.main_master')
 
-@section('title',        'Lucerna Kabgayi Hôtel — Rwanda\'s Iconic Destination')
-@section('meta_description', 'A world-class sanctuary rooted in Catholic hospitality — luxury rooms, fine dining, and landmark events in the heart of Rwanda.')
+@section('title',        'Lucerna Kabgayi HÃ´tel â€” Rwanda\'s Iconic Destination')
+@section('meta_description', 'A world-class sanctuary rooted in Catholic hospitality â€” luxury rooms, fine dining, and landmark events in the heart of Rwanda.')
 
 @section('styles')
 
-/* ══════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    HERO
-══════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .hero {
     position:relative; height:80vh; min-height:540px;
     overflow:hidden; display:flex; align-items:center; justify-content:center;
@@ -78,9 +78,9 @@
 .hstat-num { font-family:var(--f-head); font-size:28px; font-weight:400; color:var(--white); line-height:1; margin-bottom:4px; }
 .hstat-lbl { font-family:var(--f-body); font-size:11px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--brand-pale); }
 
-/* ══════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BOOKING BAR
-══════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .booking-section {
     padding:48px 48px 56px;
     background:var(--off-white);
@@ -167,9 +167,9 @@
 .hi-phone { font-family:var(--f-body); font-size:12.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--brand); text-decoration:none; display:flex; align-items:center; gap:6px; transition:color .2s; }
 .hi-phone:hover { color:var(--brand-light); }
 
-/* ══════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ABOUT
-══════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .about-section { padding:72px 48px; background:var(--white); }
 .about-inner {
     max-width:1280px; margin:0 auto;
@@ -206,9 +206,9 @@
 .av-name { font-family:var(--f-head); font-size:19.5px; font-weight:400; font-style:italic; color:var(--navy); margin-bottom:4px; }
 .av-text { font-family:var(--f-body); font-size:14px; color:var(--soft); line-height:1.6; }
 
-/* ══════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ROOMS
-══════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .rooms-section {
     background: linear-gradient(139deg,#0c62c3 14.24%,#034ea2 75.61%); padding:48px 48px;
     position:relative;
@@ -263,9 +263,9 @@
 .room-arrow { width:32px; height:32px; border:1px solid rgba(12,77,162,.3); display:flex; align-items:center; justify-content:center; color:var(--brand-pale); font-size:14px; opacity:0; transition:all .3s; }
 .room-card:hover .room-arrow { opacity:1; background:rgba(12,77,162,.12); }
 
-/* ══════════════════════════════
-   HALLS — Events & Conferences
-══════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   HALLS â€” Events & Conferences
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .halls-section {
     background:var(--navy); padding:64px 48px;
     position:relative; overflow:hidden;
@@ -343,9 +343,9 @@
 }
 .halls-dot.active { width:40px; background:var(--brand-pale); }
 
-/* ══════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    AMENITIES (Marriott-style grid)
-══════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .amenities-section { background:var(--off-white); padding:72px 48px; }
 .amenities-inner { max-width:1280px; margin:0 auto; }
 .amenities-header { text-align:center; max-width:560px; margin:0 auto 44px; }
@@ -366,9 +366,9 @@
 .amenity-name { font-family:var(--f-head); font-size:24px; font-weight:400; font-style:italic; color:var(--navy); margin-bottom:12px; }
 .amenity-desc { font-family:var(--f-body); font-size:14.5px; line-height:1.7; color:var(--soft); }
 
-/* ══════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    FEATURED AMENITIES ON-SITE (Marriott screenshot style)
-══════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .featured-amenities {
     background:var(--white); padding:60px 48px;
     border-top:1px solid rgba(12,77,162,.07);
@@ -409,9 +409,9 @@
 .fa-item-name:hover,.fa-item-name.linked { color:var(--brand); text-decoration:underline; cursor:pointer; }
 .fa-item-note { font-family:var(--f-body); font-size:15px; color:var(--soft); margin-top:3px; }
 
-/* ══════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    HOTEL INFORMATION (Marriott style)
-══════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .hotel-info-section {
     background:var(--off-white); padding:52px 48px;
     border-top:1px solid rgba(12,77,162,.07);
@@ -432,9 +432,9 @@
 .hi-row-title { font-family:var(--f-body); font-size:17px; font-weight:600; color:var(--ink); margin-bottom:2px; }
 .hi-row-detail { font-family:var(--f-body); font-size:15px; color:var(--soft); line-height:1.6; }
 
-/* ══════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DINING
-══════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .dining-section { display:grid; grid-template-columns:1fr 1fr; min-height:520px; }
 .dining-img-wrap { position:relative; overflow:hidden; }
 .dining-img { width:100%; height:100%; min-height:520px; object-fit:cover; display:block; transition:transform 8s ease; }
@@ -453,9 +453,9 @@
 .dining-item:hover .dining-item-name { color:var(--brand-pale); }
 .dining-item-time { font-family:var(--f-body); font-size:12px; font-weight:500; color:var(--brand-pale); white-space:nowrap; }
 
-/* ══════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    EVENTS
-══════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .events-section { background:var(--white); padding:72px 48px; }
 .events-inner { max-width:1280px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; }
 .events-img-wrap { position:relative; }
@@ -471,9 +471,9 @@
 .ef-name { font-family:var(--f-head); font-size:17px; font-weight:400; font-style:italic; color:var(--navy); margin-bottom:4px; }
 .ef-desc { font-family:var(--f-body); font-size:13.5px; color:var(--soft); line-height:1.55; }
 
-/* ══════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    TESTIMONIALS
-══════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .testi-section { background:var(--navy); padding:64px 0; overflow:hidden; }
 .testi-inner { max-width:1400px; margin:0 auto; padding:0 48px; }
 .testi-header { text-align:center; margin-bottom:36px; }
@@ -500,9 +500,9 @@
 .testi-author { font-family:var(--f-body); font-size:14px; font-weight:600; color:var(--white); }
 .testi-location { font-family:var(--f-body); font-size:12px; color:var(--brand-pale); margin-top:2px; }
 
-/* ══════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    CONTACT
-══════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .contact-section { background:var(--off-white); padding:72px 48px; }
 .contact-inner { max-width:1280px; margin:0 auto; display:grid; grid-template-columns:1fr 1.1fr; gap:64px; align-items:start; }
 .contact-left .lead { margin-bottom:32px; }
@@ -541,9 +541,9 @@
 }
 .form-submit:hover { background:var(--brand-light); transform:translateY(-1px); box-shadow:0 5px 16px rgba(12,77,162,.26); }
 
-/* ══════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESPONSIVE
-══════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media(max-width:1200px){
     .about-section,.rooms-section,.amenities-section,.featured-amenities,
     .hotel-info-section,.events-section,.testi-section .testi-inner,
@@ -619,7 +619,7 @@
     .eb-num { font-size:28px; }
 }
 
-/* ── Small phones ── */
+/* â”€â”€ Small phones â”€â”€ */
 @media(max-width:480px){
     .hero { height:70vh; min-height:360px; }
     .hero-content { padding:0 14px 50px; }
@@ -704,7 +704,7 @@
     .btn-outline-w { font-size:10.5px; padding:9px 20px; letter-spacing:.1em; }
 }
 
-/* ── Very small phones (320-360px) ── */
+/* â”€â”€ Very small phones (320-360px) â”€â”€ */
 @media(max-width:360px){
     .hero { min-height:300px; }
     .hero-title { font-size:22px; }
@@ -750,7 +750,7 @@
     <div class="hero-overlay"></div>
 
     <div class="hero-content">
-        <span class="hero-eyebrow">{!! $hero->eyebrow ?? '★★★ &nbsp;·&nbsp; Kabgayi, Rwanda' !!}</span>
+        <span class="hero-eyebrow">{!! $hero->eyebrow ?? 'â˜…â˜…â˜… &nbsp;Â·&nbsp; Kabgayi, Rwanda' !!}</span>
         <h1 class="hero-title">{!! $hero->title ?? 'The Most <em>Welcoming</em><br>Sanctuary in Rwanda' !!}</h1>
         <p class="hero-sub">{{ $hero->description ?? 'Rooted in Catholic hospitality. Elevated by world-class luxury.' }}</p>
         <div class="hero-actions">
@@ -786,7 +786,7 @@
         {{-- <div class="hotel-identity-strip">
             <div class="hotel-identity-inner">
                 <div class="hotel-identity-left">
-                    <div class="hotel-identity-name">Lucerna Kabgayi Hôtel</div>
+                    <div class="hotel-identity-name">Lucerna Kabgayi HÃ´tel</div>
                     <div class="hotel-identity-rating">
                         <div class="hi-dots">
                             <div class="hi-dot"></div><div class="hi-dot"></div>
@@ -794,7 +794,7 @@
                             <div class="hi-dot half"></div>
                         </div>
                         <span class="hi-score">4.5</span>
-                        <span class="hi-reviews">· 128 Reviews</span>
+                        <span class="hi-reviews">Â· 128 Reviews</span>
                     </div>
                 </div>
                 <div class="hotel-identity-right">
@@ -853,7 +853,7 @@
             <img class="about-img-main" src="{{ asset($about->image ?? 'frontend/assets/img/about-img.jpg') }}" alt="Lucerna interior" loading="lazy">
             <div class="about-img-bar"></div>
             <div class="about-img-badge">
-                <div class="aib-num">{{ $about->badge_value ?? '3★' }}</div>
+                <div class="aib-num">{{ $about->badge_value ?? '3â˜…' }}</div>
                 <div class="aib-lbl">{{ $about->badge_label ?? 'Hotel' }}</div>
             </div>
         </div>
@@ -907,7 +907,7 @@
             <div>
                 <span class="eyebrow light reveal">{{ $roomsSection->eyebrow ?? 'Our Rooms' }}</span>
                 <h2 class="h-section on-dark reveal d1">{!! $roomsSection->title ?? 'Comfort & <em>Elegance</em> in Every Room' !!}</h2>
-                <p class="lead on-dark reveal d2" style="max-width:440px">{{ $roomsSection->description ?? 'Each room is a carefully composed haven — blending Rwandan warmth with world-class luxury.' }}</p>
+                <p class="lead on-dark reveal d2" style="max-width:440px">{{ $roomsSection->description ?? 'Each room is a carefully composed haven â€” blending Rwandan warmth with world-class luxury.' }}</p>
             </div>
             @if($roomsSection->button_text ?? null)
             <a href="{{ $roomsSection->button_url ?? route('froom.all') }}" class="btn-outline-w reveal" style="flex-shrink:0">{{ $roomsSection->button_text }}</a>
@@ -949,8 +949,8 @@
                         @endif
                     </div>
                     <div class="room-footer">
-                        <div class="room-price">RwF {{ number_format($room->price, 0) }} <span>/ night</span></div>
-                        <div class="room-arrow">→</div>
+                        <div class="room-price">$ {{ number_format($room->price, 0) }} <span>/ night</span></div>
+                        <div class="room-arrow">â†’</div>
                     </div>
                 </div>
             </a>
@@ -962,7 +962,7 @@
 </section>
 @endif
 
-{{-- HALLS — Events & Conferences --}}
+{{-- HALLS â€” Events & Conferences --}}
 @if($halls->count() && ($homeSections['halls']->status ?? true))
 @php $hallsSection = $homeSections['halls'] ?? null; @endphp
 <section class="halls-section" id="halls">
@@ -1007,9 +1007,9 @@
                             </span>
                             @endif
                         </div>
-                        <div class="hall-price">RwF {{ number_format($hall->price, 0) }} <span>/ event</span></div>
+                        <div class="hall-price">$ {{ number_format($hall->price, 0) }} <span>/ event</span></div>
                     </div>
-                    <div class="hall-arrow">→</div>
+                    <div class="hall-arrow">â†’</div>
                 </a>
                 @endforeach
             </div>
@@ -1161,7 +1161,7 @@
         <span class="eyebrow light reveal">{{ $diningSection->eyebrow ?? 'Gastronomy' }}</span>
         <div class="bar light reveal d1"></div>
         <h2 class="h-section on-dark reveal d1">{!! $diningSection->title ?? 'A Table Set<br>with <em>Passion</em>' !!}</h2>
-        <p class="lead on-dark reveal d2">{{ $diningSection->description ?? 'Our culinary team crafts every meal as an act of hospitality — drawing from Rwandan heritage and global traditions.' }}</p>
+        <p class="lead on-dark reveal d2">{{ $diningSection->description ?? 'Our culinary team crafts every meal as an act of hospitality â€” drawing from Rwandan heritage and global traditions.' }}</p>
         <div class="dining-items reveal d2">
             @foreach($diningItems as $item)
             <div class="dining-item"><span class="dining-item-name">{{ $item->name }}</span><span class="dining-item-time">{{ $item->time_text }}</span></div>
@@ -1225,7 +1225,7 @@
             <div class="testi-card">
                 <div class="testi-quote">&ldquo;</div>
                 <p class="testi-text">{{ $item->message }}</p>
-                <div class="testi-stars">★★★★★</div>
+                <div class="testi-stars">â˜…â˜…â˜…â˜…â˜…</div>
                 <div class="testi-author">{{ $item->name }}</div>
                 @if($item->city)
                 <div class="testi-location">{{ $item->city }}</div>
@@ -1248,22 +1248,22 @@
             <span class="eyebrow reveal">{{ $contactSection->eyebrow ?? 'Get In Touch' }}</span>
             <div class="bar reveal d1"></div>
             <h2 class="h-section reveal d1">{!! $contactSection->title ?? 'Begin Your <em>Journey</em>' !!}</h2>
-            <p class="lead reveal d2">{{ $contactSection->description ?? 'Our concierge team is ready to curate a bespoke experience for you — personal retreat, family stay, or grand corporate event.' }}</p>
+            <p class="lead reveal d2">{{ $contactSection->description ?? 'Our concierge team is ready to curate a bespoke experience for you â€” personal retreat, family stay, or grand corporate event.' }}</p>
             <div class="contact-details reveal d3">
                 <div class="cd-item">
-                    <div class="cd-icon">◈</div>
+                    <div class="cd-icon">â—ˆ</div>
                     <div><div class="cd-label">Address</div><div class="cd-val">{{ $siteSettings->address ?? 'Muhanga, Kabgayi, Rwanda' }}</div></div>
                 </div>
                 <div class="cd-item">
-                    <div class="cd-icon">◎</div>
+                    <div class="cd-icon">â—Ž</div>
                     <div><div class="cd-label">Reservations</div><div class="cd-val"><a href="tel:{{ preg_replace('/\s+/', '', $siteSettings->phone ?? '+250794191115') }}">{{ $siteSettings->phone ?? '+250 794 191 115' }}</a></div></div>
                 </div>
                 <div class="cd-item">
-                    <div class="cd-icon">✉</div>
+                    <div class="cd-icon">âœ‰</div>
                     <div><div class="cd-label">Email</div><div class="cd-val"><a href="mailto:{{ $siteSettings->email ?? 'hotellucernakabgayi@gmail.com' }}">{{ $siteSettings->email ?? 'hotellucernakabgayi@gmail.com' }}</a></div></div>
                 </div>
                 <div class="cd-item">
-                    <div class="cd-icon">◑</div>
+                    <div class="cd-icon">â—‘</div>
                     <div><div class="cd-label">Reception</div><div class="cd-val">Open 24 Hours, Every Day</div></div>
                 </div>
             </div>
@@ -1295,7 +1295,7 @@
 (function(){
     'use strict';
 
-    /* ── Category → Guests dynamic ── */
+    /* â”€â”€ Category â†’ Guests dynamic â”€â”€ */
     var catSel = document.getElementById('room_type');
     var guestSel = document.getElementById('persion');
     var defaultMax = 4;
@@ -1329,7 +1329,7 @@
         });
     }
 
-    /* ── Hero slideshow ── */
+    /* â”€â”€ Hero slideshow â”€â”€ */
     var slides=document.querySelectorAll('.hero-slide'),dots=document.querySelectorAll('.hero-dot'),cur=0,timer;
     function goSlide(n){
         slides[cur].classList.remove('active'); dots[cur].classList.remove('active');
@@ -1346,7 +1346,7 @@
         hero.addEventListener('touchend',function(e){ var dx=e.changedTouches[0].screenX-tx; if(Math.abs(dx)>44){ goSlide(dx<0?cur+1:cur-1); start(); } },{passive:true});
     }
 
-    /* ── Pikaday Calendar V12 ── */
+    /* â”€â”€ Pikaday Calendar V12 â”€â”€ */
     document.addEventListener('DOMContentLoaded', function(){
         var today = new Date();
         var tomorrow = new Date(today); tomorrow.setDate(today.getDate()+1);
@@ -1375,7 +1375,7 @@
         });
     });
 
-    /* ── Halls scroll dots ── */
+    /* â”€â”€ Halls scroll dots â”€â”€ */
     var hs=document.querySelector('.halls-scroll'), hDots=document.querySelectorAll('.halls-dot');
     if(hs && hDots.length>1){
         hs.addEventListener('scroll',function(){

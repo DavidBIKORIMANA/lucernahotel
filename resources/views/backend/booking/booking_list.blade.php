@@ -91,7 +91,7 @@
                     <div class="d-flex align-items-center">
                         <div>
                             <p class="mb-0 text-muted" style="font-size:11px">Revenue (Paid)</p>
-                            <h6 class="mb-0 text-success" style="font-size:13px">{{ number_format($totalRevenue) }} RwF</h6>
+                            <h6 class="mb-0 text-success" style="font-size:13px">{{ number_format($totalRevenue) }} $</h6>
                         </div>
                         <div class="ms-auto"><i class="bx bx-wallet fs-3 text-success"></i></div>
                     </div>
@@ -104,7 +104,7 @@
                     <div class="d-flex align-items-center">
                         <div>
                             <p class="mb-0 text-muted" style="font-size:11px">Unpaid</p>
-                            <h6 class="mb-0 text-danger" style="font-size:13px">{{ number_format($unpaidTotal) }} RwF</h6>
+                            <h6 class="mb-0 text-danger" style="font-size:13px">{{ number_format($unpaidTotal) }} $</h6>
                         </div>
                         <div class="ms-auto"><i class="bx bx-error-circle fs-3 text-danger"></i></div>
                     </div>
@@ -128,7 +128,7 @@
                             <th>Check Out</th>
                             <th>Rooms</th>
                             <th>Guests</th>
-                            <th>Amount (RwF)</th>
+                            <th>Amount ($)</th>
                             <th>Payment</th>
                             <th>Method</th>
                             <th>Status</th>
@@ -319,7 +319,7 @@
                             <p>Are you sure you want to cancel this booking?</p>
                             <p><strong>Guest:</strong> {{ $item->name }}<br>
                                <strong>Room:</strong> {{ $item['room']['type']['name'] ?? 'N/A' }}<br>
-                               <strong>Amount:</strong> {{ number_format($item->total_price) }} RwF</p>
+                               <strong>Amount:</strong> {{ number_format($item->total_price) }} $</p>
                             <div class="mb-3">
                                 <label class="form-label">Cancellation Reason</label>
                                 <textarea name="cancellation_reason" class="form-control" rows="3" placeholder="Enter reason for cancellation..."></textarea>
@@ -352,7 +352,7 @@
                             <p>This will deny the booking and free up the room dates.</p>
                             <p><strong>Guest:</strong> {{ $item->name }}<br>
                                <strong>Room:</strong> {{ $item['room']['type']['name'] ?? 'N/A' }}<br>
-                               <strong>Amount:</strong> {{ number_format($item->total_price) }} RwF</p>
+                               <strong>Amount:</strong> {{ number_format($item->total_price) }} $</p>
                             <div class="mb-3">
                                 <label class="form-label">Denial Reason <span class="text-danger">*</span></label>
                                 <textarea name="denial_reason" class="form-control" rows="3" required placeholder="Enter reason for denial..."></textarea>

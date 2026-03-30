@@ -660,10 +660,53 @@
   }
   </style>
 
+  <style>
+  /* ── Page loader bar ── */
+  .page-loader-bar {
+    position: fixed; top: 0; left: 0; width: 0; height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+    z-index: 99999; transition: width .3s ease;
+    box-shadow: 0 0 10px rgba(208,170,72,.6), 0 0 5px rgba(208,170,72,.3);
+  }
+  .page-loader-bar.loading { animation: loaderGrow 1.2s ease-in-out forwards; }
+  .page-loader-bar.done    { width: 100% !important; opacity: 0; transition: width .2s ease, opacity .4s .3s ease; }
+  @keyframes loaderGrow {
+    0%   { width: 0; }
+    20%  { width: 35%; }
+    50%  { width: 65%; }
+    80%  { width: 85%; }
+    100% { width: 92%; }
+  }
+
+  /* ── Render time badge ── */
+  .render-badge {
+    position: fixed; bottom: 14px; right: 14px; z-index: 99998;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 5px 12px;
+    font-size: 11px; color: var(--text-3);
+    font-family: var(--font-ui); letter-spacing: .3px;
+    display: flex; align-items: center; gap: 7px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.4);
+    opacity: 0; transform: translateY(10px);
+    animation: badgeFadeIn .4s .6s ease forwards;
+    pointer-events: none;
+  }
+  .render-badge .rb-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 6px rgba(63,184,122,.5);
+  }
+  .render-badge .rb-val { color: var(--gold); font-weight: 600; }
+  @keyframes badgeFadeIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  </style>
+
   @stack('styles')
 </head>
 
 <body>
+<div class="page-loader-bar loading" id="pageLoaderBar"></div>
 <div class="shell">
 
   {{-- ══ SIDEBAR ══ --}}
@@ -1092,6 +1135,43 @@ function markNotificationAsRead(id){
   })
   .catch(err=>console.error('Notif error',err));
 }
+</script>
+
+<div class="render-badge" id="renderBadge">
+  <span class="rb-dot"></span>
+  Page loaded in <span class="rb-val" id="renderTime">…</span>
+</div>
+
+<script>
+/* ── Page loader finish + render time ── */
+(function(){
+  var bar = document.getElementById('pageLoaderBar');
+  var badge = document.getElementById('renderBadge');
+  var startTime = performance.timing.navigationStart || performance.timeOrigin;
+
+  window.addEventListener('load', function(){
+    var loadTime = Math.round(performance.now());
+    bar.classList.remove('loading');
+    bar.classList.add('done');
+    document.getElementById('renderTime').textContent = loadTime + 'ms';
+    setTimeout(function(){ bar.style.display = 'none'; }, 800);
+    setTimeout(function(){
+      badge.style.opacity = '0';
+      badge.style.transition = 'opacity .5s ease';
+      setTimeout(function(){ badge.style.display = 'none'; }, 500);
+    }, 5000);
+  });
+
+  /* Show loader on navigation away */
+  window.addEventListener('beforeunload', function(){
+    bar.style.display = '';
+    bar.classList.remove('done');
+    bar.classList.add('loading');
+    bar.style.animation = 'none';
+    bar.offsetHeight; /* reflow */
+    bar.style.animation = '';
+  });
+})();
 </script>
 
 @stack('scripts')

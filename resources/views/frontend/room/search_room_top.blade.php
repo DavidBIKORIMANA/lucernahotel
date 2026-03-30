@@ -134,7 +134,7 @@
                     @if($item->bed_style) &middot; {{ $item->bed_style }} @endif
                 </div>
                 <div class="sr-card-footer">
-                    <div class="sr-card-price">RwF {{ number_format($item->price, 0) }} <span>/ night</span></div>
+                    <div class="sr-card-price">$ {{ number_format($item->price, 0) }} <span>/ night</span></div>
                     <a href="{{ route('search_room_details', $item->id.'?check_in='.old('check_in').'&check_out='.old('check_out').'&persion='.old('persion')) }}" class="sr-card-btn">Reserve</a>
                 </div>
             </div>

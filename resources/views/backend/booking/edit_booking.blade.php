@@ -159,12 +159,12 @@
                         <tr>
                             <td>{{ $editData->room->type->name }}</td>
                             <td>{{ $editData->number_of_rooms }}</td>
-                            <td>{{ number_format($editData->actual_price) }} RWF</td>
+                            <td>{{ number_format($editData->actual_price) }} $</td>
                             <td>
                                 <span class="badge bg-primary">{{ $editData->check_in }}</span>  /<br> 
                                 <span class="badge bg-warning text-dark">{{ $editData->check_out }}</span></td>
                             <td>{{ $editData->total_night }}</td>
-                            <td>{{ number_format($editData->actual_price *  $editData->number_of_rooms) }} RWF</td>
+                            <td>{{ number_format($editData->actual_price *  $editData->number_of_rooms) }} $</td>
 
                         </tr>
                     </tbody> 
@@ -176,15 +176,15 @@
                     <table class="table test_table" style="float: right" border="none">
                         <tr>
                             <td>Subtotal</td>
-                            <td>{{ number_format($editData->subtotal) }} RWF</td>
+                            <td>{{ number_format($editData->subtotal) }} $</td>
                         </tr>
                         <tr>
                             <td>Discount</td>
-                            <td>{{ number_format($editData->discount) }} RWF</td>
+                            <td>{{ number_format($editData->discount) }} $</td>
                         </tr>
                         <tr style="font-weight:bold;border-top:2px solid #0c4da2;">
                             <td>Grand Total</td>
-                            <td>{{ number_format($editData->total_price) }} RWF</td>
+                            <td>{{ number_format($editData->total_price) }} $</td>
                         </tr>
                     </table>
 
@@ -507,7 +507,7 @@
                     </div>
                     <div class="modal-body">
                         <p>Booking: <strong>{{ $editData->code }}</strong></p>
-                        <p>Amount: <strong>{{ number_format($editData->total_price) }} RWF</strong></p>
+                        <p>Amount: <strong>{{ number_format($editData->total_price) }} $</strong></p>
                         <p>Method: <strong>{{ $editData->payment_method_label }}</strong></p>
                         @if($editData->payment_phone)
                             <p>Phone: <strong>{{ $editData->payment_phone }}</strong></p>

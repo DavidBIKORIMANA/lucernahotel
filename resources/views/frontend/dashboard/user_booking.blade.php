@@ -134,7 +134,7 @@ input:focus, select:focus, textarea:focus { outline:none !important; box-shadow:
                             <span class="ud-date-badge ud-date-out">{{ \Carbon\Carbon::parse($item->check_out)->format('M d, Y') }}</span>
                         </td>
                         <td>
-                            <div class="ud-amount">{{ number_format($item->total_price) }} <small>RwF</small></div>
+                            <div class="ud-amount">{{ number_format($item->total_price) }} <small>$</small></div>
                         </td>
                         <td><span class="ud-pay-badge {{ $payMap[$item->payment_status] ?? 'unpaid' }}">{{ $payText[$item->payment_status] ?? 'Unpaid' }}</span></td>
                         <td><span class="ud-badge {{ $statusMap[$item->status] ?? 'pending' }}">{{ $statusText[$item->status] ?? 'Pending' }}</span></td>

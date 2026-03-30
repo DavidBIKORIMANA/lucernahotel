@@ -171,10 +171,10 @@
                 <tr class="item">
                     <td>{{ $editData->room->type->name }}</td>
                     <td>{{ $editData->number_of_rooms }}</td>
-                    <td>{{ number_format($editData->actual_price) }} RWF</td>
+                    <td>{{ number_format($editData->actual_price) }} $</td>
                     <td>{{ \Carbon\Carbon::parse($editData->check_in)->format('d/m/Y') }} / {{ \Carbon\Carbon::parse($editData->check_out)->format('d/m/Y') }}</td>
                     <td>{{ $editData->total_night }}</td>
-                    <td>{{ number_format($editData->actual_price * $editData->number_of_rooms) }} RWF</td>
+                    <td>{{ number_format($editData->actual_price * $editData->number_of_rooms) }} $</td>
                 </tr>
 
 
@@ -184,7 +184,7 @@
                     <td></td>
                     <td></td>
                     <td>Subtotal</td>
-                    <td>{{ number_format($editData->subtotal) }} RWF</td>
+                    <td>{{ number_format($editData->subtotal) }} $</td>
                 </tr>
                 <tr class="total">
                     <td></td>
@@ -192,7 +192,7 @@
                     <td></td>
                     <td></td>
                     <td>Discount</td>
-                    <td>{{ number_format($editData->discount) }} RWF</td>
+                    <td>{{ number_format($editData->discount) }} $</td>
                 </tr>
                 <tr class="total">
                     <td></td>
@@ -200,7 +200,7 @@
                     <td></td>
                     <td></td>
                     <td>Grand Total</td>
-                    <td>{{ number_format($editData->total_price) }} RWF</td>
+                    <td>{{ number_format($editData->total_price) }} $</td>
                 </tr>
             </table>
             <br>

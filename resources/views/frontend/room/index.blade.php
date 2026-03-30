@@ -47,7 +47,7 @@
             <h2>Renaissance Hall</h2>
             <ul>
                 <li>
-                    <b> Basic : RwF 200000/Night/Room</b>
+                    <b> Basic : $ 200000/Night/Room</b>
                 </li>
             </ul>
         </div>

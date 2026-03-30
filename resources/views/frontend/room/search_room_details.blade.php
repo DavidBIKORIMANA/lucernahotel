@@ -363,10 +363,10 @@
             <h1 class="srd-room-title">{{ $roomdetails->type->name ?? $entityLabel }}</h1>
             <div class="srd-room-price">
                 @if($roomdetails->discount > 0)
-                    <span class="old">RwF {{ number_format($roomdetails->price,0) }}</span>
-                    RwF {{ number_format($roomdetails->price - ($roomdetails->price * $roomdetails->discount / 100),0) }}
+                    <span class="old">$ {{ number_format($roomdetails->price,0) }}</span>
+                    $ {{ number_format($roomdetails->price - ($roomdetails->price * $roomdetails->discount / 100),0) }}
                 @else
-                    RwF {{ number_format($roomdetails->price,0) }}
+                    $ {{ number_format($roomdetails->price,0) }}
                 @endif
                 <span class="unit">/ {{ $unitLabel }}</span>
             </div>
@@ -421,7 +421,7 @@
         {{-- ══ Booking Card ══ --}}
         <div class="srd-book-card">
             <div class="srd-book-header">
-                <span class="srd-book-price-label">RwF {{ number_format($roomdetails->price,0) }}</span>
+                <span class="srd-book-price-label">$ {{ number_format($roomdetails->price,0) }}</span>
                 <span class="srd-book-unit">/ {{ $unitLabel }}</span>
             </div>
             <div class="srd-book-body">
@@ -468,7 +468,7 @@
                     <div class="srd-pricing-table" id="pricing_table" style="display:none">
                         <div class="srd-pricing-row">
                             <span>Rate / {{ $unitLabel }}</span>
-                            <span>RwF {{ number_format($roomdetails->price,0) }}</span>
+                            <span>$ {{ number_format($roomdetails->price,0) }}</span>
                         </div>
                         <div class="srd-pricing-row">
                             <span>Nights</span>
@@ -480,17 +480,17 @@
                         </div>
                         <div class="srd-pricing-row">
                             <span>Subtotal</span>
-                            <span class="t_subtotal">RwF 0</span>
+                            <span class="t_subtotal">$ 0</span>
                         </div>
                         @if($roomdetails->discount > 0)
                         <div class="srd-pricing-row">
                             <span>Discount ({{ $roomdetails->discount }}%)</span>
-                            <span class="t_discount" style="color:#22c55e">-RwF 0</span>
+                            <span class="t_discount" style="color:#22c55e">-$ 0</span>
                         </div>
                         @endif
                         <div class="srd-pricing-total">
                             <span>Total</span>
-                            <span class="t_g_total">RwF 0</span>
+                            <span class="t_g_total">$ 0</span>
                         </div>
                     </div>
 
@@ -517,7 +517,7 @@
             </div>
             <div class="srd-other-card-body">
                 <div class="srd-other-card-name">{{ $item->type->name ?? 'Room' }}</div>
-                <div class="srd-other-card-price">RwF {{ number_format($item->price,0) }} / {{ $unitLabel }}</div>
+                <div class="srd-other-card-price">$ {{ number_format($item->price,0) }} / {{ $unitLabel }}</div>
                 <div class="srd-other-card-meta">
                     @if($item->room_capacity) {{ $item->room_capacity }} Person @endif
                     @if($item->bed_style) &middot; {{ $item->bed_style }} @endif
@@ -703,10 +703,10 @@
 
         document.querySelector('.t_nights').textContent = totalNights;
         document.querySelector('.t_rooms').textContent = selectRoom;
-        document.querySelector('.t_subtotal').textContent = 'RwF ' + subtotal.toLocaleString();
+        document.querySelector('.t_subtotal').textContent = '$ ' + subtotal.toLocaleString();
         var discEl = document.querySelector('.t_discount');
-        if(discEl) discEl.textContent = '-RwF ' + disc.toLocaleString();
-        document.querySelector('.t_g_total').textContent = 'RwF ' + total.toLocaleString();
+        if(discEl) discEl.textContent = '-$ ' + disc.toLocaleString();
+        document.querySelector('.t_g_total').textContent = '$ ' + total.toLocaleString();
         document.getElementById('pricing_table').style.display = '';
     }
 

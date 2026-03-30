@@ -178,7 +178,7 @@ class BookingController extends Controller
            $data->subtotal = $subtotal;
            $data->discount = $discount;
            $data->total_price = $total_price;
-           $data->currency = 'RWF';
+           $data->currency = 'USD';
            $data->payment_method = $request->payment_method;
            $data->transation_id = $transation_id;
            $data->payment_status = $payment_status;
@@ -220,7 +220,7 @@ class BookingController extends Controller
             'bank_ref' => $request->payment_bank_ref,
             'proof_file' => $data->payment_proof,
             'amount' => $total_price,
-            'currency' => 'RWF',
+            'currency' => 'USD',
             'status' => $payment_status ? 'success' : 'pending',
         ]);
 

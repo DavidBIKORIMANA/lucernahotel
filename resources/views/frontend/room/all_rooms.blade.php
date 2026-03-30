@@ -233,9 +233,9 @@
                 <div class="rl-footer">
                     <div class="rl-price">
                         @if($item->discount > 0)
-                        <span class="rl-old">RwF {{ number_format($item->price,0) }}</span>
+                        <span class="rl-old">$ {{ number_format($item->price,0) }}</span>
                         @endif
-                        RwF {{ number_format($item->discount > 0 ? $item->price - ($item->price * $item->discount / 100) : $item->price, 0) }}
+                        $ {{ number_format($item->discount > 0 ? $item->price - ($item->price * $item->discount / 100) : $item->price, 0) }}
                         <span>/ {{ $isHall ? 'event' : 'night' }}</span>
                     </div>
                     <a href="{{ url('room/details/'.$item->id) }}" class="rl-book-btn">View &amp; Book</a>

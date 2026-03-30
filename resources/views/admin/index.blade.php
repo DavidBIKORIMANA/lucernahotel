@@ -309,7 +309,7 @@
       </div>
     </div>
     <div class="kpi-value">{{ number_format($monthlyRevenue) }}</div>
-    <div class="kpi-label">REVENUE (RWF) · THIS MONTH</div>
+    <div class="kpi-label">REVENUE ($) · THIS MONTH</div>
     @php $revenueTarget = max($monthlyRevenue, $yearlyRevenue / 12); $revPct = $revenueTarget > 0 ? min(100, round(($monthlyRevenue / $revenueTarget) * 100)) : 0; @endphp
     <div class="kpi-bar"><div class="kpi-bar-fill" style="width:{{ $revPct }}%;background:var(--gold);"></div></div>
   </a>
@@ -633,7 +633,7 @@
           titleFont: { family: "'DM Sans'", size: 11 },
           bodyFont: { family: "'DM Sans'", size: 13, weight: '600' },
           callbacks: {
-            label: ctx => '  ' + Number(ctx.parsed.y).toLocaleString() + ' RwF'
+            label: ctx => '  $' + Number(ctx.parsed.y).toLocaleString()
           }
         }
       },

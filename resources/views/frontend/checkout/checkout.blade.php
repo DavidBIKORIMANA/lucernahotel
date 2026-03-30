@@ -508,7 +508,7 @@ input:focus, select:focus, textarea:focus, button:focus {
                 <div class="co-room-info">
                     <span class="co-room-badge {{ strtolower($entityLabel) }}">{{ $entityLabel }}</span>
                     <div class="co-room-name">{{ $room->type->name ?? 'Room' }}</div>
-                    <div class="co-room-rate">{{ number_format($room->price) }} RWF / {{ $unitLabel }}</div>
+                    <div class="co-room-rate">{{ number_format($room->price) }} $ / {{ $unitLabel }}</div>
                 </div>
             </div>
 
@@ -528,7 +528,7 @@ input:focus, select:focus, textarea:focus, button:focus {
             <table class="co-price-table">
                 <tr>
                     <td>Rate per {{ $unitLabel }}</td>
-                    <td>{{ number_format($room->price) }} RWF</td>
+                    <td>{{ number_format($room->price) }} $</td>
                 </tr>
                 <tr>
                     <td>Nights</td>
@@ -540,17 +540,17 @@ input:focus, select:focus, textarea:focus, button:focus {
                 </tr>
                 <tr>
                     <td>Subtotal</td>
-                    <td>{{ number_format($subtotal) }} RWF</td>
+                    <td>{{ number_format($subtotal) }} $</td>
                 </tr>
                 @if($discount > 0)
                 <tr>
                     <td>Discount ({{ $room->discount }}%)</td>
-                    <td style="color:#16a34a">-{{ number_format($discount) }} RWF</td>
+                    <td style="color:#16a34a">-{{ number_format($discount) }} $</td>
                 </tr>
                 @endif
                 <tr class="total">
                     <td>Total</td>
-                    <td>{{ number_format($total) }} RWF</td>
+                    <td>{{ number_format($total) }} $</td>
                 </tr>
             </table>
 

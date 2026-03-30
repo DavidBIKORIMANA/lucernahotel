@@ -143,7 +143,7 @@
                     @if($item->size) &middot; {{ $item->size }} @endif
                 </div>
                 <div class="sr-card-footer">
-                    <div class="sr-card-price">RwF {{ number_format($item->price, 0) }} <span>/ event</span></div>
+                    <div class="sr-card-price">$ {{ number_format($item->price, 0) }} <span>/ event</span></div>
                     <a href="{{ route('search_room_details', $item->id.'?check_in='.old('check_in').'&check_out='.old('check_out').'&persion='.old('persion')) }}" class="sr-card-btn">Reserve</a>
                 </div>
             </div>
