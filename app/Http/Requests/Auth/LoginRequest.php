@@ -56,6 +56,14 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        if ($user->status !== 'active') {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'login' => 'Your account is not verified yet. Please contact an administrator.',
+            ]);
+        }
+
         Auth::login($user, $this->boolean('remember'));
         RateLimiter::clear($this->throttleKey());
     }

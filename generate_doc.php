@@ -1,0 +1,1581 @@
+<?php
+/**
+ * Lucerna Kabgayi Hôtel — System Documentation Generator
+ * Generates a Word-compatible .doc file with full system guidance & documentation.
+ * Run: php generate_doc.php
+ */
+
+$outputFile = __DIR__ . '/Lucerna_System_Documentation.doc';
+
+// ─── Helper: wrap content in Word-compatible HTML ───
+function wordDoc($title, $bodyHtml) {
+    return <<<HTML
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="UTF-8">
+<title>{$title}</title>
+<!--[if gte mso 9]>
+<xml>
+<w:WordDocument>
+<w:View>Print</w:View>
+<w:Zoom>100</w:Zoom>
+<w:DoNotOptimizeForBrowser/>
+</w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+    @page {
+        size: A4;
+        margin: 2.5cm 2cm 2cm 2.5cm;
+        mso-header-margin: 1cm;
+        mso-footer-margin: 1cm;
+        mso-page-orientation: portrait;
+    }
+    @page Section1 { }
+    div.Section1 { page: Section1; }
+
+    body {
+        font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+        font-size: 11pt;
+        color: #1e2535;
+        line-height: 1.5;
+    }
+
+    /* Cover page */
+    .cover {
+        text-align: center;
+        padding-top: 120pt;
+        page-break-after: always;
+    }
+    .cover-logo {
+        font-size: 42pt;
+        font-weight: 700;
+        color: #0c2340;
+        letter-spacing: 3pt;
+        margin-bottom: 6pt;
+    }
+    .cover-sub {
+        font-size: 14pt;
+        color: #c9a84c;
+        letter-spacing: 2pt;
+        font-weight: 600;
+        margin-bottom: 40pt;
+    }
+    .cover-title {
+        font-size: 26pt;
+        font-weight: 700;
+        color: #0c4da2;
+        margin-bottom: 12pt;
+    }
+    .cover-subtitle {
+        font-size: 13pt;
+        color: #6b7280;
+        margin-bottom: 60pt;
+    }
+    .cover-meta {
+        font-size: 10pt;
+        color: #6b7280;
+    }
+    .cover-line {
+        width: 60%;
+        border: none;
+        border-top: 2px solid #c9a84c;
+        margin: 30pt auto;
+    }
+
+    /* Headings */
+    h1 {
+        font-size: 22pt;
+        color: #0c2340;
+        font-weight: 700;
+        border-bottom: 2px solid #c9a84c;
+        padding-bottom: 6pt;
+        margin-top: 30pt;
+        margin-bottom: 12pt;
+        page-break-after: avoid;
+    }
+    h2 {
+        font-size: 16pt;
+        color: #0c4da2;
+        font-weight: 700;
+        margin-top: 22pt;
+        margin-bottom: 8pt;
+        page-break-after: avoid;
+    }
+    h3 {
+        font-size: 13pt;
+        color: #0c2340;
+        font-weight: 600;
+        margin-top: 16pt;
+        margin-bottom: 6pt;
+        page-break-after: avoid;
+    }
+    h4 {
+        font-size: 11pt;
+        color: #0c4da2;
+        font-weight: 600;
+        margin-top: 12pt;
+        margin-bottom: 4pt;
+    }
+
+    /* Paragraphs */
+    p { margin: 0 0 8pt 0; }
+    .note {
+        background: #f0f4ff;
+        border-left: 3px solid #0c4da2;
+        padding: 8pt 12pt;
+        margin: 10pt 0;
+        font-size: 10pt;
+    }
+    .warning {
+        background: #fef3cd;
+        border-left: 3px solid #c9a84c;
+        padding: 8pt 12pt;
+        margin: 10pt 0;
+        font-size: 10pt;
+    }
+
+    /* Tables */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 8pt 0 16pt 0;
+        font-size: 9.5pt;
+    }
+    th {
+        background: #0c2340;
+        color: #ffffff;
+        font-weight: 600;
+        text-align: left;
+        padding: 6pt 8pt;
+        font-size: 9pt;
+    }
+    td {
+        border: 1px solid #d1d5db;
+        padding: 5pt 8pt;
+        vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f9fafb; }
+    .tbl-section td {
+        background: #e8f0ff !important;
+        font-weight: 600;
+        color: #0c2340;
+        border-top: 2px solid #0c4da2;
+    }
+
+    /* Code */
+    code {
+        font-family: 'Cascadia Code', 'Consolas', monospace;
+        font-size: 9pt;
+        background: #f3f4f6;
+        padding: 1pt 4pt;
+        border-radius: 2pt;
+        color: #b91c1c;
+    }
+    pre {
+        font-family: 'Cascadia Code', 'Consolas', monospace;
+        font-size: 9pt;
+        background: #1e293b;
+        color: #e2e8f0;
+        padding: 10pt 14pt;
+        margin: 8pt 0 12pt;
+        border-radius: 4pt;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    /* Lists */
+    ul, ol { margin: 4pt 0 10pt 20pt; }
+    li { margin-bottom: 3pt; }
+
+    /* Page breaks */
+    .page-break { page-break-before: always; }
+
+    /* Diagram boxes */
+    .arch-box {
+        display: inline-block;
+        border: 2px solid #0c4da2;
+        background: #f0f4ff;
+        padding: 6pt 14pt;
+        margin: 4pt 8pt 4pt 0;
+        text-align: center;
+        font-weight: 600;
+        font-size: 9pt;
+        color: #0c2340;
+    }
+    .arch-box-gold {
+        display: inline-block;
+        border: 2px solid #c9a84c;
+        background: #fdf8ed;
+        padding: 6pt 14pt;
+        margin: 4pt 8pt 4pt 0;
+        text-align: center;
+        font-weight: 600;
+        font-size: 9pt;
+        color: #0c2340;
+    }
+    .arch-box-dark {
+        display: inline-block;
+        border: 2px solid #0c2340;
+        background: #0c2340;
+        color: #ffffff;
+        padding: 6pt 14pt;
+        margin: 4pt 8pt 4pt 0;
+        text-align: center;
+        font-weight: 600;
+        font-size: 9pt;
+    }
+    .arrow { font-size: 14pt; color: #c9a84c; vertical-align: middle; }
+
+    /* TOC styling */
+    .toc a { text-decoration: none; color: #0c4da2; }
+    .toc-item { margin: 3pt 0; }
+    .toc-h1 { font-weight: 700; font-size: 11pt; margin-top: 8pt; }
+    .toc-h2 { padding-left: 20pt; font-size: 10pt; }
+
+    /* Figure caption */
+    .fig-caption {
+        text-align: center;
+        font-size: 9pt;
+        color: #6b7280;
+        font-style: italic;
+        margin: 4pt 0 12pt;
+    }
+
+    /* Badge */
+    .badge {
+        display: inline-block;
+        padding: 2pt 8pt;
+        font-size: 8pt;
+        font-weight: 600;
+        border-radius: 2pt;
+        color: #fff;
+    }
+    .badge-blue { background: #0c4da2; }
+    .badge-gold { background: #c9a84c; color: #0c2340; }
+    .badge-green { background: #15803d; }
+    .badge-red { background: #b91c1c; }
+    .badge-gray { background: #6b7280; }
+</style>
+</head>
+<body>
+<div class="Section1">
+{$bodyHtml}
+</div>
+</body>
+</html>
+HTML;
+}
+
+$date = date('F d, Y');
+$year = date('Y');
+
+// ═══════════════════════════════════════════════════════════════════════
+// BUILD THE DOCUMENT BODY
+// ═══════════════════════════════════════════════════════════════════════
+$body = <<<BODY
+
+<!-- ═══════════════════ COVER PAGE ═══════════════════ -->
+<div class="cover">
+    <div class="cover-logo">LUCERNA</div>
+    <div class="cover-sub">KABGAYI HÔTEL</div>
+    <hr class="cover-line">
+    <div class="cover-title">System Documentation<br>&amp; Technical Guide</div>
+    <div class="cover-subtitle">Complete Architecture, Database Design, Feature Reference<br>& Administration Manual</div>
+    <hr class="cover-line">
+    <div class="cover-meta">
+        <p><strong>Version:</strong> 2.0</p>
+        <p><strong>Date:</strong> {$date}</p>
+        <p><strong>Framework:</strong> Laravel 10.10 &middot; PHP 8.2</p>
+        <p><strong>Classification:</strong> Internal / Confidential</p>
+    </div>
+</div>
+
+<!-- ═══════════════════ TABLE OF CONTENTS ═══════════════════ -->
+<h1>Table of Contents</h1>
+<div class="toc">
+    <div class="toc-item toc-h1">1. System Overview</div>
+    <div class="toc-item toc-h2">1.1 Project Summary</div>
+    <div class="toc-item toc-h2">1.2 Technology Stack</div>
+    <div class="toc-item toc-h2">1.3 System Architecture Diagram</div>
+
+    <div class="toc-item toc-h1">2. Application Architecture</div>
+    <div class="toc-item toc-h2">2.1 Directory Structure</div>
+    <div class="toc-item toc-h2">2.2 MVC Pattern</div>
+    <div class="toc-item toc-h2">2.3 Request Lifecycle</div>
+
+    <div class="toc-item toc-h1">3. Database Design</div>
+    <div class="toc-item toc-h2">3.1 Entity Relationship Overview</div>
+    <div class="toc-item toc-h2">3.2 Table Definitions</div>
+    <div class="toc-item toc-h2">3.3 Eloquent Models &amp; Relationships</div>
+
+    <div class="toc-item toc-h1">4. Authentication &amp; Authorization</div>
+    <div class="toc-item toc-h2">4.1 User Roles &amp; Workflow</div>
+    <div class="toc-item toc-h2">4.2 Admin Verification System</div>
+    <div class="toc-item toc-h2">4.3 Permission System (Spatie)</div>
+    <div class="toc-item toc-h2">4.4 Middleware Stack</div>
+
+    <div class="toc-item toc-h1">5. Feature Modules</div>
+    <div class="toc-item toc-h2">5.1 Room &amp; Hall Management</div>
+    <div class="toc-item toc-h2">5.2 Booking System</div>
+    <div class="toc-item toc-h2">5.3 Payment Processing</div>
+    <div class="toc-item toc-h2">5.4 Rate &amp; Season Management</div>
+    <div class="toc-item toc-h2">5.5 Homepage CMS</div>
+    <div class="toc-item toc-h2">5.6 Blog &amp; Content</div>
+    <div class="toc-item toc-h2">5.7 Reviews &amp; Testimonials</div>
+    <div class="toc-item toc-h2">5.8 Gallery Management</div>
+    <div class="toc-item toc-h2">5.9 Reporting &amp; Analytics</div>
+
+    <div class="toc-item toc-h1">6. API / Route Reference</div>
+    <div class="toc-item toc-h2">6.1 Public Routes</div>
+    <div class="toc-item toc-h2">6.2 User Routes</div>
+    <div class="toc-item toc-h2">6.3 Admin Routes</div>
+
+    <div class="toc-item toc-h1">7. Frontend Architecture</div>
+    <div class="toc-item toc-h2">7.1 Design System &amp; Tokens</div>
+    <div class="toc-item toc-h2">7.2 Layout Structure</div>
+    <div class="toc-item toc-h2">7.3 Page Templates</div>
+
+    <div class="toc-item toc-h1">8. Admin Panel Guide</div>
+    <div class="toc-item toc-h2">8.1 Dashboard Overview</div>
+    <div class="toc-item toc-h2">8.2 Navigation &amp; Sidebar</div>
+    <div class="toc-item toc-h2">8.3 Managing Content</div>
+
+    <div class="toc-item toc-h1">9. Deployment &amp; Configuration</div>
+    <div class="toc-item toc-h2">9.1 Environment Setup</div>
+    <div class="toc-item toc-h2">9.2 Database Configuration</div>
+    <div class="toc-item toc-h2">9.3 Mail &amp; SMTP</div>
+    <div class="toc-item toc-h2">9.4 Payment Gateway</div>
+
+    <div class="toc-item toc-h1">10. Security Considerations</div>
+
+    <div class="toc-item toc-h1">Appendices</div>
+    <div class="toc-item toc-h2">A. Complete Route Table</div>
+    <div class="toc-item toc-h2">B. Database Schema Reference</div>
+    <div class="toc-item toc-h2">C. Model Relationship Map</div>
+</div>
+
+<!-- ═══════════════════ 1. SYSTEM OVERVIEW ═══════════════════ -->
+<div class="page-break"></div>
+<h1>1. System Overview</h1>
+
+<h2>1.1 Project Summary</h2>
+<p><strong>Lucerna Kabgayi Hôtel</strong> is a full-featured hotel management and online booking platform built on the Laravel 10 framework. It provides a luxury-styled public website for guest browsing and online reservations, alongside a comprehensive administrative dashboard for managing rooms, bookings, content, and system settings.</p>
+
+<table>
+<tr><th colspan="2" style="text-align:center">Project Information</th></tr>
+<tr><td style="width:35%"><strong>Project Name</strong></td><td>Lucerna Kabgayi Hôtel</td></tr>
+<tr><td><strong>Type</strong></td><td>Hotel Management &amp; Booking System</td></tr>
+<tr><td><strong>Framework</strong></td><td>Laravel 10.10 (PHP 8.2)</td></tr>
+<tr><td><strong>Database</strong></td><td>MySQL 8.x (<code>lucerna_db</code>)</td></tr>
+<tr><td><strong>Timezone</strong></td><td>Africa/Kigali (UTC+2)</td></tr>
+<tr><td><strong>Locale</strong></td><td>English (en)</td></tr>
+<tr><td><strong>Hosting</strong></td><td>Apache / WAMP (localhost)</td></tr>
+<tr><td><strong>Contact Email</strong></td><td>lucernakabgayihotel.rw@gmail.com</td></tr>
+</table>
+
+<h2>1.2 Technology Stack</h2>
+
+<table>
+<tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
+<tr><td>Backend Framework</td><td>Laravel 10.10</td><td>MVC web application framework</td></tr>
+<tr><td>Language</td><td>PHP 8.2</td><td>Server-side logic</td></tr>
+<tr><td>Database</td><td>MySQL 8.x</td><td>Relational data storage</td></tr>
+<tr><td>Frontend CSS</td><td>Custom CSS + Tailwind utilities</td><td>Luxury UI design system</td></tr>
+<tr><td>Frontend JS</td><td>Vanilla ES5+ (no jQuery)</td><td>Interactive components</td></tr>
+<tr><td>Templating</td><td>Blade</td><td>Server-side HTML rendering</td></tr>
+<tr><td>Auth / Roles</td><td>Spatie Laravel Permission v5.10</td><td>Role-based access control</td></tr>
+<tr><td>Payments</td><td>Stripe PHP v10.15</td><td>Online card payments</td></tr>
+<tr><td>PDF Generation</td><td>barryvdh/laravel-dompdf v2.0</td><td>Invoice PDF exports</td></tr>
+<tr><td>Excel</td><td>Maatwebsite Excel v3.1</td><td>Permission import/export</td></tr>
+<tr><td>Image Processing</td><td>Intervention Image v2.7</td><td>Photo uploads &amp; thumbnails</td></tr>
+<tr><td>Mail</td><td>Gmail SMTP</td><td>Booking confirmations &amp; OTP</td></tr>
+<tr><td>Date Picker</td><td>Pikaday.js</td><td>Calendar UI for bookings</td></tr>
+<tr><td>Notifications</td><td>Toastr.js</td><td>Flash message popups</td></tr>
+<tr><td>Icons</td><td>BoxIcons (Blade), SVG (Admin)</td><td>UI iconography</td></tr>
+</table>
+
+<h2>1.3 System Architecture Diagram</h2>
+
+<div style="text-align:center; margin: 20pt 0;">
+<table style="width:90%; margin:0 auto; border:2px solid #0c2340;">
+<tr>
+<td colspan="5" style="background:#0c2340; color:#fff; text-align:center; font-size:12pt; font-weight:700; padding:10pt;">LUCERNA KABGAYI HÔTEL — SYSTEM ARCHITECTURE</td>
+</tr>
+<tr>
+<td colspan="5" style="background:#c9a84c; color:#0c2340; text-align:center; font-weight:600; padding:6pt;">PRESENTATION LAYER</td>
+</tr>
+<tr style="text-align:center">
+<td style="background:#e8f0ff; padding:10pt; width:20%"><strong>Guest Website</strong><br><span style="font-size:8pt">Rooms, Blog, Gallery<br>Booking, Reviews</span></td>
+<td style="background:#e8f0ff; padding:10pt; width:20%"><strong>User Dashboard</strong><br><span style="font-size:8pt">Profile, My Bookings<br>Invoice, Review</span></td>
+<td style="background:#e8f0ff; padding:10pt; width:20%"><strong>Admin Panel</strong><br><span style="font-size:8pt">CRUD Management<br>Reports, Settings</span></td>
+<td style="background:#e8f0ff; padding:10pt; width:20%"><strong>Auth Pages</strong><br><span style="font-size:8pt">Login, Register<br>OTP, Password Reset</span></td>
+<td style="background:#e8f0ff; padding:10pt; width:20%"><strong>Checkout</strong><br><span style="font-size:8pt">Stripe, MoMo<br>Bank, Cash</span></td>
+</tr>
+<tr>
+<td colspan="5" style="text-align:center; padding:4pt; color:#c9a84c; font-size:14pt;">▼ ▼ ▼ ▼ ▼</td>
+</tr>
+<tr>
+<td colspan="5" style="background:#c9a84c; color:#0c2340; text-align:center; font-weight:600; padding:6pt;">APPLICATION LAYER (Laravel MVC)</td>
+</tr>
+<tr style="text-align:center">
+<td style="background:#fdf8ed; padding:8pt"><strong>Routes</strong><br><span style="font-size:8pt">web.php<br>auth.php</span></td>
+<td style="background:#fdf8ed; padding:8pt"><strong>Middleware</strong><br><span style="font-size:8pt">Auth, Role<br>CSRF, Verify</span></td>
+<td style="background:#fdf8ed; padding:8pt"><strong>Controllers</strong><br><span style="font-size:8pt">20+ Controllers<br>150+ Methods</span></td>
+<td style="background:#fdf8ed; padding:8pt"><strong>Models</strong><br><span style="font-size:8pt">35 Eloquent<br>Models</span></td>
+<td style="background:#fdf8ed; padding:8pt"><strong>Views</strong><br><span style="font-size:8pt">136 Blade<br>Templates</span></td>
+</tr>
+<tr>
+<td colspan="5" style="text-align:center; padding:4pt; color:#c9a84c; font-size:14pt;">▼ ▼ ▼ ▼ ▼</td>
+</tr>
+<tr>
+<td colspan="5" style="background:#c9a84c; color:#0c2340; text-align:center; font-weight:600; padding:6pt;">DATA &amp; SERVICE LAYER</td>
+</tr>
+<tr style="text-align:center">
+<td style="background:#f0f4ff; padding:8pt"><strong>MySQL</strong><br><span style="font-size:8pt">lucerna_db<br>35+ Tables</span></td>
+<td style="background:#f0f4ff; padding:8pt"><strong>File Storage</strong><br><span style="font-size:8pt">public/upload/<br>Room Images</span></td>
+<td style="background:#f0f4ff; padding:8pt"><strong>Stripe API</strong><br><span style="font-size:8pt">Payment<br>Processing</span></td>
+<td style="background:#f0f4ff; padding:8pt"><strong>Gmail SMTP</strong><br><span style="font-size:8pt">Email<br>Notifications</span></td>
+<td style="background:#f0f4ff; padding:8pt"><strong>Spatie RBAC</strong><br><span style="font-size:8pt">Permissions<br>&amp; Roles</span></td>
+</tr>
+</table>
+</div>
+<p class="fig-caption">Figure 1.1 — Three-tier system architecture of Lucerna Kabgayi Hôtel</p>
+
+
+<!-- ═══════════════════ 2. APPLICATION ARCHITECTURE ═══════════════════ -->
+<div class="page-break"></div>
+<h1>2. Application Architecture</h1>
+
+<h2>2.1 Directory Structure</h2>
+<pre>
+lucerna/
+├── app/
+│   ├── Console/Kernel.php          # Scheduled commands
+│   ├── Exceptions/Handler.php      # Error handling
+│   ├── Exports/PermissionExport.php
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── AdminController.php
+│   │   │   ├── Backend/
+│   │   │   │   ├── BlogController.php
+│   │   │   │   ├── BookingController.php
+│   │   │   │   ├── CommentController.php
+│   │   │   │   ├── GalleryController.php
+│   │   │   │   ├── HomepageController.php
+│   │   │   │   ├── FacilityOptionController.php
+│   │   │   │   ├── RateSeasonController.php
+│   │   │   │   ├── ReportController.php
+│   │   │   │   ├── ReviewController.php
+│   │   │   │   ├── RoleController.php
+│   │   │   │   ├── RoomController.php
+│   │   │   │   ├── RoomListController.php
+│   │   │   │   ├── RoomTypeController.php
+│   │   │   │   ├── SettingController.php
+│   │   │   │   └── TeamController.php
+│   │   │   └── Frontend/
+│   │   │       ├── BookingController.php
+│   │   │       ├── FrontendRoomController.php
+│   │   │       └── ReviewController.php
+│   │   ├── Middleware/
+│   │   │   ├── AdminRole.php        # Admin role check
+│   │   │   └── UserRole.php         # User role check
+│   │   └── Requests/
+│   │       └── Auth/LoginRequest.php
+│   ├── Imports/PermissionImport.php
+│   ├── Mail/BookConfirm.php
+│   ├── Models/                      # 35 Eloquent models
+│   ├── Notifications/
+│   └── Providers/
+├── config/                          # App configuration
+├── database/
+│   ├── migrations/                  # 35+ migration files
+│   └── seeders/
+├── public/
+│   ├── backend/                     # Admin assets
+│   ├── frontend/                    # Frontend assets
+│   └── upload/                      # User uploads
+├── resources/views/
+│   ├── admin/                       # Admin layout views
+│   ├── backend/                     # Admin feature views
+│   ├── frontend/                    # Guest website views
+│   ├── auth/                        # Authentication views
+│   └── components/                  # Reusable Blade components
+├── routes/
+│   ├── web.php                      # All web routes (200+)
+│   └── auth.php                     # Auth scaffolding routes
+└── storage/                         # Logs, cache, sessions
+</pre>
+
+<h2>2.2 MVC Pattern</h2>
+<p>The application follows Laravel's Model-View-Controller pattern with clear separation:</p>
+
+<table>
+<tr><th>Component</th><th>Location</th><th>Responsibility</th></tr>
+<tr><td><strong>Models</strong> (35)</td><td><code>app/Models/</code></td><td>Database interaction, relationships, scopes, accessors, business logic</td></tr>
+<tr><td><strong>Views</strong> (136)</td><td><code>resources/views/</code></td><td>HTML rendering via Blade templates with layout inheritance</td></tr>
+<tr><td><strong>Controllers</strong> (20+)</td><td><code>app/Http/Controllers/</code></td><td>Request handling, validation, response orchestration</td></tr>
+<tr><td><strong>Routes</strong></td><td><code>routes/web.php</code></td><td>URL-to-controller mapping with middleware &amp; naming</td></tr>
+<tr><td><strong>Middleware</strong></td><td><code>app/Http/Middleware/</code></td><td>Request filtering: auth, roles, CSRF, encryption</td></tr>
+<tr><td><strong>Requests</strong></td><td><code>app/Http/Requests/</code></td><td>Form validation &amp; authorization (LoginRequest)</td></tr>
+</table>
+
+<h2>2.3 Request Lifecycle</h2>
+<div style="text-align:center; margin: 16pt 0;">
+<table style="width:85%; margin:0 auto;">
+<tr style="text-align:center">
+<td style="background:#0c2340; color:#fff; padding:8pt; font-weight:600;">Browser Request</td>
+<td style="color:#c9a84c; font-size:16pt; padding:4pt;">→</td>
+<td style="background:#f0f4ff; border:2px solid #0c4da2; padding:8pt; font-weight:600;">public/index.php</td>
+<td style="color:#c9a84c; font-size:16pt; padding:4pt;">→</td>
+<td style="background:#f0f4ff; border:2px solid #0c4da2; padding:8pt; font-weight:600;">Route Matching<br><span style="font-size:8pt">web.php</span></td>
+</tr>
+</table>
+<p style="color:#c9a84c; font-size:16pt; margin:4pt;">▼</p>
+<table style="width:85%; margin:0 auto;">
+<tr style="text-align:center">
+<td style="background:#0c2340; color:#fff; padding:8pt; font-weight:600;">HTML Response</td>
+<td style="color:#c9a84c; font-size:16pt; padding:4pt;">←</td>
+<td style="background:#fdf8ed; border:2px solid #c9a84c; padding:8pt; font-weight:600;">Blade View<br><span style="font-size:8pt">Compile &amp; Render</span></td>
+<td style="color:#c9a84c; font-size:16pt; padding:4pt;">←</td>
+<td style="background:#fdf8ed; border:2px solid #c9a84c; padding:8pt; font-weight:600;">Controller<br><span style="font-size:8pt">Business Logic</span></td>
+<td style="color:#c9a84c; font-size:16pt; padding:4pt;">←</td>
+<td style="background:#fdf8ed; border:2px solid #c9a84c; padding:8pt; font-weight:600;">Middleware<br><span style="font-size:8pt">Auth, CSRF</span></td>
+</tr>
+</table>
+</div>
+<p class="fig-caption">Figure 2.1 — Laravel request lifecycle (simplified)</p>
+
+
+<!-- ═══════════════════ 3. DATABASE DESIGN ═══════════════════ -->
+<div class="page-break"></div>
+<h1>3. Database Design</h1>
+
+<h2>3.1 Entity Relationship Overview</h2>
+
+<div style="text-align:center; margin: 16pt 0;">
+<table style="width:95%; margin:0 auto; border:2px solid #0c2340;">
+<tr><td colspan="5" style="background:#0c2340; color:#fff; text-align:center; font-weight:700; padding:8pt;">ENTITY RELATIONSHIP MAP</td></tr>
+
+<tr style="text-align:center">
+<td style="background:#e8f0ff; padding:10pt; border:2px solid #0c4da2; width:20%">
+<strong>users</strong><br><span style="font-size:8pt">
+id, name, email<br>
+phone, role, status<br>
+otp, otp_expires_at
+</span>
+</td>
+<td style="color:#c9a84c; padding:4pt;">← 1:N →</td>
+<td style="background:#fdf8ed; padding:10pt; border:2px solid #c9a84c; width:20%">
+<strong>bookings</strong><br><span style="font-size:8pt">
+id, rooms_id, user_id<br>
+check_in, check_out<br>
+total_price, status
+</span>
+</td>
+<td style="color:#c9a84c; padding:4pt;">← N:1 →</td>
+<td style="background:#e8f0ff; padding:10pt; border:2px solid #0c4da2; width:20%">
+<strong>rooms</strong><br><span style="font-size:8pt">
+id, roomtype_id<br>
+price, discount<br>
+capacity, status
+</span>
+</td>
+</tr>
+
+<tr style="text-align:center">
+<td style="padding:4pt; color:#c9a84c;">↕ 1:N</td>
+<td></td>
+<td style="padding:4pt; color:#c9a84c;">↕ 1:N</td>
+<td></td>
+<td style="padding:4pt; color:#c9a84c;">↕ 1:N</td>
+</tr>
+
+<tr style="text-align:center">
+<td style="background:#f0f4ff; padding:8pt; border:1px solid #0c4da2;">
+<strong>reviews</strong><br><span style="font-size:8pt">rating, comment</span>
+</td>
+<td></td>
+<td style="background:#fef8ed; padding:8pt; border:1px solid #c9a84c;">
+<strong>payment_transactions</strong><br><span style="font-size:8pt">method, amount, status</span><br><br>
+<strong>booking_extras</strong><br><span style="font-size:8pt">name, price, quantity</span><br><br>
+<strong>room_booked_dates</strong><br><span style="font-size:8pt">book_date</span><br><br>
+<strong>booking_room_lists</strong><br><span style="font-size:8pt">room_number_id</span>
+</td>
+<td></td>
+<td style="background:#f0f4ff; padding:8pt; border:1px solid #0c4da2;">
+<strong>facilities</strong><br><span style="font-size:8pt">facility_name</span><br><br>
+<strong>multi_images</strong><br><span style="font-size:8pt">multi_img</span><br><br>
+<strong>room_numbers</strong><br><span style="font-size:8pt">room_no, floor</span><br><br>
+<strong>room_rate_overrides</strong><br><span style="font-size:8pt">rate_season_id, price</span>
+</td>
+</tr>
+
+<tr><td colspan="5" style="padding:4pt;"></td></tr>
+
+<tr style="text-align:center">
+<td style="background:#e8f0ff; padding:8pt; border:1px solid #0c4da2;">
+<strong>room_types</strong><br><span style="font-size:8pt">name, type, slug</span>
+</td>
+<td style="color:#c9a84c; padding:4pt;">← 1:N →</td>
+<td style="padding:4pt" colspan="2"></td>
+<td style="background:#e8f0ff; padding:8pt; border:1px solid #0c4da2;">
+<strong>rate_seasons</strong><br><span style="font-size:8pt">name, dates, multiplier</span>
+</td>
+</tr>
+</table>
+</div>
+<p class="fig-caption">Figure 3.1 — Core entity relationships in the Lucerna booking system</p>
+
+<h2>3.2 Table Definitions</h2>
+
+<h3>3.2.1 Core Tables</h3>
+
+<h4>users</h4>
+<table>
+<tr><th>Column</th><th>Type</th><th>Nullable</th><th>Description</th></tr>
+<tr><td>id</td><td>BIGINT UNSIGNED AI</td><td>No</td><td>Primary key</td></tr>
+<tr><td>name</td><td>VARCHAR(255)</td><td>No</td><td>Full name</td></tr>
+<tr><td>email</td><td>VARCHAR(255) UNIQUE</td><td>No</td><td>Login email</td></tr>
+<tr><td>email_verified_at</td><td>TIMESTAMP</td><td>Yes</td><td>Email verification date</td></tr>
+<tr><td>password</td><td>VARCHAR(255)</td><td>No</td><td>Bcrypt hashed password</td></tr>
+<tr><td>photo</td><td>VARCHAR(255)</td><td>Yes</td><td>Profile photo path</td></tr>
+<tr><td>phone</td><td>VARCHAR(255)</td><td>Yes</td><td>Phone number</td></tr>
+<tr><td>address</td><td>TEXT</td><td>Yes</td><td>Physical address</td></tr>
+<tr><td>status</td><td>ENUM(active, inactive)</td><td>No</td><td>Account verification status (default: active)</td></tr>
+<tr><td>otp</td><td>VARCHAR(6)</td><td>Yes</td><td>One-time password for verification</td></tr>
+<tr><td>otp_expires_at</td><td>TIMESTAMP</td><td>Yes</td><td>OTP expiration time</td></tr>
+<tr><td>remember_token</td><td>VARCHAR(100)</td><td>Yes</td><td>Session remember token</td></tr>
+<tr><td>created_at / updated_at</td><td>TIMESTAMP</td><td>Yes</td><td>Record timestamps</td></tr>
+</table>
+
+<h4>rooms</h4>
+<table>
+<tr><th>Column</th><th>Type</th><th>Nullable</th><th>Description</th></tr>
+<tr><td>id</td><td>BIGINT UNSIGNED AI</td><td>No</td><td>Primary key</td></tr>
+<tr><td>roomtype_id</td><td>BIGINT UNSIGNED FK</td><td>No</td><td>References room_types.id</td></tr>
+<tr><td>price</td><td>VARCHAR(255)</td><td>Yes</td><td>Base price per night/event</td></tr>
+<tr><td>discount</td><td>INT (default: 0)</td><td>No</td><td>Discount percentage</td></tr>
+<tr><td>room_capacity</td><td>VARCHAR(255)</td><td>Yes</td><td>Max guests</td></tr>
+<tr><td>size</td><td>VARCHAR(255)</td><td>Yes</td><td>Room size (sq ft)</td></tr>
+<tr><td>view</td><td>VARCHAR(255)</td><td>Yes</td><td>View type (Garden, City, etc.)</td></tr>
+<tr><td>bed_style</td><td>VARCHAR(255)</td><td>Yes</td><td>Bed configuration</td></tr>
+<tr><td>image</td><td>VARCHAR(255)</td><td>Yes</td><td>Main room image path</td></tr>
+<tr><td>amenities</td><td>JSON</td><td>Yes</td><td>Amenity list (array)</td></tr>
+<tr><td>description</td><td>TEXT</td><td>Yes</td><td>Full HTML description</td></tr>
+<tr><td>short_desc</td><td>TEXT</td><td>Yes</td><td>Brief description for cards</td></tr>
+<tr><td>featured</td><td>BOOLEAN (default: false)</td><td>No</td><td>Featured on homepage</td></tr>
+<tr><td>status</td><td>INT (default: 1)</td><td>No</td><td>Active = 1, Inactive = 0</td></tr>
+</table>
+
+<h4>bookings</h4>
+<table>
+<tr><th>Column</th><th>Type</th><th>Nullable</th><th>Description</th></tr>
+<tr><td>id</td><td>BIGINT UNSIGNED AI</td><td>No</td><td>Primary key</td></tr>
+<tr><td>rooms_id</td><td>BIGINT UNSIGNED FK</td><td>Yes</td><td>References rooms.id</td></tr>
+<tr><td>user_id</td><td>BIGINT UNSIGNED FK</td><td>Yes</td><td>References users.id</td></tr>
+<tr><td>check_in / check_out</td><td>VARCHAR → DATE</td><td>Yes</td><td>Stay date range</td></tr>
+<tr><td>number_of_rooms</td><td>VARCHAR</td><td>Yes</td><td>Quantity booked</td></tr>
+<tr><td>total_night</td><td>FLOAT (default: 0)</td><td>No</td><td>Number of nights</td></tr>
+<tr><td>actual_price</td><td>FLOAT (default: 0)</td><td>No</td><td>Pre-discount total</td></tr>
+<tr><td>discount</td><td>INT (default: 0)</td><td>No</td><td>Discount %</td></tr>
+<tr><td>total_price</td><td>FLOAT (default: 0)</td><td>No</td><td>Final amount due</td></tr>
+<tr><td>payment_method</td><td>VARCHAR</td><td>Yes</td><td>stripe, momo, bank, cash</td></tr>
+<tr><td>payment_status</td><td>VARCHAR</td><td>Yes</td><td>pending, paid, refunded</td></tr>
+<tr><td>status</td><td>INT (default: 1)</td><td>No</td><td>0=Pending, 1=Confirmed, 2=Checked-In, etc.</td></tr>
+<tr><td>code</td><td>VARCHAR</td><td>Yes</td><td>Unique booking reference code</td></tr>
+<tr><td>confirmed_at</td><td>TIMESTAMP</td><td>Yes</td><td>Confirmation timestamp</td></tr>
+<tr><td>checked_in_at</td><td>TIMESTAMP</td><td>Yes</td><td>Check-in timestamp</td></tr>
+<tr><td>checked_out_at</td><td>TIMESTAMP</td><td>Yes</td><td>Checkout timestamp</td></tr>
+<tr><td>cancelled_at</td><td>TIMESTAMP</td><td>Yes</td><td>Cancellation timestamp</td></tr>
+<tr><td>special_requests</td><td>TEXT</td><td>Yes</td><td>Guest special requests</td></tr>
+</table>
+
+<h4>room_types</h4>
+<table>
+<tr><th>Column</th><th>Type</th><th>Nullable</th><th>Description</th></tr>
+<tr><td>id</td><td>BIGINT UNSIGNED AI</td><td>No</td><td>Primary key</td></tr>
+<tr><td>name</td><td>VARCHAR(255)</td><td>Yes</td><td>Type name (e.g., "Deluxe Suite")</td></tr>
+<tr><td>type</td><td>TEXT</td><td>No</td><td>Category: "Room" or "Hall"</td></tr>
+<tr><td>slug</td><td>VARCHAR(255)</td><td>Yes</td><td>URL-friendly name</td></tr>
+<tr><td>description</td><td>TEXT</td><td>Yes</td><td>Type description</td></tr>
+<tr><td>status</td><td>VARCHAR (default: active)</td><td>No</td><td>Active/Inactive</td></tr>
+<tr><td>sort_order</td><td>INT (default: 0)</td><td>No</td><td>Display ordering</td></tr>
+</table>
+
+<h3>3.2.2 Supporting Tables</h3>
+
+<table>
+<tr><th>Table</th><th>Key Columns</th><th>Purpose</th></tr>
+<tr><td><code>room_numbers</code></td><td>rooms_id, room_type_id, room_no, floor, status</td><td>Individual room instances (101, 102, etc.)</td></tr>
+<tr><td><code>facilities</code></td><td>rooms_id, facility_name</td><td>Room-specific amenities</td></tr>
+<tr><td><code>facility_options</code></td><td>name, sort_order, status</td><td>Global facility option catalog</td></tr>
+<tr><td><code>multi_images</code></td><td>rooms_id, multi_img</td><td>Room photo gallery images</td></tr>
+<tr><td><code>room_booked_dates</code></td><td>booking_id, room_id, book_date</td><td>Calendar-blocked dates</td></tr>
+<tr><td><code>booking_room_lists</code></td><td>booking_id, room_id, room_number_id</td><td>Assigned rooms per booking</td></tr>
+<tr><td><code>payment_transactions</code></td><td>booking_id, method, amount, status</td><td>Payment audit trail</td></tr>
+<tr><td><code>booking_extras</code></td><td>booking_id, name, price, quantity</td><td>Add-on services</td></tr>
+<tr><td><code>rate_seasons</code></td><td>name, start_date, end_date, multiplier</td><td>Seasonal pricing multipliers</td></tr>
+<tr><td><code>room_rate_overrides</code></td><td>room_id, rate_season_id, price</td><td>Per-room seasonal prices</td></tr>
+<tr><td><code>reviews</code></td><td>booking_id, user_id, rating, comment</td><td>Guest reviews (1-5 stars)</td></tr>
+<tr><td><code>activity_logs</code></td><td>user_id, action, model_type, changes</td><td>Admin action audit trail</td></tr>
+</table>
+
+<h3>3.2.3 Content Tables</h3>
+
+<table>
+<tr><th>Table</th><th>Key Columns</th><th>Purpose</th></tr>
+<tr><td><code>blog_categories</code></td><td>category_name, category_slug</td><td>Blog category taxonomy</td></tr>
+<tr><td><code>blog_posts</code></td><td>blogcat_id, user_id, post_titile, post_slug, post_image</td><td>Blog articles</td></tr>
+<tr><td><code>comments</code></td><td>user_id, post_id, message, status</td><td>Blog post comments</td></tr>
+<tr><td><code>testimonials</code></td><td>name, city, image, message</td><td>Guest testimonials</td></tr>
+<tr><td><code>galleries</code></td><td>photo_name</td><td>Photo gallery images</td></tr>
+<tr><td><code>contacts</code></td><td>name, email, phone, subject, message</td><td>Contact form submissions</td></tr>
+<tr><td><code>teams</code></td><td>image, name, postion, facebook</td><td>Staff/team members</td></tr>
+<tr><td><code>book_areas</code></td><td>image, short_title, main_title, short_desc</td><td>Homepage booking promo banner</td></tr>
+</table>
+
+<h3>3.2.4 Homepage CMS Tables</h3>
+
+<table>
+<tr><th>Table</th><th>Key Columns</th><th>Purpose</th></tr>
+<tr><td><code>hero_slides</code></td><td>image, alt_text, sort_order, status</td><td>Homepage hero carousel slides</td></tr>
+<tr><td><code>hero_stats</code></td><td>counter_value, counter_label, sort_order</td><td>Animated stats counters</td></tr>
+<tr><td><code>about_pillars</code></td><td>name, description, sort_order</td><td>"Why Choose Us" pillars</td></tr>
+<tr><td><code>amenities</code></td><td>icon, name, description, sort_order</td><td>Amenity showcase cards</td></tr>
+<tr><td><code>featured_amenities</code></td><td>icon_key, name, note, sort_order</td><td>Featured amenity icons</td></tr>
+<tr><td><code>dining_items</code></td><td>name, time_text, sort_order</td><td>Dining menu items</td></tr>
+<tr><td><code>event_features</code></td><td>name, description, sort_order</td><td>Event venue features</td></tr>
+<tr><td><code>hotel_infos</code></td><td>group, title, detail, icon, sort_order</td><td>Hotel information cards</td></tr>
+<tr><td><code>home_sections</code></td><td>section_key, title, description, image, status</td><td>Section content &amp; visibility toggle</td></tr>
+</table>
+
+<h3>3.2.5 System Tables</h3>
+
+<table>
+<tr><th>Table</th><th>Purpose</th></tr>
+<tr><td><code>site_settings</code></td><td>Logo, phone, email, address, social links, copyright</td></tr>
+<tr><td><code>smtp_settings</code></td><td>Mail server configuration (host, port, credentials)</td></tr>
+<tr><td><code>permissions</code></td><td>Spatie: individual permission definitions</td></tr>
+<tr><td><code>roles</code></td><td>Spatie: role definitions (admin, user, etc.)</td></tr>
+<tr><td><code>model_has_permissions / model_has_roles / role_has_permissions</code></td><td>Spatie: pivot tables for RBAC</td></tr>
+<tr><td><code>notifications</code></td><td>Laravel notification system (polymorphic)</td></tr>
+<tr><td><code>personal_access_tokens</code></td><td>Sanctum API tokens</td></tr>
+</table>
+
+<h2>3.3 Eloquent Models &amp; Relationships</h2>
+
+<table>
+<tr><th>Model</th><th>Table</th><th>Key Relationships</th><th>Scopes</th></tr>
+<tr><td><strong>User</strong></td><td>users</td><td>hasMany: Booking, Review, ActivityLog<br>Traits: HasRoles (Spatie)</td><td>—</td></tr>
+<tr><td><strong>Room</strong></td><td>rooms</td><td>belongsTo: RoomType<br>hasMany: RoomNumber, Facility, MultiImage, Booking, Review, RoomRateOverride</td><td>active(), featured()</td></tr>
+<tr><td><strong>RoomType</strong></td><td>room_types</td><td>hasMany: Room, RoomNumber</td><td>active(), ordered()</td></tr>
+<tr><td><strong>Booking</strong></td><td>bookings</td><td>belongsTo: User, Room<br>hasMany: BookingRoomList, RoomBookedDate, PaymentTransaction, BookingExtra<br>hasOne: Review</td><td>pending(), confirmed(), cancelled(), paid()</td></tr>
+<tr><td><strong>RoomNumber</strong></td><td>room_numbers</td><td>belongsTo: Room, RoomType<br>hasMany: BookingRoomList</td><td>active()</td></tr>
+<tr><td><strong>Review</strong></td><td>reviews</td><td>belongsTo: Booking, User, Room</td><td>approved()</td></tr>
+<tr><td><strong>PaymentTransaction</strong></td><td>payment_transactions</td><td>belongsTo: Booking, User (verifier)</td><td>successful(), pending(), failed()</td></tr>
+<tr><td><strong>RateSeason</strong></td><td>rate_seasons</td><td>hasMany: RoomRateOverride</td><td>active(), current()</td></tr>
+<tr><td><strong>RoomRateOverride</strong></td><td>room_rate_overrides</td><td>belongsTo: Room, RateSeason</td><td>—</td></tr>
+<tr><td><strong>BlogPost</strong></td><td>blog_posts</td><td>belongsTo: BlogCategory, User</td><td>—</td></tr>
+<tr><td><strong>Comment</strong></td><td>comments</td><td>belongsTo: User, BlogPost</td><td>—</td></tr>
+<tr><td><strong>HomeSection</strong></td><td>home_sections</td><td>—</td><td>getSection(\$key)</td></tr>
+<tr><td><strong>ActivityLog</strong></td><td>activity_logs</td><td>belongsTo: User, morphTo: model</td><td>record()</td></tr>
+</table>
+
+
+<!-- ═══════════════════ 4. AUTH & AUTHORIZATION ═══════════════════ -->
+<div class="page-break"></div>
+<h1>4. Authentication &amp; Authorization</h1>
+
+<h2>4.1 User Roles &amp; Workflow</h2>
+
+<p>The system supports two primary user types managed via Spatie Laravel Permission:</p>
+
+<table>
+<tr><th>Role</th><th>Access</th><th>Registration</th></tr>
+<tr><td><span class="badge badge-blue">Admin</span></td><td>Full admin panel access, booking management, content CRUD, settings, user management</td><td>Created by existing admin via Admin Management panel. Starts <strong>inactive</strong> (unverified).</td></tr>
+<tr><td><span class="badge badge-green">User</span></td><td>Frontend browsing, booking, profile management, review submission</td><td>Self-registration via the public registration form. Starts <strong>active</strong>.</td></tr>
+</table>
+
+<div style="text-align:center; margin: 16pt 0;">
+<table style="width:90%; margin:0 auto;">
+<tr style="text-align:center">
+<td style="background:#0c2340; color:#fff; padding:10pt; font-weight:600;">Admin Creates New Admin</td>
+<td style="color:#c9a84c; font-size:16pt;">→</td>
+<td style="background:#fef3cd; padding:10pt; font-weight:600; border:2px solid #c9a84c;">Status: INACTIVE<br><span style="font-size:8pt; font-weight:normal;">Cannot login yet</span></td>
+<td style="color:#c9a84c; font-size:16pt;">→</td>
+<td style="background:#e8f0ff; padding:10pt; font-weight:600; border:2px solid #0c4da2;">Admin Clicks "Verify"</td>
+<td style="color:#c9a84c; font-size:16pt;">→</td>
+<td style="background:#dcfce7; padding:10pt; font-weight:600; border:2px solid #15803d;">Status: ACTIVE<br><span style="font-size:8pt; font-weight:normal;">Can login</span></td>
+</tr>
+</table>
+</div>
+<p class="fig-caption">Figure 4.1 — Admin verification workflow</p>
+
+<h2>4.2 Admin Verification System</h2>
+<p>When a new admin account is created, the <code>status</code> is set to <code>inactive</code>. The login system checks the user's status before allowing authentication:</p>
+
+<pre>
+// LoginRequest.php — Status check after password validation
+if (\$user && \$user->status !== 'active') {
+    throw ValidationException::withMessages([
+        'login' => 'Your account is not verified yet. 
+                    Please contact an administrator.'
+    ]);
+}
+</pre>
+
+<p>An existing admin can toggle verification from the <strong>All Admin</strong> page using the Verify/Unverify button, which calls <code>AdminController@ToggleAdminStatus</code>.</p>
+
+<h2>4.3 Permission System (Spatie)</h2>
+<p>Fine-grained permissions are organized by module group:</p>
+
+<table>
+<tr><th>Permission Group</th><th>Permissions</th></tr>
+<tr><td>Team</td><td>team.all, team.add, team.edit, team.delete</td></tr>
+<tr><td>Room</td><td>room.all, room.add, room.edit, room.delete</td></tr>
+<tr><td>Room Type</td><td>type.all, type.add, type.edit, type.delete</td></tr>
+<tr><td>Booking</td><td>booking.all, booking.edit, booking.confirm, booking.deny</td></tr>
+<tr><td>Blog</td><td>blog.category, blog.post.all, blog.post.add, blog.post.edit, blog.post.delete</td></tr>
+<tr><td>Gallery</td><td>gallery.all, gallery.add, gallery.edit, gallery.delete</td></tr>
+<tr><td>Setting</td><td>setting.smtp, setting.site</td></tr>
+<tr><td>Roles</td><td>role.all, role.add, role.edit, role.delete, role.permission</td></tr>
+<tr><td>Admin</td><td>admin.all, admin.add, admin.edit, admin.delete</td></tr>
+</table>
+
+<h2>4.4 Middleware Stack</h2>
+
+<table>
+<tr><th>Middleware</th><th>Key</th><th>Purpose</th></tr>
+<tr><td><code>Authenticate</code></td><td><code>auth</code></td><td>Requires authenticated session</td></tr>
+<tr><td><code>AdminRole</code></td><td><code>roles:admin</code></td><td>Requires admin role (Spatie check)</td></tr>
+<tr><td><code>UserRole</code></td><td><code>user</code></td><td>Blocks admins from user-only pages</td></tr>
+<tr><td><code>VerifyCsrfToken</code></td><td><code>csrf</code></td><td>CSRF protection on POST/PUT/DELETE</td></tr>
+<tr><td><code>EncryptCookies</code></td><td>—</td><td>Cookie encryption</td></tr>
+<tr><td><code>RedirectIfAuthenticated</code></td><td><code>guest</code></td><td>Redirects logged-in users from login page</td></tr>
+</table>
+
+
+<!-- ═══════════════════ 5. FEATURE MODULES ═══════════════════ -->
+<div class="page-break"></div>
+<h1>5. Feature Modules</h1>
+
+<h2>5.1 Room &amp; Hall Management</h2>
+
+<p>The system manages both hotel <strong>Rooms</strong> and <strong>Event Halls</strong> through a unified interface distinguished by the <code>room_types.type</code> field.</p>
+
+<h3>Room Type Hierarchy</h3>
+<table>
+<tr><th>Level</th><th>Model</th><th>Example</th><th>Description</th></tr>
+<tr><td>Category</td><td>RoomType</td><td>"Deluxe Suite" (Room), "Grand Hall" (Hall)</td><td>Classification with type flag</td></tr>
+<tr><td>Template</td><td>Room</td><td>Deluxe Suite configuration</td><td>Pricing, amenities, photos, description</td></tr>
+<tr><td>Instance</td><td>RoomNumber</td><td>Room 201, Room 202</td><td>Individual bookable units</td></tr>
+</table>
+
+<h3>Key Features</h3>
+<ul>
+<li><strong>Multi-image Gallery:</strong> Multiple photos per room via <code>multi_images</code> table, displayed in Alibaba-style gallery with main image + thumbnail strip + fullscreen lightbox</li>
+<li><strong>Facility Management:</strong> Room-specific amenities from a global <code>facility_options</code> catalog</li>
+<li><strong>Room Numbering:</strong> Individual room instances with floor, notes, and status tracking</li>
+<li><strong>Dynamic Pricing:</strong> Base price + discount percentage + seasonal rate overrides</li>
+<li><strong>Featured Rooms:</strong> Toggle to showcase rooms on the homepage</li>
+</ul>
+
+<h3>Admin CRUD Flow</h3>
+<div class="note">
+<strong>Create:</strong> All Rooms → Room Types → Add Room → Fill details, upload images, set facilities → Save<br>
+<strong>Update:</strong> All Rooms → Edit (pencil icon) → Modify fields → Update<br>
+<strong>Add Instances:</strong> From edit page → Room Numbers section → Add room number with floor &amp; status<br>
+<strong>Delete:</strong> All Rooms → Delete icon → Confirmation → Room and related data removed
+</div>
+
+<h2>5.2 Booking System</h2>
+
+<h3>Booking Lifecycle</h3>
+<div style="text-align:center; margin: 16pt 0;">
+<table style="width:95%; margin:0 auto;">
+<tr style="text-align:center">
+<td style="background:#fef3cd; padding:8pt; border:2px solid #c9a84c; font-weight:600; width:15%">
+1. PENDING<br><span style="font-size:7pt; font-weight:normal">Guest submits booking</span>
+</td>
+<td style="color:#c9a84c; font-size:14pt;">→</td>
+<td style="background:#dbeafe; padding:8pt; border:2px solid #0c4da2; font-weight:600; width:15%">
+2. CONFIRMED<br><span style="font-size:7pt; font-weight:normal">Admin approves</span>
+</td>
+<td style="color:#c9a84c; font-size:14pt;">→</td>
+<td style="background:#e8f0ff; padding:8pt; border:2px solid #0c4da2; font-weight:600; width:15%">
+3. CHECKED-IN<br><span style="font-size:7pt; font-weight:normal">Guest arrives</span>
+</td>
+<td style="color:#c9a84c; font-size:14pt;">→</td>
+<td style="background:#dcfce7; padding:8pt; border:2px solid #15803d; font-weight:600; width:15%">
+4. COMPLETED<br><span style="font-size:7pt; font-weight:normal">Guest departs</span>
+</td>
+</tr>
+<tr style="text-align:center">
+<td colspan="7" style="padding:6pt;">
+<span style="color:#b91c1c; font-size:9pt;">↘ At any point: CANCELLED (by admin or guest with reason) &ensp;|&ensp; DENIED (by admin with reason)</span>
+</td>
+</tr>
+</table>
+</div>
+<p class="fig-caption">Figure 5.1 — Booking status lifecycle</p>
+
+<h3>Availability Check Algorithm</h3>
+<ol>
+<li>Guest selects check-in date, check-out date, and room quantity</li>
+<li><code>CheckRoomAvailability</code> AJAX endpoint queries <code>room_booked_dates</code> for conflicting dates</li>
+<li>Calculates available rooms = total room instances − already-booked for those dates</li>
+<li>Returns available count and total nights to the frontend</li>
+<li>Frontend calculates pricing: (rate × nights × rooms) − discount</li>
+</ol>
+
+<h3>Room Assignment</h3>
+<p>After confirming a booking, admin assigns specific room numbers via the <strong>Assign Room</strong> interface. Each assignment creates a <code>booking_room_lists</code> record and marks dates in <code>room_booked_dates</code>.</p>
+
+<h2>5.3 Payment Processing</h2>
+
+<table>
+<tr><th>Method</th><th>Type</th><th>Flow</th></tr>
+<tr><td><span class="badge badge-blue">Stripe</span></td><td>Immediate</td><td>Card details collected at checkout → Stripe API charge → Auto-confirmed</td></tr>
+<tr><td><span class="badge badge-gold">MTN MoMo</span></td><td>Manual Verify</td><td>Guest sends money to hotel number → Uploads proof screenshot → Admin verifies</td></tr>
+<tr><td><span class="badge badge-gold">Airtel Money</span></td><td>Manual Verify</td><td>Same as MoMo with Airtel platform</td></tr>
+<tr><td><span class="badge badge-gray">Bank Transfer</span></td><td>Manual Verify</td><td>Guest provides bank name + reference → Admin verifies with bank</td></tr>
+<tr><td><span class="badge badge-green">Cash at Hotel</span></td><td>In-Person</td><td>Guest pays upon arrival → Admin marks as paid</td></tr>
+</table>
+
+<h2>5.4 Rate &amp; Season Management</h2>
+<p>Seasonal pricing allows dynamic rate adjustments:</p>
+<ul>
+<li><strong>Rate Seasons</strong> define date ranges with a price multiplier (e.g., "High Season" July-August at 1.50x)</li>
+<li><strong>Room Rate Overrides</strong> allow specific rooms to have fixed seasonal prices instead of multiplied rates</li>
+<li>The <code>Room::getEffectivePrice($date)</code> method calculates the correct rate for any given date</li>
+</ul>
+
+<h2>5.5 Homepage CMS</h2>
+<p>The homepage is fully dynamic, managed through the admin panel:</p>
+
+<table>
+<tr><th>Section</th><th>Database Table</th><th>Admin Interface</th></tr>
+<tr><td>Hero Carousel</td><td>hero_slides</td><td>Upload slides with alt text, ordering, active/inactive toggle</td></tr>
+<tr><td>Statistics Bar</td><td>hero_stats</td><td>Counter value + label (e.g., "250+" / "Happy Guests")</td></tr>
+<tr><td>About Section</td><td>about_pillars + home_sections</td><td>Section content + "Why Choose Us" pillars</td></tr>
+<tr><td>Amenities Grid</td><td>amenities</td><td>Icon, name, description per amenity card</td></tr>
+<tr><td>Featured Amenities</td><td>featured_amenities</td><td>Icon key + name + note</td></tr>
+<tr><td>Dining Section</td><td>dining_items + home_sections</td><td>Menu items with time text</td></tr>
+<tr><td>Events Section</td><td>event_features + home_sections</td><td>Event venue features</td></tr>
+<tr><td>Hotel Info Cards</td><td>hotel_infos</td><td>Grouped info cards (group, title, detail, icon)</td></tr>
+<tr><td>Section Visibility</td><td>home_sections.status</td><td>Show/hide any section via toggle</td></tr>
+</table>
+
+<h2>5.6 Blog &amp; Content</h2>
+<ul>
+<li><strong>Blog Categories:</strong> Organized taxonomy for blog posts</li>
+<li><strong>Blog Posts:</strong> Title, slug, featured image, short/long descriptions, author tracking</li>
+<li><strong>Comments:</strong> User comments on posts with admin approval system (status: 0=pending, 1=approved)</li>
+<li><strong>Frontend Pages:</strong> Blog listing with category filtering, single post view with comments</li>
+</ul>
+
+<h2>5.7 Reviews &amp; Testimonials</h2>
+<ul>
+<li><strong>Guest Reviews:</strong> Submitted after booking completion. 1-5 star rating + text comment. Require admin approval before public display.</li>
+<li><strong>Testimonials:</strong> Admin-managed testimonial cards with name, city, photo, and message for homepage display.</li>
+</ul>
+
+<h2>5.8 Gallery Management</h2>
+<ul>
+<li>Admin uploads photos to a global hotel gallery</li>
+<li>Support for single and bulk deletion</li>
+<li>Displayed on the public Gallery page in a responsive grid</li>
+</ul>
+
+<h2>5.9 Reporting &amp; Analytics</h2>
+<ul>
+<li><strong>Booking Report:</strong> Searchable by date range with PDF export via DomPDF</li>
+<li><strong>Dashboard Stats:</strong> Total bookings, revenue, pending bookings, recent activity</li>
+<li><strong>Activity Logs:</strong> Admin action audit trail stored in <code>activity_logs</code> table</li>
+</ul>
+
+
+<!-- ═══════════════════ 6. ROUTE REFERENCE ═══════════════════ -->
+<div class="page-break"></div>
+<h1>6. API / Route Reference</h1>
+
+<h2>6.1 Public Routes (No Authentication)</h2>
+
+<table>
+<tr><th>Method</th><th>URL</th><th>Controller@Method</th><th>Name</th></tr>
+<tr><td>GET</td><td>/</td><td>UserController@Index</td><td>home</td></tr>
+<tr><td>GET</td><td>/rooms</td><td>FrontendRoomController@AllFrontendRoomList</td><td>froom.all</td></tr>
+<tr><td>GET</td><td>/room/details/{id}</td><td>FrontendRoomController@RoomDetailsPage</td><td>—</td></tr>
+<tr><td>GET</td><td>/bookings</td><td>FrontendRoomController@BookingSeach</td><td>booking.search</td></tr>
+<tr><td>GET</td><td>/check_room_availability</td><td>FrontendRoomController@CheckRoomAvailability</td><td>check_room_availability</td></tr>
+<tr><td>GET</td><td>/blog</td><td>BlogController@BlogList</td><td>blog.list</td></tr>
+<tr><td>GET</td><td>/blog/details/{slug}</td><td>BlogController@BlogDetails</td><td>—</td></tr>
+<tr><td>GET</td><td>/blog/cat/list/{id}</td><td>BlogController@BlogCatList</td><td>—</td></tr>
+<tr><td>GET</td><td>/gallery</td><td>GalleryController@ShowGallery</td><td>show.gallery</td></tr>
+<tr><td>GET</td><td>/contact</td><td>GalleryController@ContactUs</td><td>contact.us</td></tr>
+<tr><td>POST</td><td>/store/contact</td><td>GalleryController@StoreContactUs</td><td>store.contact</td></tr>
+<tr><td>GET</td><td>/admin/login</td><td>AdminController@AdminLogin</td><td>admin.login</td></tr>
+</table>
+
+<h2>6.2 Authenticated User Routes</h2>
+<p><span class="badge badge-green">Middleware: auth, user</span></p>
+
+<table>
+<tr><th>Method</th><th>URL</th><th>Controller@Method</th><th>Name</th></tr>
+<tr><td>GET</td><td>/dashboard</td><td>—</td><td>dashboard</td></tr>
+<tr><td>GET</td><td>/profile</td><td>UserController@UserProfile</td><td>user.profile</td></tr>
+<tr><td>POST</td><td>/profile/store</td><td>UserController@UserStore</td><td>profile.store</td></tr>
+<tr><td>GET</td><td>/user/change/password</td><td>UserController@UserChangePassword</td><td>user.change.password</td></tr>
+<tr><td>POST</td><td>/password/change/password</td><td>UserController@ChangePasswordStore</td><td>password.change.store</td></tr>
+<tr><td>GET</td><td>/checkout</td><td>BookingController@Checkout</td><td>checkout</td></tr>
+<tr><td>POST</td><td>/booking/store</td><td>BookingController@BookingStore</td><td>user_booking_store</td></tr>
+<tr><td>POST</td><td>/checkout/store</td><td>BookingController@CheckoutStore</td><td>checkout.store</td></tr>
+<tr><td>GET</td><td>/user/booking</td><td>BookingController@UserBooking</td><td>user.booking</td></tr>
+<tr><td>GET</td><td>/user/invoice/{id}</td><td>BookingController@UserInvoice</td><td>user.invoice</td></tr>
+<tr><td>POST</td><td>/store/review</td><td>ReviewController@StoreReview</td><td>store.review</td></tr>
+<tr><td>POST</td><td>/store/comment</td><td>CommentController@StoreComment</td><td>store.comment</td></tr>
+</table>
+
+<h2>6.3 Admin Routes (Selected)</h2>
+<p><span class="badge badge-blue">Middleware: auth, roles:admin</span></p>
+
+<table>
+<tr><th>Module</th><th>Method</th><th>URL Pattern</th><th>Action</th></tr>
+<tr class="tbl-section"><td colspan="4">Dashboard &amp; Profile</td></tr>
+<tr><td>Dashboard</td><td>GET</td><td>/admin/dashboard</td><td>Main admin dashboard</td></tr>
+<tr><td>Profile</td><td>GET</td><td>/admin/profile</td><td>View/edit admin profile</td></tr>
+<tr><td>Password</td><td>POST</td><td>/admin/password/update</td><td>Change admin password</td></tr>
+
+<tr class="tbl-section"><td colspan="4">Room Management</td></tr>
+<tr><td>Types</td><td>GET</td><td>/room/type/list</td><td>List all room types</td></tr>
+<tr><td>Types</td><td>POST</td><td>/room/type/store</td><td>Create room type</td></tr>
+<tr><td>Rooms</td><td>GET</td><td>/edit/room/{id}/{type}</td><td>Edit room details</td></tr>
+<tr><td>Rooms</td><td>POST</td><td>/update/room/{id}</td><td>Update room</td></tr>
+<tr><td>Room No.</td><td>POST</td><td>/store/room/no/{id}</td><td>Add room number</td></tr>
+<tr><td>Images</td><td>GET</td><td>/multi/image/delete/{id}</td><td>Delete room photo</td></tr>
+
+<tr class="tbl-section"><td colspan="4">Booking Management</td></tr>
+<tr><td>List</td><td>GET</td><td>/booking/list</td><td>All bookings with filters</td></tr>
+<tr><td>Edit</td><td>GET</td><td>/edit_booking/{id}</td><td>View/edit booking details</td></tr>
+<tr><td>Confirm</td><td>GET</td><td>/booking/confirm/{id}</td><td>Confirm a pending booking</td></tr>
+<tr><td>Deny</td><td>POST</td><td>/booking/deny/{id}</td><td>Deny with reason</td></tr>
+<tr><td>Check-in</td><td>GET</td><td>/booking/checkin/{id}</td><td>Mark guest as checked-in</td></tr>
+<tr><td>Checkout</td><td>GET</td><td>/booking/checkout/{id}</td><td>Mark guest as checked-out</td></tr>
+<tr><td>Assign</td><td>GET</td><td>/assign_room/{id}</td><td>Assign room numbers to booking</td></tr>
+<tr><td>Payment</td><td>POST</td><td>/booking/verify-payment/{id}</td><td>Verify payment proof</td></tr>
+<tr><td>Invoice</td><td>GET</td><td>/download/invoice/{id}</td><td>Download PDF invoice</td></tr>
+
+<tr class="tbl-section"><td colspan="4">Content Management</td></tr>
+<tr><td>Blog</td><td>GET/POST</td><td>/all/blog/post, /store/blog/post</td><td>Blog CRUD</td></tr>
+<tr><td>Gallery</td><td>GET/POST</td><td>/all/gallery, /store/gallery</td><td>Gallery CRUD</td></tr>
+<tr><td>Team</td><td>GET/POST</td><td>/all/team, /team/store</td><td>Team CRUD</td></tr>
+<tr><td>Testimonial</td><td>GET/POST</td><td>/all/testimonial, /store/testimonial</td><td>Testimonial CRUD</td></tr>
+<tr><td>Reviews</td><td>GET</td><td>/all/review, /approve/review/{id}</td><td>Review moderation</td></tr>
+
+<tr class="tbl-section"><td colspan="4">Homepage CMS</td></tr>
+<tr><td>Sections</td><td>GET</td><td>/homepage/sections</td><td>Section visibility manager</td></tr>
+<tr><td>Hero</td><td>GET/POST</td><td>/all/hero/slides, /hero/slide/store</td><td>Hero carousel CRUD</td></tr>
+<tr><td>Stats</td><td>GET/POST</td><td>/all/hero/stats, /hero/stat/store</td><td>Stats counter CRUD</td></tr>
+<tr><td>Amenities</td><td>GET/POST</td><td>/all/amenities, /amenity/store</td><td>Amenity CRUD</td></tr>
+<tr><td>Dining</td><td>GET/POST</td><td>/all/dining/items, /dining/item/store</td><td>Dining items CRUD</td></tr>
+
+<tr class="tbl-section"><td colspan="4">System Administration</td></tr>
+<tr><td>Admins</td><td>GET</td><td>/all/admin</td><td>Admin users with verify toggle</td></tr>
+<tr><td>Roles</td><td>GET</td><td>/all/roles</td><td>Role management</td></tr>
+<tr><td>Permissions</td><td>GET</td><td>/all/permission</td><td>Permission CRUD + import/export</td></tr>
+<tr><td>Settings</td><td>GET</td><td>/smtp/setting, /site/setting</td><td>SMTP &amp; site configuration</td></tr>
+<tr><td>Reports</td><td>GET/POST</td><td>/booking/report, /search-by-date</td><td>Booking reports with date filter</td></tr>
+</table>
+
+
+<!-- ═══════════════════ 7. FRONTEND ARCHITECTURE ═══════════════════ -->
+<div class="page-break"></div>
+<h1>7. Frontend Architecture</h1>
+
+<h2>7.1 Design System &amp; Tokens</h2>
+<p>The frontend uses CSS custom properties (design tokens) for consistent theming:</p>
+
+<table>
+<tr><th>Token</th><th>Value</th><th>Usage</th></tr>
+<tr><td><code>--clr-navy</code></td><td style="background:#0c2340; color:#fff">#0c2340</td><td>Primary dark background, headings</td></tr>
+<tr><td><code>--clr-brand</code></td><td style="background:#0c4da2; color:#fff">#0c4da2</td><td>Primary accent, buttons, links</td></tr>
+<tr><td><code>--clr-gold</code></td><td style="background:#c9a84c; color:#fff">#c9a84c</td><td>Luxury accent, decorative elements</td></tr>
+<tr><td><code>--clr-ivory</code></td><td style="background:#f9f6f0">#f9f6f0</td><td>Warm backgrounds</td></tr>
+<tr><td><code>--clr-white</code></td><td style="background:#fff; border:1px solid #ddd">#ffffff</td><td>Card backgrounds</td></tr>
+<tr><td><code>--f-display</code></td><td colspan="2">Cormorant Garamond — Elegant serif for headings &amp; titles</td></tr>
+<tr><td><code>--f-body</code></td><td colspan="2">DM Sans / Source Sans 3 — Clean sans-serif for body text</td></tr>
+</table>
+
+<h3>Spacing Scale (8-point grid)</h3>
+<table>
+<tr><th>Token</th><th>Value</th><th>Token</th><th>Value</th></tr>
+<tr><td>--sp-1</td><td>8px</td><td>--sp-5</td><td>40px</td></tr>
+<tr><td>--sp-2</td><td>16px</td><td>--sp-6</td><td>48px</td></tr>
+<tr><td>--sp-3</td><td>24px</td><td>--sp-8</td><td>64px</td></tr>
+<tr><td>--sp-4</td><td>32px</td><td>--max-w</td><td>1340px</td></tr>
+</table>
+
+<h2>7.2 Layout Structure</h2>
+
+<pre>
+┌─────────────────────────────────────────────────────┐
+│ ┌─ TOP BAR (48px fixed) ──────────────────────────┐ │
+│ │ Logo  │  Nav Links  │  Login │ Book Now CTA     │ │
+│ └─────────────────────────────────────────────────┘ │
+│ ┌─ MAIN NAV ─────────────────────────────────────┐ │
+│ │ Home │ Rooms │ Blog │ Gallery │ Contact         │ │
+│ └─────────────────────────────────────────────────┘ │
+│                                                     │
+│   @yield('main')  ← Page-specific content           │
+│                                                     │
+│ ┌─ FOOTER ────────────────────────────────────────┐ │
+│ │ Logo │ Links │ Contact Info │ Social │ Copyright │ │
+│ └─────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────┘
+</pre>
+
+<h2>7.3 Page Templates</h2>
+
+<table>
+<tr><th>Page</th><th>Template File</th><th>Key Sections</th></tr>
+<tr><td>Homepage</td><td>frontend/index.blade.php</td><td>Hero carousel, stats, about, rooms, amenities, dining, events, testimonials, blog</td></tr>
+<tr><td>All Rooms</td><td>frontend/room/all_rooms.blade.php</td><td>Room cards grid with type filter, pricing, "View Details" CTA</td></tr>
+<tr><td>Room Details</td><td>frontend/room/room_details.blade.php</td><td>50/50 split: gallery left (sticky) + details/booking right. Lightbox. Reviews.</td></tr>
+<tr><td>Checkout</td><td>frontend/checkout/checkout.blade.php</td><td>Booking summary, guest info form, payment method selection</td></tr>
+<tr><td>Blog List</td><td>frontend/blog/blog_all.blade.php</td><td>Blog cards with category sidebar</td></tr>
+<tr><td>Blog Post</td><td>frontend/blog/blog_details.blade.php</td><td>Post content, author, comments section</td></tr>
+<tr><td>Gallery</td><td>frontend/gallery/show_gallery.blade.php</td><td>Responsive photo grid with lightbox</td></tr>
+<tr><td>Contact Us</td><td>frontend/contact/contact_us.blade.php</td><td>Contact form + hotel address/phone/email</td></tr>
+<tr><td>User Dashboard</td><td>frontend/dashboard/user_dashboard.blade.php</td><td>Booking list, profile summary</td></tr>
+</table>
+
+
+<!-- ═══════════════════ 8. ADMIN PANEL GUIDE ═══════════════════ -->
+<div class="page-break"></div>
+<h1>8. Admin Panel Guide</h1>
+
+<h2>8.1 Dashboard Overview</h2>
+<p>The admin dashboard (<code>/admin/dashboard</code>) provides at-a-glance metrics:</p>
+<ul>
+<li><strong>KPI Cards:</strong> Total bookings, pending bookings, revenue, active rooms</li>
+<li><strong>Notification Center:</strong> Dropdown with new booking alerts and payment verifications</li>
+<li><strong>Quick Actions:</strong> Direct links to common tasks</li>
+</ul>
+
+<h2>8.2 Navigation &amp; Sidebar</h2>
+<p>The admin sidebar is organized into logical groups with permission-gated visibility:</p>
+
+<pre>
+SIDEBAR NAVIGATION
+═══════════════════
+ 📊 Overview
+    └── Dashboard
+
+ 🏨 Rooms &amp; Stays
+    ├── Room Types
+    ├── Room List
+    ├── Add Reservation
+    └── Rate Seasons
+
+ 📋 Bookings
+    └── Booking List (+ pending badge)
+
+ ⭐ Reviews
+    └── Reviews (+ unapproved badge)
+
+ 📝 Content
+    ├── Blog Categories
+    ├── All Posts
+    └── Add Post
+
+ ⚙️ Operations
+    ├── Manage Teams
+    ├── Book Area
+    ├── Booking Report
+    ├── Contact Messages (+ unread count)
+    ├── Hotel Gallery
+    ├── Testimonials
+    └── Comments
+
+ 🔐 System
+    ├── Role &amp; Permissions
+    ├── Admin Users
+    └── Settings (SMTP, Site)
+</pre>
+
+<h2>8.3 Managing Content</h2>
+
+<h3>Creating a Blog Post</h3>
+<ol>
+<li>Navigate to <strong>Content → Add Post</strong></li>
+<li>Select a <strong>Category</strong> (create one first via Blog Categories if needed)</li>
+<li>Enter the <strong>Title</strong> (slug is auto-generated)</li>
+<li>Upload a <strong>Featured Image</strong></li>
+<li>Write the <strong>Short Description</strong> (for card previews)</li>
+<li>Write the <strong>Full Content</strong> in the rich text editor</li>
+<li>Click <strong>Save Post</strong></li>
+</ol>
+
+<h3>Managing Homepage Sections</h3>
+<ol>
+<li>Navigate to <strong>Homepage Management</strong> (sidebar link)</li>
+<li>Use <strong>Homepage Sections</strong> to toggle visibility of each section (Hero, About, Rooms, etc.)</li>
+<li>Edit individual section content via their respective sub-pages (Hero Slides, Stats, Amenities, etc.)</li>
+<li>Reorder items using the <strong>Sort Order</strong> field</li>
+</ol>
+
+<h3>Processing a Booking</h3>
+<ol>
+<li>New booking notification appears in the header bell icon</li>
+<li>Go to <strong>Bookings → Booking List</strong></li>
+<li>Click <strong>Edit</strong> on the pending booking</li>
+<li>Review guest details, dates, payment proof (if mobile money/bank)</li>
+<li>Click <strong>Confirm</strong> to approve or <strong>Deny</strong> with a reason</li>
+<li>If confirmed, go to <strong>Assign Room</strong> to assign specific room numbers</li>
+<li>On guest arrival: click <strong>Check-In</strong></li>
+<li>On guest departure: click <strong>Check-Out</strong></li>
+</ol>
+
+
+<!-- ═══════════════════ 9. DEPLOYMENT & CONFIGURATION ═══════════════════ -->
+<div class="page-break"></div>
+<h1>9. Deployment &amp; Configuration</h1>
+
+<h2>9.1 Environment Setup</h2>
+
+<pre>
+# Clone the project
+git clone [repository-url] lucerna
+cd lucerna
+
+# Install PHP dependencies
+composer install
+
+# Copy environment file
+cp .env.example .env
+
+# Generate application key
+php artisan key:generate
+
+# Run database migrations
+php artisan migrate
+
+# Seed default data (admin + user accounts)
+php artisan db:seed
+
+# Build frontend assets (if using Vite)
+npm install &amp;&amp; npm run build
+</pre>
+
+<h2>9.2 Database Configuration</h2>
+
+<pre>
+# .env file — Database section
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=lucerna_db
+DB_USERNAME=root
+DB_PASSWORD=
+</pre>
+
+<div class="note">
+<strong>Default Accounts (from seeder):</strong><br>
+Admin: <code>admin@gmail.com</code> / <code>11223344</code><br>
+User: <code>user@gmail.com</code> / <code>11223344</code>
+</div>
+
+<div class="warning">
+<strong>⚠ Security:</strong> Change default passwords immediately after deployment. Never use empty database passwords in production.
+</div>
+
+<h2>9.3 Mail &amp; SMTP Configuration</h2>
+
+<pre>
+# .env file — Mail section
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=lucernakabgayihotel.rw@gmail.com
+MAIL_PASSWORD=[App Password]
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=lucernakabgayihotel.rw@gmail.com
+MAIL_FROM_NAME="Lucerna Kabgayi Hôtel"
+</pre>
+
+<p>SMTP settings can also be updated from the admin panel: <strong>Settings → SMTP Settings</strong></p>
+
+<h2>9.4 Payment Gateway Configuration</h2>
+
+<pre>
+# .env file — Stripe section
+STRIPE_KEY=pk_live_xxxxxxxxxx
+STRIPE_SECRET=sk_live_xxxxxxxxxx
+</pre>
+
+<p>For mobile money and bank transfers, no API configuration is needed — these use manual verification by admin.</p>
+
+
+<!-- ═══════════════════ 10. SECURITY ═══════════════════ -->
+<div class="page-break"></div>
+<h1>10. Security Considerations</h1>
+
+<table>
+<tr><th>Measure</th><th>Implementation</th></tr>
+<tr><td><strong>CSRF Protection</strong></td><td>All POST/PUT/DELETE routes protected via <code>@csrf</code> token in forms and <code>VerifyCsrfToken</code> middleware</td></tr>
+<tr><td><strong>Password Hashing</strong></td><td>Bcrypt hashing via <code>Hash::make()</code> — passwords never stored in plain text</td></tr>
+<tr><td><strong>SQL Injection</strong></td><td>Eloquent ORM with parameterized queries throughout; no raw SQL without bindings</td></tr>
+<tr><td><strong>XSS Prevention</strong></td><td>Blade <code>{{ }}</code> auto-escaping for all user input display; <code>{!! !!}</code> used only for admin-authored HTML content</td></tr>
+<tr><td><strong>Authentication</strong></td><td>Laravel's built-in auth with session-based authentication and remember tokens</td></tr>
+<tr><td><strong>Role-Based Access</strong></td><td>Spatie Permission with middleware checks (<code>roles:admin</code>) and blade directives (<code>@can</code>)</td></tr>
+<tr><td><strong>Admin Verification</strong></td><td>New admin accounts start inactive and require existing admin verification before login is allowed</td></tr>
+<tr><td><strong>OTP Verification</strong></td><td>Email OTP for password reset with time-based expiration</td></tr>
+<tr><td><strong>Cookie Encryption</strong></td><td><code>EncryptCookies</code> middleware encrypts all cookies</td></tr>
+<tr><td><strong>File Upload Validation</strong></td><td>Image uploads validated for type and size; stored outside web root when possible</td></tr>
+<tr><td><strong>Route Protection</strong></td><td>All admin routes wrapped in <code>auth</code> + <code>roles:admin</code> middleware groups</td></tr>
+<tr><td><strong>Input Validation</strong></td><td>Form Request classes for complex validation (LoginRequest); inline validation for CRUD operations</td></tr>
+</table>
+
+<div class="warning">
+<strong>Production Checklist:</strong>
+<ul>
+<li>Set <code>APP_DEBUG=false</code> and <code>APP_ENV=production</code></li>
+<li>Use strong, unique database passwords</li>
+<li>Configure HTTPS with SSL certificate</li>
+<li>Set up proper file permissions (storage/ and bootstrap/cache/ writable)</li>
+<li>Enable Laravel's route, config, and view caching</li>
+<li>Set Stripe keys to live mode keys</li>
+<li>Configure proper backup strategy for database and uploads</li>
+</ul>
+</div>
+
+
+<!-- ═══════════════════ APPENDIX A ═══════════════════ -->
+<div class="page-break"></div>
+<h1>Appendix A — Complete Route Summary</h1>
+
+<table>
+<tr><th>#</th><th>Method</th><th>URL</th><th>Name</th><th>Middleware</th></tr>
+<tr class="tbl-section"><td colspan="5">Public Routes</td></tr>
+<tr><td>1</td><td>GET</td><td>/</td><td>home</td><td>web</td></tr>
+<tr><td>2</td><td>GET</td><td>/rooms</td><td>froom.all</td><td>web</td></tr>
+<tr><td>3</td><td>GET</td><td>/room/details/{id}</td><td>—</td><td>web</td></tr>
+<tr><td>4</td><td>GET</td><td>/bookings</td><td>booking.search</td><td>web</td></tr>
+<tr><td>5</td><td>GET</td><td>/check_room_availability</td><td>check_room_availability</td><td>web</td></tr>
+<tr><td>6</td><td>GET</td><td>/blog</td><td>blog.list</td><td>web</td></tr>
+<tr><td>7</td><td>GET</td><td>/blog/details/{slug}</td><td>—</td><td>web</td></tr>
+<tr><td>8</td><td>GET</td><td>/gallery</td><td>show.gallery</td><td>web</td></tr>
+<tr><td>9</td><td>GET</td><td>/contact</td><td>contact.us</td><td>web</td></tr>
+<tr><td>10</td><td>POST</td><td>/store/contact</td><td>store.contact</td><td>web</td></tr>
+
+<tr class="tbl-section"><td colspan="5">User Routes (auth, user)</td></tr>
+<tr><td>11</td><td>GET</td><td>/profile</td><td>user.profile</td><td>auth, user</td></tr>
+<tr><td>12</td><td>POST</td><td>/profile/store</td><td>profile.store</td><td>auth, user</td></tr>
+<tr><td>13</td><td>GET</td><td>/checkout</td><td>checkout</td><td>auth, user</td></tr>
+<tr><td>14</td><td>POST</td><td>/booking/store</td><td>user_booking_store</td><td>auth, user</td></tr>
+<tr><td>15</td><td>POST</td><td>/checkout/store</td><td>checkout.store</td><td>auth, user</td></tr>
+<tr><td>16</td><td>GET</td><td>/user/booking</td><td>user.booking</td><td>auth, user</td></tr>
+<tr><td>17</td><td>GET</td><td>/user/invoice/{id}</td><td>user.invoice</td><td>auth, user</td></tr>
+<tr><td>18</td><td>POST</td><td>/store/review</td><td>store.review</td><td>auth, user</td></tr>
+
+<tr class="tbl-section"><td colspan="5">Admin Routes (auth, roles:admin) — Selected</td></tr>
+<tr><td>19</td><td>GET</td><td>/admin/dashboard</td><td>admin.dashboard</td><td>auth, roles:admin</td></tr>
+<tr><td>20</td><td>GET</td><td>/booking/list</td><td>booking.list</td><td>auth, roles:admin</td></tr>
+<tr><td>21</td><td>GET</td><td>/room/type/list</td><td>room.type.list</td><td>auth, roles:admin</td></tr>
+<tr><td>22</td><td>GET</td><td>/view/room/list</td><td>view.room.list</td><td>auth, roles:admin</td></tr>
+<tr><td>23</td><td>GET</td><td>/all/admin</td><td>all.admin</td><td>auth, roles:admin</td></tr>
+<tr><td>24</td><td>GET</td><td>/all/permission</td><td>all.permission</td><td>auth, roles:admin</td></tr>
+<tr><td>25</td><td>GET</td><td>/all/roles</td><td>all.roles</td><td>auth, roles:admin</td></tr>
+<tr><td>26</td><td>GET</td><td>/homepage/manage</td><td>homepage.manage</td><td>auth, roles:admin</td></tr>
+<tr><td>27</td><td>GET</td><td>/booking/report</td><td>booking.report</td><td>auth, roles:admin</td></tr>
+<tr><td>28</td><td>GET</td><td>/all/gallery</td><td>all.gallery</td><td>auth, roles:admin</td></tr>
+<tr><td>29</td><td>GET</td><td>/rate/seasons</td><td>all.seasons</td><td>auth, roles:admin</td></tr>
+<tr><td>30</td><td>GET</td><td>/all/review</td><td>all.review</td><td>auth, roles:admin</td></tr>
+</table>
+<p style="font-size:9pt; color:#6b7280; font-style:italic;">Note: This is a selected subset. The full system contains 200+ routes. See routes/web.php for the complete listing.</p>
+
+
+<!-- ═══════════════════ APPENDIX B ═══════════════════ -->
+<div class="page-break"></div>
+<h1>Appendix B — Database Schema Summary</h1>
+
+<table>
+<tr><th>#</th><th>Table Name</th><th>Primary Purpose</th><th>Total Columns</th><th>Key Relations</th></tr>
+<tr class="tbl-section"><td colspan="5">Authentication &amp; Users</td></tr>
+<tr><td>1</td><td>users</td><td>All user accounts (admin + guest)</td><td>14</td><td>→ bookings, reviews</td></tr>
+<tr><td>2</td><td>password_reset_tokens</td><td>Password reset requests</td><td>3</td><td>—</td></tr>
+<tr><td>3</td><td>personal_access_tokens</td><td>API authentication tokens</td><td>10</td><td>morphTo</td></tr>
+
+<tr class="tbl-section"><td colspan="5">Room System</td></tr>
+<tr><td>4</td><td>room_types</td><td>Room/Hall categories</td><td>7</td><td>→ rooms</td></tr>
+<tr><td>5</td><td>rooms</td><td>Room configurations &amp; pricing</td><td>18</td><td>→ room_numbers, facilities, multi_images, bookings</td></tr>
+<tr><td>6</td><td>room_numbers</td><td>Physical room instances</td><td>8</td><td>← rooms, ← room_types</td></tr>
+<tr><td>7</td><td>facilities</td><td>Room amenities</td><td>4</td><td>← rooms</td></tr>
+<tr><td>8</td><td>facility_options</td><td>Global amenity catalog</td><td>4</td><td>—</td></tr>
+<tr><td>9</td><td>multi_images</td><td>Room photo gallery</td><td>4</td><td>← rooms</td></tr>
+
+<tr class="tbl-section"><td colspan="5">Booking &amp; Payments</td></tr>
+<tr><td>10</td><td>bookings</td><td>Reservation records</td><td>35+</td><td>← users, ← rooms, → payment_transactions</td></tr>
+<tr><td>11</td><td>room_booked_dates</td><td>Calendar blocking</td><td>6</td><td>← bookings, ← rooms</td></tr>
+<tr><td>12</td><td>booking_room_lists</td><td>Room assignments</td><td>5</td><td>← bookings, ← rooms</td></tr>
+<tr><td>13</td><td>payment_transactions</td><td>Payment audit trail</td><td>14</td><td>← bookings</td></tr>
+<tr><td>14</td><td>booking_extras</td><td>Add-on services</td><td>6</td><td>← bookings</td></tr>
+
+<tr class="tbl-section"><td colspan="5">Pricing</td></tr>
+<tr><td>15</td><td>rate_seasons</td><td>Seasonal pricing periods</td><td>7</td><td>→ room_rate_overrides</td></tr>
+<tr><td>16</td><td>room_rate_overrides</td><td>Per-room seasonal prices</td><td>5</td><td>← rooms, ← rate_seasons</td></tr>
+
+<tr class="tbl-section"><td colspan="5">Content</td></tr>
+<tr><td>17</td><td>blog_categories</td><td>Blog taxonomy</td><td>4</td><td>→ blog_posts</td></tr>
+<tr><td>18</td><td>blog_posts</td><td>Blog articles</td><td>8</td><td>← blog_categories, ← users</td></tr>
+<tr><td>19</td><td>comments</td><td>Blog comments</td><td>6</td><td>← users, ← blog_posts</td></tr>
+<tr><td>20</td><td>reviews</td><td>Guest reviews</td><td>10</td><td>← bookings, ← users, ← rooms</td></tr>
+<tr><td>21</td><td>testimonials</td><td>Testimonial cards</td><td>6</td><td>—</td></tr>
+<tr><td>22</td><td>galleries</td><td>Photo gallery</td><td>3</td><td>—</td></tr>
+<tr><td>23</td><td>contacts</td><td>Contact form submissions</td><td>7</td><td>—</td></tr>
+<tr><td>24</td><td>teams</td><td>Staff members</td><td>6</td><td>—</td></tr>
+<tr><td>25</td><td>book_areas</td><td>Booking promo banner</td><td>7</td><td>—</td></tr>
+
+<tr class="tbl-section"><td colspan="5">Homepage CMS</td></tr>
+<tr><td>26</td><td>hero_slides</td><td>Hero carousel</td><td>6</td><td>—</td></tr>
+<tr><td>27</td><td>hero_stats</td><td>Counter stats</td><td>5</td><td>—</td></tr>
+<tr><td>28</td><td>about_pillars</td><td>About section pillars</td><td>5</td><td>—</td></tr>
+<tr><td>29</td><td>amenities</td><td>Amenity cards</td><td>7</td><td>—</td></tr>
+<tr><td>30</td><td>featured_amenities</td><td>Featured amenity icons</td><td>6</td><td>—</td></tr>
+<tr><td>31</td><td>dining_items</td><td>Dining menu</td><td>5</td><td>—</td></tr>
+<tr><td>32</td><td>event_features</td><td>Event features</td><td>5</td><td>—</td></tr>
+<tr><td>33</td><td>hotel_infos</td><td>Hotel info cards</td><td>7</td><td>—</td></tr>
+<tr><td>34</td><td>home_sections</td><td>Section content &amp; toggle</td><td>13</td><td>—</td></tr>
+
+<tr class="tbl-section"><td colspan="5">System</td></tr>
+<tr><td>35</td><td>site_settings</td><td>Site config</td><td>9</td><td>—</td></tr>
+<tr><td>36</td><td>smtp_settings</td><td>Mail config</td><td>9</td><td>—</td></tr>
+<tr><td>37</td><td>activity_logs</td><td>Admin audit trail</td><td>8</td><td>← users, morphTo</td></tr>
+<tr><td>38</td><td>notifications</td><td>Laravel notifications</td><td>6</td><td>morphTo</td></tr>
+<tr><td>39-42</td><td>permissions, roles, model_has_*, role_has_*</td><td>Spatie RBAC</td><td>—</td><td>Pivot tables</td></tr>
+</table>
+
+
+<!-- ═══════════════════ APPENDIX C ═══════════════════ -->
+<div class="page-break"></div>
+<h1>Appendix C — Model Relationship Map</h1>
+
+<div style="text-align:center; margin: 20pt 0;">
+<table style="width:100%; border:2px solid #0c2340;">
+<tr><td colspan="7" style="background:#0c2340; color:#fff; text-align:center; font-weight:700; padding:10pt; font-size:13pt;">ELOQUENT MODEL RELATIONSHIP DIAGRAM</td></tr>
+
+<tr style="text-align:center">
+<td colspan="7" style="background:#c9a84c; color:#0c2340; font-weight:600; padding:4pt; font-size:9pt;">─── CORE ENTITIES ───</td>
+</tr>
+
+<tr style="text-align:center; font-size:9pt;">
+<td style="background:#e8f0ff; padding:8pt; border:2px solid #0c4da2;">
+<strong>User</strong><br>
+hasMany → Booking<br>
+hasMany → Review<br>
+hasMany → ActivityLog<br>
+trait: HasRoles
+</td>
+<td style="padding:4pt; color:#c9a84c; font-size:14pt;">⟷</td>
+<td style="background:#fdf8ed; padding:8pt; border:2px solid #c9a84c;">
+<strong>Booking</strong><br>
+belongsTo → User<br>
+belongsTo → Room<br>
+hasMany → BookingRoomList<br>
+hasMany → RoomBookedDate<br>
+hasMany → PaymentTransaction<br>
+hasMany → BookingExtra<br>
+hasOne → Review
+</td>
+<td style="padding:4pt; color:#c9a84c; font-size:14pt;">⟷</td>
+<td style="background:#e8f0ff; padding:8pt; border:2px solid #0c4da2;">
+<strong>Room</strong><br>
+belongsTo → RoomType<br>
+hasMany → RoomNumber<br>
+hasMany → Facility<br>
+hasMany → MultiImage<br>
+hasMany → Booking<br>
+hasMany → Review<br>
+hasMany → RoomRateOverride
+</td>
+<td style="padding:4pt; color:#c9a84c; font-size:14pt;">⟷</td>
+<td style="background:#e8f0ff; padding:8pt; border:2px solid #0c4da2;">
+<strong>RoomType</strong><br>
+hasMany → Room<br>
+hasMany → RoomNumber
+</td>
+</tr>
+
+<tr style="text-align:center">
+<td colspan="7" style="background:#c9a84c; color:#0c2340; font-weight:600; padding:4pt; font-size:9pt; margin-top:8pt;">─── SUPPORTING ENTITIES ───</td>
+</tr>
+
+<tr style="text-align:center; font-size:9pt;">
+<td style="background:#f0f4ff; padding:6pt;">
+<strong>Review</strong><br>
+→ Booking<br>
+→ User<br>
+→ Room
+</td>
+<td style="background:#f0f4ff; padding:6pt;">
+<strong>PaymentTransaction</strong><br>
+→ Booking<br>
+→ User (verifier)
+</td>
+<td style="background:#f0f4ff; padding:6pt;">
+<strong>RoomNumber</strong><br>
+→ Room<br>
+→ RoomType<br>
+↔ BookingRoomList
+</td>
+<td style="background:#f0f4ff; padding:6pt;">
+<strong>RateSeason</strong><br>
+↔ RoomRateOverride
+</td>
+<td style="background:#f0f4ff; padding:6pt;">
+<strong>BlogPost</strong><br>
+→ BlogCategory<br>
+→ User
+</td>
+<td style="background:#f0f4ff; padding:6pt;">
+<strong>Comment</strong><br>
+→ User<br>
+→ BlogPost
+</td>
+<td style="background:#f0f4ff; padding:6pt;">
+<strong>ActivityLog</strong><br>
+→ User<br>
+morphTo → model
+</td>
+</tr>
+</table>
+</div>
+<p class="fig-caption">Figure C.1 — Complete Eloquent model relationship diagram</p>
+
+
+<!-- ═══════════════════ END MARKERS ═══════════════════ -->
+<div class="page-break"></div>
+<div style="text-align:center; padding-top:200pt;">
+    <div style="font-size:36pt; font-weight:700; color:#0c2340; letter-spacing:3pt;">LUCERNA</div>
+    <div style="font-size:12pt; color:#c9a84c; letter-spacing:2pt; font-weight:600;">KABGAYI HÔTEL</div>
+    <hr class="cover-line">
+    <p style="font-size:11pt; color:#6b7280;">End of Documentation</p>
+    <p style="font-size:9pt; color:#9ca3af;">Generated on {$date} &middot; Version 2.0</p>
+    <p style="font-size:9pt; color:#9ca3af;">© {$year} Lucerna Kabgayi Hôtel. All rights reserved.</p>
+</div>
+
+BODY;
+
+// ═══════════════════════════════════════════════════════════════════════
+// WRITE THE FILE
+// ═══════════════════════════════════════════════════════════════════════
+$html = wordDoc('Lucerna Kabgayi Hôtel — System Documentation', $body);
+file_put_contents($outputFile, $html);
+
+echo "✅ Documentation generated successfully!\n";
+echo "   File: " . realpath($outputFile) . "\n";
+echo "   Size: " . number_format(filesize($outputFile)) . " bytes\n";
+echo "   Open in Microsoft Word to view with full formatting.\n";

@@ -1,13 +1,11 @@
-@extends('frontend.main_master')
-
-@section('styles')
-@php
+<?php $__env->startSection('styles'); ?>
+<?php
     $isHall = ($roomdetails->type->type ?? 'Room') === 'Hall';
     $unitLabel = $isHall ? 'event' : 'night';
     $entityLabel = $isHall ? 'Hall' : 'Room';
     $images = [asset('upload/roomimg/'.$roomdetails->image)];
     foreach($multiImage as $mi) { $images[] = asset('upload/roomimg/multi_img/'.$mi->multi_img); }
-@endphp
+?>
 <style>
 /* ───── Design Tokens ───── */
 :root {
@@ -334,132 +332,135 @@
     .srd-other-card-img { width:100%; height:180px; }
 }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('main')
+<?php $__env->startSection('main'); ?>
 <div class="srd-container">
-    {{-- ══ Gallery Column ══ --}}
+    
     <aside class="srd-gallery-col">
         <div class="srd-main-display" id="gallery-main">
-            <span class="srd-badge"><span id="curr-idx">1</span> / {{ count($images) }}</span>
+            <span class="srd-badge"><span id="curr-idx">1</span> / <?php echo e(count($images)); ?></span>
             <button class="srd-nav-btn srd-prev" id="btn-prev" aria-label="Previous photo">&#10094;</button>
             <button class="srd-nav-btn srd-next" id="btn-next" aria-label="Next photo">&#10095;</button>
-            <img id="main-feat-img" src="{{ $images[0] }}" alt="{{ $roomdetails->type->name ?? $entityLabel }}">
+            <img id="main-feat-img" src="<?php echo e($images[0]); ?>" alt="<?php echo e($roomdetails->type->name ?? $entityLabel); ?>">
         </div>
         <div class="srd-thumb-strip" id="thumb-strip">
-            @foreach($images as $i => $src)
-            <div class="srd-thumb-item {{ $i === 0 ? 'is-active' : '' }}" data-index="{{ $i }}">
-                <img src="{{ $src }}" alt="Photo {{ $i + 1 }}">
+            <?php $__currentLoopData = $images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $src): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <div class="srd-thumb-item <?php echo e($i === 0 ? 'is-active' : ''); ?>" data-index="<?php echo e($i); ?>">
+                <img src="<?php echo e($src); ?>" alt="Photo <?php echo e($i + 1); ?>">
             </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </aside>
 
-    {{-- ══ Details Column ══ --}}
+    
     <main class="srd-details-col">
-        {{-- Room header --}}
+        
         <div class="srd-room-header">
-            <span class="srd-room-badge {{ $isHall ? 'hall' : 'room' }}">{{ $entityLabel }}</span>
-            <h1 class="srd-room-title">{{ $roomdetails->type->name ?? $entityLabel }}</h1>
+            <span class="srd-room-badge <?php echo e($isHall ? 'hall' : 'room'); ?>"><?php echo e($entityLabel); ?></span>
+            <h1 class="srd-room-title"><?php echo e($roomdetails->type->name ?? $entityLabel); ?></h1>
             <div class="srd-room-price">
-                @if($roomdetails->discount > 0)
-                    <span class="old">RwF {{ number_format($roomdetails->price,0) }}</span>
-                    RwF {{ number_format($roomdetails->price - ($roomdetails->price * $roomdetails->discount / 100),0) }}
-                @else
-                    RwF {{ number_format($roomdetails->price,0) }}
-                @endif
-                <span class="unit">/ {{ $unitLabel }}</span>
+                <?php if($roomdetails->discount > 0): ?>
+                    <span class="old">RwF <?php echo e(number_format($roomdetails->price,0)); ?></span>
+                    RwF <?php echo e(number_format($roomdetails->price - ($roomdetails->price * $roomdetails->discount / 100),0)); ?>
+
+                <?php else: ?>
+                    RwF <?php echo e(number_format($roomdetails->price,0)); ?>
+
+                <?php endif; ?>
+                <span class="unit">/ <?php echo e($unitLabel); ?></span>
             </div>
         </div>
 
-        {{-- About --}}
-        <div class="srd-section-title">About This {{ $entityLabel }}</div>
-        <div class="srd-description">{!! $roomdetails->description !!}</div>
+        
+        <div class="srd-section-title">About This <?php echo e($entityLabel); ?></div>
+        <div class="srd-description"><?php echo $roomdetails->description; ?></div>
 
-        {{-- Details grid --}}
+        
         <div class="srd-section-title">Details</div>
         <div class="srd-details-grid">
-            @if($roomdetails->room_capacity)
+            <?php if($roomdetails->room_capacity): ?>
             <div class="srd-detail-card">
                 <div class="srd-detail-label">Capacity</div>
-                <div class="srd-detail-value">{{ $roomdetails->room_capacity }} Person</div>
+                <div class="srd-detail-value"><?php echo e($roomdetails->room_capacity); ?> Person</div>
             </div>
-            @endif
-            @if($roomdetails->size)
+            <?php endif; ?>
+            <?php if($roomdetails->size): ?>
             <div class="srd-detail-card">
                 <div class="srd-detail-label">Size</div>
-                <div class="srd-detail-value">{{ $roomdetails->size }}</div>
+                <div class="srd-detail-value"><?php echo e($roomdetails->size); ?></div>
             </div>
-            @endif
-            @if($roomdetails->view)
+            <?php endif; ?>
+            <?php if($roomdetails->view): ?>
             <div class="srd-detail-card">
                 <div class="srd-detail-label">View</div>
-                <div class="srd-detail-value">{{ $roomdetails->view }}</div>
+                <div class="srd-detail-value"><?php echo e($roomdetails->view); ?></div>
             </div>
-            @endif
-            @if($roomdetails->bed_style)
+            <?php endif; ?>
+            <?php if($roomdetails->bed_style): ?>
             <div class="srd-detail-card">
                 <div class="srd-detail-label">Bed Style</div>
-                <div class="srd-detail-value">{{ $roomdetails->bed_style }}</div>
+                <div class="srd-detail-value"><?php echo e($roomdetails->bed_style); ?></div>
             </div>
-            @endif
+            <?php endif; ?>
         </div>
 
-        {{-- Facilities --}}
-        @if($facility->count())
+        
+        <?php if($facility->count()): ?>
         <div class="srd-section-title">Facilities</div>
         <div class="srd-facilities">
-            @foreach($facility as $fac)
+            <?php $__currentLoopData = $facility; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fac): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <span class="srd-fac-tag">
                 <svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
-                {{ $fac->facility_name }}
-            </span>
-            @endforeach
-        </div>
-        @endif
+                <?php echo e($fac->facility_name); ?>
 
-        {{-- ══ Booking Card ══ --}}
+            </span>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </div>
+        <?php endif; ?>
+
+        
         <div class="srd-book-card">
             <div class="srd-book-header">
-                <span class="srd-book-price-label">RwF {{ number_format($roomdetails->price,0) }}</span>
-                <span class="srd-book-unit">/ {{ $unitLabel }}</span>
+                <span class="srd-book-price-label">RwF <?php echo e(number_format($roomdetails->price,0)); ?></span>
+                <span class="srd-book-unit">/ <?php echo e($unitLabel); ?></span>
             </div>
             <div class="srd-book-body">
-                <form action="{{ route('user_booking_store', $roomdetails->id) }}" method="post" id="bk_form">
-                    @csrf
-                    <input type="hidden" name="room_id" value="{{ $roomdetails->id }}">
-                    <input type="hidden" id="room_price" value="{{ $roomdetails->price }}">
-                    <input type="hidden" id="discount_p" value="{{ $roomdetails->discount }}">
-                    <input type="hidden" id="total_adult" value="{{ $roomdetails->total_adult }}">
+                <form action="<?php echo e(route('user_booking_store', $roomdetails->id)); ?>" method="post" id="bk_form">
+                    <?php echo csrf_field(); ?>
+                    <input type="hidden" name="room_id" value="<?php echo e($roomdetails->id); ?>">
+                    <input type="hidden" id="room_price" value="<?php echo e($roomdetails->price); ?>">
+                    <input type="hidden" id="discount_p" value="<?php echo e($roomdetails->discount); ?>">
+                    <input type="hidden" id="total_adult" value="<?php echo e($roomdetails->total_adult); ?>">
                     <input type="hidden" name="available_room" id="available_room">
 
                     <div class="srd-date-row">
                         <div class="srd-field">
                             <label>Check In</label>
                             <input type="text" name="check_in" id="check_in" required autocomplete="off"
-                                   placeholder="Select date" value="{{ old('check_in') ? date('Y-m-d', strtotime(old('check_in'))) : '' }}">
+                                   placeholder="Select date" value="<?php echo e(old('check_in') ? date('Y-m-d', strtotime(old('check_in'))) : ''); ?>">
                         </div>
                         <div class="srd-field">
                             <label>Check Out</label>
                             <input type="text" name="check_out" id="check_out" required autocomplete="off"
-                                   placeholder="Select date" value="{{ old('check_out') ? date('Y-m-d', strtotime(old('check_out'))) : '' }}">
+                                   placeholder="Select date" value="<?php echo e(old('check_out') ? date('Y-m-d', strtotime(old('check_out'))) : ''); ?>">
                         </div>
                     </div>
 
                     <div style="display:none">
                         <select name="persion" id="nmbr_person">
-                            @for($i = 1; $i <= 4; $i++)
-                            <option {{ old('persion') == $i ? 'selected' : '' }} value="0{{ $i }}">0{{ $i }}</option>
-                            @endfor
+                            <?php for($i = 1; $i <= 4; $i++): ?>
+                            <option <?php echo e(old('persion') == $i ? 'selected' : ''); ?> value="0<?php echo e($i); ?>">0<?php echo e($i); ?></option>
+                            <?php endfor; ?>
                         </select>
                     </div>
 
                     <div class="srd-field">
-                        <label>Number of {{ $entityLabel }}s</label>
+                        <label>Number of <?php echo e($entityLabel); ?>s</label>
                         <select name="number_of_rooms" id="select_room" class="number_of_rooms">
-                            @for($i = 1; $i <= 5; $i++)
-                            <option value="0{{ $i }}">0{{ $i }}</option>
-                            @endfor
+                            <?php for($i = 1; $i <= 5; $i++): ?>
+                            <option value="0<?php echo e($i); ?>">0<?php echo e($i); ?></option>
+                            <?php endfor; ?>
                         </select>
                     </div>
 
@@ -467,85 +468,85 @@
 
                     <div class="srd-pricing-table" id="pricing_table" style="display:none">
                         <div class="srd-pricing-row">
-                            <span>Rate / {{ $unitLabel }}</span>
-                            <span>RwF {{ number_format($roomdetails->price,0) }}</span>
+                            <span>Rate / <?php echo e($unitLabel); ?></span>
+                            <span>RwF <?php echo e(number_format($roomdetails->price,0)); ?></span>
                         </div>
                         <div class="srd-pricing-row">
                             <span>Nights</span>
                             <span class="t_nights">0</span>
                         </div>
                         <div class="srd-pricing-row">
-                            <span>{{ $entityLabel }}s</span>
+                            <span><?php echo e($entityLabel); ?>s</span>
                             <span class="t_rooms">1</span>
                         </div>
                         <div class="srd-pricing-row">
                             <span>Subtotal</span>
                             <span class="t_subtotal">RwF 0</span>
                         </div>
-                        @if($roomdetails->discount > 0)
+                        <?php if($roomdetails->discount > 0): ?>
                         <div class="srd-pricing-row">
-                            <span>Discount ({{ $roomdetails->discount }}%)</span>
+                            <span>Discount (<?php echo e($roomdetails->discount); ?>%)</span>
                             <span class="t_discount" style="color:#22c55e">-RwF 0</span>
                         </div>
-                        @endif
+                        <?php endif; ?>
                         <div class="srd-pricing-total">
                             <span>Total</span>
                             <span class="t_g_total">RwF 0</span>
                         </div>
                     </div>
 
-                    @auth
+                    <?php if(auth()->guard()->check()): ?>
                     <button type="submit" class="srd-btn-book primary" id="book_now_btn" disabled>Book Now</button>
-                    @else
-                    <a href="{{ route('login') }}?redirect={{ urlencode(url()->full()) }}" class="srd-btn-book primary">Login to Book</a>
-                    @endauth
+                    <?php else: ?>
+                    <a href="<?php echo e(route('login')); ?>?redirect=<?php echo e(urlencode(url()->full())); ?>" class="srd-btn-book primary">Login to Book</a>
+                    <?php endif; ?>
                 </form>
             </div>
         </div>
     </main>
 </div>
 
-{{-- ── Other Rooms ── --}}
-@if($otherRooms->count())
+
+<?php if($otherRooms->count()): ?>
 <div class="srd-other">
-    <div class="srd-other-title">Other {{ $entityLabel }}s</div>
+    <div class="srd-other-title">Other <?php echo e($entityLabel); ?>s</div>
     <div class="srd-other-grid">
-        @foreach($otherRooms as $item)
-        <a class="srd-other-card" href="{{ route('search_room_details', $item->id.'?check_in='.old('check_in').'&check_out='.old('check_out').'&persion='.old('persion')) }}">
+        <?php $__currentLoopData = $otherRooms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <a class="srd-other-card" href="<?php echo e(route('search_room_details', $item->id.'?check_in='.old('check_in').'&check_out='.old('check_out').'&persion='.old('persion'))); ?>">
             <div class="srd-other-card-img">
-                <img src="{{ asset('upload/roomimg/'.$item->image) }}" alt="{{ $item->type->name ?? 'Room' }}" loading="lazy">
+                <img src="<?php echo e(asset('upload/roomimg/'.$item->image)); ?>" alt="<?php echo e($item->type->name ?? 'Room'); ?>" loading="lazy">
             </div>
             <div class="srd-other-card-body">
-                <div class="srd-other-card-name">{{ $item->type->name ?? 'Room' }}</div>
-                <div class="srd-other-card-price">RwF {{ number_format($item->price,0) }} / {{ $unitLabel }}</div>
+                <div class="srd-other-card-name"><?php echo e($item->type->name ?? 'Room'); ?></div>
+                <div class="srd-other-card-price">RwF <?php echo e(number_format($item->price,0)); ?> / <?php echo e($unitLabel); ?></div>
                 <div class="srd-other-card-meta">
-                    @if($item->room_capacity) {{ $item->room_capacity }} Person @endif
-                    @if($item->bed_style) &middot; {{ $item->bed_style }} @endif
+                    <?php if($item->room_capacity): ?> <?php echo e($item->room_capacity); ?> Person <?php endif; ?>
+                    <?php if($item->bed_style): ?> &middot; <?php echo e($item->bed_style); ?> <?php endif; ?>
                 </div>
             </div>
         </a>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 </div>
-@endif
+<?php endif; ?>
 
-{{-- ══ Lightbox ══ --}}
+
 <div id="lightbox" class="srd-lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
-    <span class="srd-lb-badge"><span id="lb-idx">1</span> / {{ count($images) }}</span>
+    <span class="srd-lb-badge"><span id="lb-idx">1</span> / <?php echo e(count($images)); ?></span>
     <button class="srd-lb-close" id="lb-close" aria-label="Close lightbox">&times;</button>
     <button class="srd-lb-nav srd-lb-prev" id="lb-prev" aria-label="Previous photo">&#10094;</button>
     <button class="srd-lb-nav srd-lb-next" id="lb-next" aria-label="Next photo">&#10095;</button>
     <img id="lb-img" src="" alt="Zoomed photo">
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script>
 (function(){
     'use strict';
 
     /* ── Gallery Data ── */
-    var photos = @json($images);
+    var photos = <?php echo json_encode($images, 15, 512) ?>;
     var idx = 0;
     var lbOpen = false;
 
@@ -660,7 +661,7 @@
     ════════════════════════════════════ */
     var ciField = document.getElementById('check_in');
     var coField = document.getElementById('check_out');
-    var roomIdVal = "{{ $room_id }}";
+    var roomIdVal = "<?php echo e($room_id); ?>";
 
     new Pikaday({ field: ciField, format: 'YYYY-MM-DD', minDate: new Date(), onSelect: function(){ checkDates(); } });
     new Pikaday({ field: coField, format: 'YYYY-MM-DD', minDate: new Date(), onSelect: function(){ checkDates(); } });
@@ -674,7 +675,7 @@
     }
 
     function getAvailability(check_in, check_out, room_id){
-        var url = "{{ route('check_room_availability') }}" +
+        var url = "<?php echo e(route('check_room_availability')); ?>" +
             '?room_id=' + encodeURIComponent(room_id) +
             '&check_in=' + encodeURIComponent(check_in) +
             '&check_out=' + encodeURIComponent(check_out);
@@ -684,7 +685,7 @@
             .then(function(data){
                 var el = document.querySelector('.available_room');
                 el.classList.add('success');
-                el.innerHTML = '&#10003; ' + data.available_room + ' {{ $entityLabel }}(s) available';
+                el.innerHTML = '&#10003; ' + data.available_room + ' <?php echo e($entityLabel); ?>(s) available';
                 document.getElementById('available_room').value = data.available_room;
                 var btn = document.getElementById('book_now_btn');
                 if(btn) btn.disabled = false;
@@ -715,9 +716,11 @@
         var selectRoom = parseInt(document.getElementById('select_room').value);
         if(selectRoom > avRoom){
             e.preventDefault();
-            alert('Sorry, only ' + avRoom + ' {{ $entityLabel }}(s) available. Please select fewer.');
+            alert('Sorry, only ' + avRoom + ' <?php echo e($entityLabel); ?>(s) available. Please select fewer.');
         }
     });
 })();
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('frontend.main_master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\workspace\htdocs\lucerna\resources\views/frontend/room/search_room_details.blade.php ENDPATH**/ ?>

@@ -256,7 +256,7 @@ class AdminController extends Controller
         $user->phone = $request->phone;
         $user->address = $request->address;
         $user->password =  Hash::make($request->password);
-        $user->status = 'active';
+        $user->status = 'inactive';
         $user->save();
 
         $user->assignRole('admin');
@@ -265,7 +265,7 @@ class AdminController extends Controller
         }
 
         $notification = array(
-            'message' => 'Admin User Created Successfully',
+            'message' => 'Admin User Created Successfully. Account needs verification before login.',
             'alert-type' => 'success'
         );
 
@@ -289,7 +289,6 @@ class AdminController extends Controller
         $user->email = $request->email;
         $user->phone = $request->phone;
         $user->address = $request->address; 
-        $user->status = 'active';
         $user->save();
 
         $user->roles()->detach();
@@ -304,6 +303,24 @@ class AdminController extends Controller
         );
 
         return redirect()->route('all.admin')->with($notification); 
+
+    }// End Method 
+
+
+    public function ToggleAdminStatus($id){
+
+        $user = User::findOrFail($id);
+        $user->status = ($user->status === 'active') ? 'inactive' : 'active';
+        $user->save();
+
+        $statusLabel = ($user->status === 'active') ? 'verified' : 'unverified';
+
+        $notification = array(
+            'message' => 'Admin User ' . $user->name . ' is now ' . $statusLabel,
+            'alert-type' => 'success'
+        );
+
+        return redirect()->back()->with($notification);
 
     }// End Method 
 

@@ -1,6 +1,4 @@
-@extends('frontend.main_master')
-
-@section('styles')
+<?php $__env->startSection('styles'); ?>
 <style>
 /* ───── Gallery Design Tokens ───── */
 :root {
@@ -282,58 +280,59 @@
     .srd-lb-next { right: 6px; }
 }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('main')
-@php
+<?php $__env->startSection('main'); ?>
+<?php
     $images = [asset('upload/roomimg/'.$roomdetails->image)];
     foreach($multiImage as $mi) { $images[] = asset('upload/roomimg/multi_img/'.$mi->multi_img); }
-@endphp
+?>
 
 <div class="srd-container">
-    {{-- ══ Gallery Column ══ --}}
+    
     <aside class="srd-gallery-column">
         <div class="srd-main-display" id="gallery-main">
-            <span class="srd-badge"><span id="curr-idx">1</span> / {{ count($images) }}</span>
+            <span class="srd-badge"><span id="curr-idx">1</span> / <?php echo e(count($images)); ?></span>
             <button class="srd-nav-btn srd-prev" id="btn-prev" aria-label="Previous photo">&#10094;</button>
             <button class="srd-nav-btn srd-next" id="btn-next" aria-label="Next photo">&#10095;</button>
-            <img id="main-feat-img" src="{{ $images[0] }}" alt="{{ $roomdetails->type->name }}">
+            <img id="main-feat-img" src="<?php echo e($images[0]); ?>" alt="<?php echo e($roomdetails->type->name); ?>">
         </div>
 
         <div class="srd-thumb-strip" id="thumb-strip">
-            @foreach($images as $i => $src)
-            <div class="srd-thumb-item {{ $i === 0 ? 'is-active' : '' }}" data-index="{{ $i }}">
-                <img src="{{ $src }}" alt="Photo {{ $i + 1 }}">
+            <?php $__currentLoopData = $images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $src): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <div class="srd-thumb-item <?php echo e($i === 0 ? 'is-active' : ''); ?>" data-index="<?php echo e($i); ?>">
+                <img src="<?php echo e($src); ?>" alt="Photo <?php echo e($i + 1); ?>">
             </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </aside>
 
-    {{-- ══ Details Column ══ --}}
+    
     <main class="srd-details-column">
-        <h1 style="font-family: var(--g-serif); font-size: 48px; color: var(--g-navy);">{{ $roomdetails->type->name }}</h1>
+        <h1 style="font-family: var(--g-serif); font-size: 48px; color: var(--g-navy);"><?php echo e($roomdetails->type->name); ?></h1>
         <hr class="my-4">
         <div class="room-desc" style="font-family: var(--g-sans); line-height: 1.8; color: #555;">
-            {!! $roomdetails->description !!}
+            <?php echo $roomdetails->description; ?>
+
         </div>
     </main>
 </div>
 
-{{-- ══ Full-Screen Lightbox ══ --}}
+
 <div id="lightbox" class="srd-lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
-    <span class="srd-lb-badge"><span id="lb-idx">1</span> / {{ count($images) }}</span>
+    <span class="srd-lb-badge"><span id="lb-idx">1</span> / <?php echo e(count($images)); ?></span>
     <button class="srd-lb-close" id="lb-close" aria-label="Close lightbox">&times;</button>
     <button class="srd-lb-nav srd-lb-prev" id="lb-prev" aria-label="Previous photo">&#10094;</button>
     <button class="srd-lb-nav srd-lb-next" id="lb-next" aria-label="Next photo">&#10095;</button>
     <img id="lb-img" src="" alt="Zoomed photo">
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     /* ── Data ── */
-    var photos = @json($images);
+    var photos = <?php echo json_encode($images, 15, 512) ?>;
     var idx = 0;
     var lbOpen = false;
 
@@ -461,4 +460,5 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('frontend.main_master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\workspace\htdocs\lucerna\resources\views/frontend/room/room_details.blade.php ENDPATH**/ ?>

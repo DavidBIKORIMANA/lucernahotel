@@ -38,7 +38,8 @@
                             <th>Name </th> 
                             <th>Email </th>
                             <th>Phone </th>
-                            <th>Role </th> 
+                            <th>Role </th>
+                            <th>Status</th> 
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -55,8 +56,16 @@
                  <span class="badge badge-pill bg-danger">{{ $role->name }}</span>
              @endforeach   
             
+            </td>
+            <td>
+                @if($item->status === 'active')
+                    <span class="badge bg-success">Verified</span>
+                @else
+                    <span class="badge bg-warning text-dark">Unverified</span>
+                @endif
             </td>  
             <td>
+<a href="{{ route('toggle.admin.status',$item->id) }}" class="btn btn-{{ $item->status === 'active' ? 'secondary' : 'success' }} px-3 radius-30">{{ $item->status === 'active' ? 'Unverify' : 'Verify' }}</a>
 <a href="{{ route('edit.admin',$item->id) }}" class="btn btn-warning px-3 radius-30"> Edit</a>
 <a href="{{ route('delete.admin',$item->id) }}" class="btn btn-danger px-3 radius-30" id="delete"> Delete</a>
 

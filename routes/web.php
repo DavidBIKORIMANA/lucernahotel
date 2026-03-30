@@ -224,6 +224,7 @@ Route::middleware(['auth','roles:admin'])->group(function(){
       Route::get('/edit/admin/{id}', 'EditAdmin')->name('edit.admin');
       Route::post('/update/admin/{id}', 'UpdateAdmin')->name('update.admin');
       Route::get('/delete/admin/{id}', 'DeleteAdmin')->name('delete.admin');
+      Route::get('/toggle/admin/status/{id}', 'ToggleAdminStatus')->name('toggle.admin.status');
    });
    /// Homepage Content All Route
    Route::controller(HomepageController::class)->group(function(){
