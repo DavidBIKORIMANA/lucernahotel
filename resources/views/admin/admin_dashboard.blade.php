@@ -17,7 +17,7 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-  <title>{{ config('app.name','Grand Hotel') }} — Admin</title>
+  <title>{{ config('app.name','Lucerna') }} — Admin</title>
 
   <style>
   /* ══════════════════════════════════════════════════════
@@ -683,7 +683,7 @@
         </svg>
       </div>
       <div>
-        <div class="brand-name">{{ config('app.name','Grand Hotel') }}</div>
+        <div class="brand-name">{{ config('app.name','Lucerna') }}</div>
         <div class="brand-sub">Admin Panel</div>
       </div>
     </div>
@@ -732,6 +732,47 @@
         @php $pendingReviews = App\Models\Review::where('is_approved',false)->count(); @endphp
         @if($pendingReviews > 0)<span class="nav-badge">{{ $pendingReviews }}</span>@endif
       </a>
+
+      <div class="nav-label">Content</div>
+
+      <div class="nav-group {{ request()->routeIs('homepage.manage','homepage.sections','all.hero.slides','add.hero.slide','edit.hero.slide','all.hero.stats','add.hero.stat','edit.hero.stat','all.about.pillars','add.about.pillar','edit.about.pillar','all.amenities','add.amenity','edit.amenity','all.featured.amenities','add.featured.amenity','edit.featured.amenity','all.dining.items','add.dining.item','edit.dining.item','all.event.features','add.event.feature','edit.event.feature','all.hotel.info','add.hotel.info','edit.hotel.info','homepage.site.settings') ? 'open' : '' }}" onclick="toggleGroup(this)">
+        <div class="nav-group-toggle">
+          <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span class="nav-text">Homepage Content</span>
+          <svg class="nav-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="nav-group-children">
+          <a class="nav-sub-item" href="{{ route('homepage.manage') }}"><span class="nav-sub-dot"></span>Dashboard</a>
+          <a class="nav-sub-item" href="{{ route('homepage.sections') }}"><span class="nav-sub-dot"></span>Sections</a>
+          <a class="nav-sub-item" href="{{ route('all.hero.slides') }}"><span class="nav-sub-dot"></span>Hero Slides</a>
+          <a class="nav-sub-item" href="{{ route('all.hero.stats') }}"><span class="nav-sub-dot"></span>Hero Stats</a>
+          <a class="nav-sub-item" href="{{ route('all.about.pillars') }}"><span class="nav-sub-dot"></span>About Pillars</a>
+          <a class="nav-sub-item" href="{{ route('all.amenities') }}"><span class="nav-sub-dot"></span>Amenities</a>
+          <a class="nav-sub-item" href="{{ route('all.featured.amenities') }}"><span class="nav-sub-dot"></span>Featured Amenities</a>
+          <a class="nav-sub-item" href="{{ route('all.dining.items') }}"><span class="nav-sub-dot"></span>Dining Items</a>
+          <a class="nav-sub-item" href="{{ route('all.event.features') }}"><span class="nav-sub-dot"></span>Event Features</a>
+          <a class="nav-sub-item" href="{{ route('all.hotel.info') }}"><span class="nav-sub-dot"></span>Hotel Info</a>
+          <a class="nav-sub-item" href="{{ route('homepage.site.settings') }}"><span class="nav-sub-dot"></span>Site Settings</a>
+        </div>
+      </div>
+
+      <a class="nav-item {{ request()->routeIs('all.facility.options','add.facility.option','edit.facility.option') ? 'active' : '' }}" href="{{ route('all.facility.options') }}">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        <span class="nav-text">Facilities</span>
+      </a>
+
+      <div class="nav-group {{ request()->routeIs('blog.category','all.blog.post','add.blog.post','edit.blog.post') ? 'open' : '' }}" onclick="toggleGroup(this)">
+        <div class="nav-group-toggle">
+          <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          <span class="nav-text">Blog</span>
+          <svg class="nav-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="nav-group-children">
+          <a class="nav-sub-item" href="{{ route('blog.category') }}"><span class="nav-sub-dot"></span>Categories</a>
+          <a class="nav-sub-item" href="{{ route('all.blog.post') }}"><span class="nav-sub-dot"></span>All Posts</a>
+          <a class="nav-sub-item" href="{{ route('add.blog.post') }}"><span class="nav-sub-dot"></span>Add Post</a>
+        </div>
+      </div>
 
       <div class="nav-label">Operations</div>
 
@@ -850,7 +891,7 @@
         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </div>
 
-      <div class="header-title">Grand <span>Hotel</span></div>
+      <div class="header-title">Lucerna <span>Hotel</span></div>
 
       <div class="search-wrap">
         <svg class="s-ico" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -939,7 +980,7 @@
 
     {{-- ── FOOTER ── --}}
     <footer class="admin-footer">
-      © {{ date('Y') }} <span>{{ config('app.name','Grand Hotel') }}</span> — All rights reserved.
+      © {{ date('Y') }} <span>{{ config('app.name','Lucerna') }}</span> — All rights reserved.
       Crafted with care for luxury hospitality.
     </footer>
 

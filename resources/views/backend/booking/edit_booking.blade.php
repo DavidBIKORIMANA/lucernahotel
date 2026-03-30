@@ -433,7 +433,7 @@
                         <tbody>
                             @foreach($transactions as $txn)
                             <tr>
-                                <td>{{ $txn->created_at->format('d/m/Y H:i') }}</td>
+                                <td>{{ $txn->created_at->format('d/m/Y') }}</td>
                                 <td>{{ $txn->method_label }}</td>
                                 <td>{{ number_format($txn->amount) }} {{ $txn->currency }}</td>
                                 <td>

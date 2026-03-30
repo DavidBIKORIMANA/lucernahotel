@@ -119,7 +119,7 @@
 
                                 <td>
                                     Invoice #: {{ $editData->code }}<br />
-                                    Created at: {{ $editData->created_at }}<br />
+                                    Created at: {{ \Carbon\Carbon::parse($editData->created_at)->format('d/m/Y') }}<br />
                                 </td>
                             </tr>
                         </table>
@@ -172,7 +172,7 @@
                     <td>{{ $editData->room->type->name }}</td>
                     <td>{{ $editData->number_of_rooms }}</td>
                     <td>{{ number_format($editData->actual_price) }} RWF</td>
-                    <td>{{ $editData->check_in }} / {{ $editData->check_out }}</td>
+                    <td>{{ \Carbon\Carbon::parse($editData->check_in)->format('d/m/Y') }} / {{ \Carbon\Carbon::parse($editData->check_out)->format('d/m/Y') }}</td>
                     <td>{{ $editData->total_night }}</td>
                     <td>{{ number_format($editData->actual_price * $editData->number_of_rooms) }} RWF</td>
                 </tr>

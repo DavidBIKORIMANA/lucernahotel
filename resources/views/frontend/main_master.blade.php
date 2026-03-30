@@ -510,9 +510,15 @@
             <div class="footer-brand-sub">Southern Province · Rwanda</div>
             <p class="footer-tagline">A sanctuary rooted in Catholic hospitality, welcoming every guest with warmth, grace, and world-class service.</p>
             <div class="footer-social">
-                <a href="#" aria-label="Facebook">f</a>
-                <a href="#" aria-label="Instagram">in</a>
-                <a href="#" aria-label="Twitter">tw</a>
+                @if(!empty($siteSetting->facebook))
+                <a href="{{ $siteSetting->facebook }}" aria-label="Facebook" target="_blank" rel="noopener">f</a>
+                @endif
+                @if(!empty($siteSetting->instagram))
+                <a href="{{ $siteSetting->instagram }}" aria-label="Instagram" target="_blank" rel="noopener">in</a>
+                @endif
+                @if(!empty($siteSetting->twitter))
+                <a href="{{ $siteSetting->twitter }}" aria-label="Twitter" target="_blank" rel="noopener">tw</a>
+                @endif
             </div>
         </div>
         <div class="footer-col">
@@ -543,15 +549,15 @@
             <div class="footer-col-title">Contact</div>
             <div class="footer-contact-item">
                 <span class="footer-contact-icon">◈</span>
-                <div><div class="footer-contact-label">Address</div><div class="footer-contact-val">Muhanga, Kabgayi, Rwanda</div></div>
+                <div><div class="footer-contact-label">Address</div><div class="footer-contact-val">{{ $siteSetting->address ?? 'Muhanga, Kabgayi, Rwanda' }}</div></div>
             </div>
             <div class="footer-contact-item">
                 <span class="footer-contact-icon">◎</span>
-                <div><div class="footer-contact-label">Phone</div><a class="footer-contact-val" href="tel:+250794191115">+250 794 191 115</a></div>
+                <div><div class="footer-contact-label">Phone</div><a class="footer-contact-val" href="tel:{{ preg_replace('/\s+/', '', $siteSetting->phone ?? '+250794191115') }}">{{ $siteSetting->phone ?? '+250 794 191 115' }}</a></div>
             </div>
             <div class="footer-contact-item">
                 <span class="footer-contact-icon">✉</span>
-                <div><div class="footer-contact-label">Email</div><a class="footer-contact-val" href="mailto:hotellucernakabgayi@gmail.com">hotellucernakabgayi@gmail.com</a></div>
+                <div><div class="footer-contact-label">Email</div><a class="footer-contact-val" href="mailto:{{ $siteSetting->email ?? 'hotellucernakabgayi@gmail.com' }}">{{ $siteSetting->email ?? 'hotellucernakabgayi@gmail.com' }}</a></div>
             </div>
         </div>
     </div>

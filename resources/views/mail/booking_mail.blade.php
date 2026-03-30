@@ -374,7 +374,7 @@
 </div>
 <div class="bee-col bee-col-2 bee-col-w8">
 <div class="bee-block bee-block-1 bee-paragraph">
-<p><strong>Hello {{ $booking['name'] }} </strong><br/><br/><br/><strong>Your booking is confirmed, and we’ll see you on {{ $booking['check_in'] }}! Thank you for booking  with us on  {{ config('app.name', '') }}. You’ll find details of your reservation and payment details enclosed below.<br/><br/><br/>
+<p><strong>Hello {{ $booking['name'] }} </strong><br/><br/><br/><strong>Your booking is confirmed, and we'll see you on {{ \Carbon\Carbon::parse($booking['check_in'])->format('d/m/Y') }}! Thank you for booking  with us on  {{ config('app.name', '') }}. You'll find details of your reservation and payment details enclosed below.<br/><br/><br/>
 
 If you need to get in touch, you can email or phone us directly. We look forward to welcoming you soon!<br/><br/><br/>
 
@@ -382,10 +382,10 @@ Thanks again,<br/><br/><br/>
 
 The team at {{ config('app.name', '') }}
 
- </strong></p>
+ </strong></p>
 
- <h4> check in : {{ $booking['check_in'] }}</h4>
- <h4> check Out : {{ $booking['check_out'] }}</h4>
+ <h4> check in : {{ \Carbon\Carbon::parse($booking['check_in'])->format('d/m/Y') }}</h4>
+ <h4> check Out : {{ \Carbon\Carbon::parse($booking['check_out'])->format('d/m/Y') }}</h4>
  <h4> Your full name: {{ $booking['name'] }}</h4>
  <!-- <h4> Email : {{ $booking['email'] }}</h4> -->
  <!-- <h4> Phone : {{ $booking['phone'] }}</h4> -->

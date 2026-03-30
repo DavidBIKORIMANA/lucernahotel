@@ -3,6 +3,8 @@
 @section('title', 'Sign In — ' . config('app.name'))
 
 @section('styles')
+    /* ── Nav solid on auth pages ── */
+    nav#mainNav{background-image:linear-gradient(180deg,#0860c5 0%,#034ea2 100%)!important;box-shadow:0 4px 22px rgba(3,40,100,.3)!important;}
     /* ── Auth Layout ── */
     .auth-wrapper{display:flex;min-height:calc(100vh - 96px);margin-top:96px;}
     .auth-hero{flex:1;position:relative;background:var(--navy);display:flex;flex-direction:column;overflow:hidden;}

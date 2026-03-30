@@ -179,7 +179,8 @@
 
   <!-- Tab 2: Photos & Gallery -->
   <div class="rm-tab-content" id="tab-images">
-    <div class="rm-card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <div class="rm-card" style="margin-bottom:0;">
       <h5>Main Photo</h5>
       <div class="form-grid cols-1">
         <div class="field">
@@ -192,7 +193,7 @@
         </div>
       </div>
     </div>
-    <div class="rm-card">
+    <div class="rm-card" style="margin-bottom:0;">
       <h5>Gallery Photos</h5>
       <div class="form-grid cols-1">
         <div class="field">
@@ -209,6 +210,7 @@
         </div>
       </div>
     </div>
+    </div>
   </div>
 
   <!-- Tab 3: Facilities -->
@@ -220,7 +222,7 @@
         <div class="facility-row">
           <select name="facility_name[]">
             <option value="">Select Facility</option>
-            @foreach(['Complimentary Breakfast','32/42 inch LED TV','Smoke alarms','Minibar','Work Desk','Free Wi-Fi','Safety box','Rain Shower','Slippers','Hair dryer','Wake-up service','Laundry & Dry Cleaning','Electronic door lock'] as $fac)
+            @foreach($facilityOptions as $fac)
             <option value="{{ $fac }}" {{ $item->facility_name == $fac ? 'selected' : '' }}>{{ $fac }}</option>
             @endforeach
           </select>
@@ -231,7 +233,7 @@
         <div class="facility-row">
           <select name="facility_name[]">
             <option value="">Select Facility</option>
-            @foreach(['Complimentary Breakfast','32/42 inch LED TV','Smoke alarms','Minibar','Work Desk','Free Wi-Fi','Safety box','Rain Shower','Slippers','Hair dryer','Wake-up service','Laundry & Dry Cleaning','Electronic door lock'] as $fac)
+            @foreach($facilityOptions as $fac)
             <option value="{{ $fac }}">{{ $fac }}</option>
             @endforeach
           </select>

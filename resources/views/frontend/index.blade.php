@@ -727,22 +727,22 @@
 @section('main')
 
 {{-- HERO --}}
+@php $hero = $homeSections['hero'] ?? null; @endphp
 <section class="hero">
     <div class="hero-slides">
-        <div class="hero-slide active"><img src="{{ asset('frontend/assets/img/home-one.jpg') }}"  alt="Lucerna" loading="eager" fetchpriority="high"></div>
-        <div class="hero-slide"><img src="{{ asset('frontend/assets/img/about-img.jpg') }}"        alt="Accommodation" loading="lazy"></div>
-        <div class="hero-slide"><img src="{{ asset('frontend/assets/img/DSC_0224.jpg') }}"         alt="Dining" loading="lazy"></div>
-        <div class="hero-slide"><img src="{{ asset('frontend/assets/img/DSC_0325.jpg') }}"         alt="Grounds" loading="lazy"></div>
+        @foreach($heroSlides as $slide)
+        <div class="hero-slide {{ $loop->first ? 'active' : '' }}"><img src="{{ asset($slide->image) }}" alt="{{ $slide->alt_text }}" loading="{{ $loop->first ? 'eager' : 'lazy' }}" {{ $loop->first ? 'fetchpriority=high' : '' }}></div>
+        @endforeach
     </div>
     <div class="hero-overlay"></div>
 
     <div class="hero-content">
-        <span class="hero-eyebrow">★★★ &nbsp;·&nbsp; Kabgayi, Rwanda</span>
-        <h1 class="hero-title">The Most <em>Welcoming</em><br>Sanctuary in Rwanda</h1>
-        <p class="hero-sub">Rooted in Catholic hospitality. Elevated by world-class luxury.</p>
+        <span class="hero-eyebrow">{!! $hero->eyebrow ?? '★★★ &nbsp;·&nbsp; Kabgayi, Rwanda' !!}</span>
+        <h1 class="hero-title">{!! $hero->title ?? 'The Most <em>Welcoming</em><br>Sanctuary in Rwanda' !!}</h1>
+        <p class="hero-sub">{{ $hero->description ?? 'Rooted in Catholic hospitality. Elevated by world-class luxury.' }}</p>
         <div class="hero-actions">
-            <a href="#booking" class="btn-blue">
-                <span>Book Now</span>
+            <a href="{{ $hero->button_url ?? '#booking' }}" class="btn-blue">
+                <span>{{ $hero->button_text ?? 'Book Now' }}</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
             <a href="#about" class="btn-outline-w">Explore</a>
@@ -750,17 +750,15 @@
     </div>
 
     <div class="hero-dots">
-        <button class="hero-dot active" onclick="goSlide(0)" aria-label="1"></button>
-        <button class="hero-dot"        onclick="goSlide(1)" aria-label="2"></button>
-        <button class="hero-dot"        onclick="goSlide(2)" aria-label="3"></button>
-        <button class="hero-dot"        onclick="goSlide(3)" aria-label="4"></button>
+        @foreach($heroSlides as $slide)
+        <button class="hero-dot {{ $loop->first ? 'active' : '' }}" onclick="goSlide({{ $loop->index }})" aria-label="{{ $loop->iteration }}"></button>
+        @endforeach
     </div>
 
     <div class="hero-stats">
-        <div class="hstat"><div class="hstat-num">48+</div><div class="hstat-lbl">Luxury Rooms</div></div>
-        <div class="hstat"><div class="hstat-num">★★★</div><div class="hstat-lbl">Hotel Rating</div></div>
-        <div class="hstat"><div class="hstat-num">3</div><div class="hstat-lbl">Dining Venues</div></div>
-        <div class="hstat"><div class="hstat-num">300</div><div class="hstat-lbl">Conference Seats</div></div>
+        @foreach($heroStats as $stat)
+        <div class="hstat"><div class="hstat-num">{{ $stat->counter_value }}</div><div class="hstat-lbl">{{ $stat->counter_label }}</div></div>
+        @endforeach
     </div>
 </section>
 
@@ -810,21 +808,21 @@
             <input type="text" id="check_out" name="check_out" placeholder="Select date" autocomplete="off" readonly required>
         </div>
         <div class="bfield">
+            <label for="room_type">Category</label>
+            <select id="room_type" name="room_type">
+                <option value="">All Categories</option>
+                @foreach($roomTypes as $type)
+                <option value="{{ $type->id }}" data-max="{{ $type->rooms()->where('status',1)->max(\DB::raw('CAST(total_adult AS UNSIGNED)')) ?? 4 }}">{{ $type->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="bfield">
             <label for="persion">Guests</label>
             <select id="persion" name="persion">
                 <option value="1">1 Guest</option>
                 <option value="2">2 Guests</option>
                 <option value="3">3 Guests</option>
                 <option value="4">4 Guests</option>
-            </select>
-        </div>
-        <div class="bfield">
-            <label for="room_type">Category</label>
-            <select id="room_type" name="room_type">
-                <option value="">All Categories</option>
-                @foreach($roomTypes as $type)
-                <option value="{{ $type->id }}">{{ $type->name }}</option>
-                @endforeach
             </select>
         </div>
         <button type="submit" class="booking-btn">Check Availability</button>
@@ -834,65 +832,75 @@
 </section>
 
 {{-- ABOUT --}}
+@if(($homeSections['about']->status ?? true))
 <section class="about-section" id="about">
+@php $about = $homeSections['about'] ?? null; @endphp
     <div class="about-inner">
         <div class="about-img-wrap reveal">
-            <img class="about-img-main" src="{{ asset('frontend/assets/img/about-img.jpg') }}" alt="Lucerna interior" loading="lazy">
+            <img class="about-img-main" src="{{ asset($about->image ?? 'frontend/assets/img/about-img.jpg') }}" alt="Lucerna interior" loading="lazy">
             <div class="about-img-bar"></div>
             <div class="about-img-badge">
-                <div class="aib-num">3★</div>
-                <div class="aib-lbl">Hotel</div>
+                <div class="aib-num">{{ $about->badge_value ?? '3★' }}</div>
+                <div class="aib-lbl">{{ $about->badge_label ?? 'Hotel' }}</div>
             </div>
         </div>
 
         <div class="about-text">
-            <span class="eyebrow reveal">Welcome to Lucerna Kabgayi</span>
+            <span class="eyebrow reveal">{{ $about->eyebrow ?? 'Welcome to Lucerna Kabgayi' }}</span>
             <div class="bar reveal d1"></div>
-            <h2 class="h-section reveal d1">A Sanctuary of <em>Hospitality</em> &amp; Grace</h2>
-            <p class="lead reveal d2">Established with deep-rooted Catholic values, Lucerna Kabgayi Hôtel stands as one of Rwanda's most distinguished retreats — where every guest is welcomed not merely as a visitor, but as a cherished soul deserving of exceptional care.</p>
+            <h2 class="h-section reveal d1">{!! $about->title ?? 'A Sanctuary of <em>Hospitality</em> &amp; Grace' !!}</h2>
+            <p class="lead reveal d2">{{ $about->description ?? '' }}</p>
 
             <div class="mv-grid reveal d3">
+                @php $mission = $homeSections['mission'] ?? null; @endphp
+                @php $vision = $homeSections['vision'] ?? null; @endphp
                 <div class="mv-card">
                     <div class="mv-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
                     </div>
-                    <div class="mv-label">Our Mission</div>
-                    <p class="mv-text">To radiate warmth and exceptional customer-centred service while embracing the beautiful diversity of our guests with open hearts, rooted in Catholic hospitality.</p>
+                    <div class="mv-label">{{ $mission->title ?? 'Our Mission' }}</div>
+                    <p class="mv-text">{{ $mission->description ?? '' }}</p>
                 </div>
                 <div class="mv-card">
                     <div class="mv-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
                     </div>
-                    <div class="mv-label">Our Vision</div>
-                    <p class="mv-text">To be a prestigious, high-quality hotel known across Rwanda and beyond for world-class accommodation, conference facilities, and genuine African hospitality.</p>
+                    <div class="mv-label">{{ $vision->title ?? 'Our Vision' }}</div>
+                    <p class="mv-text">{{ $vision->description ?? '' }}</p>
                 </div>
             </div>
 
             <div class="about-values reveal d4">
-                <div class="about-val"><div class="av-name">Faith &amp; Hospitality</div><div class="av-text">Every detail rooted in Catholic values and genuine welcome.</div></div>
-                <div class="about-val"><div class="av-name">Rwandan Warmth</div><div class="av-text">Celebrating local culture, heritage, and our homeland's beauty.</div></div>
-                <div class="about-val"><div class="av-name">World-Class Service</div><div class="av-text">Professional standards delivered with personal care and grace.</div></div>
-                <div class="about-val"><div class="av-name">Timeless Elegance</div><div class="av-text">Refined spaces that endure in the memory of every guest.</div></div>
+                @foreach($aboutPillars as $pillar)
+                <div class="about-val"><div class="av-name">{{ $pillar->name }}</div><div class="av-text">{{ $pillar->description }}</div></div>
+                @endforeach
             </div>
 
-            <a href="#contact" class="btn-blue reveal d4">
-                <span>Plan Your Stay</span>
+            <a href="{{ $about->button_url ?? '#contact' }}" class="btn-blue reveal d4">
+                <span>{{ $about->button_text ?? 'Plan Your Stay' }}</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
         </div>
     </div>
 </section>
+@endif
 
 {{-- ROOMS --}}
+@if(($homeSections['rooms']->status ?? true))
+@php $roomsSection = $homeSections['rooms'] ?? null; @endphp
 <section class="rooms-section" id="rooms">
     <div class="rooms-inner">
         <div class="rooms-header">
             <div>
-                <span class="eyebrow light reveal">Our Rooms</span>
-                <h2 class="h-section on-dark reveal d1">Comfort &amp; <em>Elegance</em> in Every Room</h2>
-                <p class="lead on-dark reveal d2" style="max-width:440px">Each room is a carefully composed haven — blending Rwandan warmth with world-class luxury.</p>
+                <span class="eyebrow light reveal">{{ $roomsSection->eyebrow ?? 'Our Rooms' }}</span>
+                <h2 class="h-section on-dark reveal d1">{!! $roomsSection->title ?? 'Comfort & <em>Elegance</em> in Every Room' !!}</h2>
+                <p class="lead on-dark reveal d2" style="max-width:440px">{{ $roomsSection->description ?? 'Each room is a carefully composed haven — blending Rwandan warmth with world-class luxury.' }}</p>
             </div>
+            @if($roomsSection->button_text ?? null)
+            <a href="{{ $roomsSection->button_url ?? route('froom.all') }}" class="btn-outline-w reveal" style="flex-shrink:0">{{ $roomsSection->button_text }}</a>
+            @else
             <a href="{{ route('froom.all') }}" class="btn-outline-w reveal" style="flex-shrink:0">View All Rooms</a>
+            @endif
         </div>
         <div class="rooms-grid">
             @forelse($rooms as $room)
@@ -939,16 +947,18 @@
         </div>
     </div>
 </section>
+@endif
 
 {{-- HALLS — Events & Conferences --}}
-@if($halls->count())
+@if($halls->count() && ($homeSections['halls']->status ?? true))
+@php $hallsSection = $homeSections['halls'] ?? null; @endphp
 <section class="halls-section" id="halls">
     <div class="halls-inner">
         <div class="halls-header">
             <div>
-                <span class="eyebrow light reveal">Events &amp; Conferences</span>
-                <h2 class="h-section on-dark reveal d1">Where Great <em>Moments</em> Unfold</h2>
-                <p class="lead on-dark reveal d2" style="max-width:460px">World-class halls for conferences, weddings, and landmark celebrations.</p>
+                <span class="eyebrow light reveal">{{ $hallsSection->eyebrow ?? 'Events & Conferences' }}</span>
+                <h2 class="h-section on-dark reveal d1">{!! $hallsSection->title ?? 'Where Great <em>Moments</em> Unfold' !!}</h2>
+                <p class="lead on-dark reveal d2" style="max-width:460px">{{ $hallsSection->description ?? 'World-class halls for conferences, weddings, and landmark celebrations.' }}</p>
             </div>
         </div>
         <div class="halls-scroll-wrap">
@@ -996,37 +1006,27 @@
 @endif
 
 {{-- AMENITIES --}}
+@if(($homeSections['amenities']->status ?? true))
 <section class="amenities-section" id="amenities">
+    @php $amenitiesSection = $homeSections['amenities'] ?? null; @endphp
     <div class="amenities-inner">
         <div class="amenities-header">
-            <span class="eyebrow reveal">Our Offerings</span>
+            <span class="eyebrow reveal">{{ $amenitiesSection->eyebrow ?? 'Our Offerings' }}</span>
             <div class="bar center reveal d1"></div>
-            <h2 class="h-section reveal d1" style="max-width:460px;margin:0 auto">World-Class <em>Experiences</em> Await</h2>
+            <h2 class="h-section reveal d1" style="max-width:460px;margin:0 auto">{!! $amenitiesSection->title ?? 'World-Class <em>Experiences</em> Await' !!}</h2>
         </div>
         <div class="amenities-grid">
-            <div class="amenity-card reveal">
-                <div class="amenity-icon-wrap"><span class="amenity-icon">✦</span></div>
-                <div class="amenity-name">Fine Dining</div>
-                <p class="amenity-desc">Curated menus celebrating Rwandan flavours alongside international cuisine.</p>
+            @foreach($amenities as $i => $amenity)
+            <div class="amenity-card reveal{{ $i > 0 ? ' d'.$i : '' }}">
+                <div class="amenity-icon-wrap"><span class="amenity-icon">{!! $amenity->icon !!}</span></div>
+                <div class="amenity-name">{{ $amenity->name }}</div>
+                <p class="amenity-desc">{{ $amenity->description }}</p>
             </div>
-            <div class="amenity-card reveal d1">
-                <div class="amenity-icon-wrap"><span class="amenity-icon">◈</span></div>
-                <div class="amenity-name">Conference Centre</div>
-                <p class="amenity-desc">State-of-the-art facilities for up to 300 delegates with full AV support.</p>
-            </div>
-            <div class="amenity-card reveal d2">
-                <div class="amenity-icon-wrap"><span class="amenity-icon">❧</span></div>
-                <div class="amenity-name">Serene Gardens</div>
-                <p class="amenity-desc">Manicured grounds — a tranquil retreat for reflection and morning walks.</p>
-            </div>
-            <div class="amenity-card reveal d3">
-                <div class="amenity-icon-wrap"><span class="amenity-icon">◎</span></div>
-                <div class="amenity-name">24/7 Concierge</div>
-                <p class="amenity-desc">Our dedicated team attends to every detail of your stay with quiet care.</p>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
+@endif
 
 {{-- FEATURED AMENITIES ON-SITE (Marriott screenshot style) --}}
 <section class="featured-amenities">
@@ -1035,73 +1035,46 @@
             <div class="fa-title">Featured Amenities On-Site</div>
         </div>
         <div class="fa-grid reveal">
+            @foreach($featuredAmenities as $fa)
             <div class="fa-item">
                 <div class="fa-item-icon">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 5.5 4 10c0 5.25 8 12 8 12s8-6.75 8-12c0-4.5-4-8-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+                    @switch($fa->icon_key)
+                        @case('garden')
+                            <svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 5.5 4 10c0 5.25 8 12 8 12s8-6.75 8-12c0-4.5-4-8-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+                            @break
+                        @case('linen')
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h6M3 15h6"/></svg>
+                            @break
+                        @case('business')
+                            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                            @break
+                        @case('meeting')
+                            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                            @break
+                        @case('restaurant')
+                            <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                            @break
+                        @case('fitness')
+                            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            @break
+                        @case('laundry')
+                            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            @break
+                        @case('frontdesk')
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                            @break
+                        @default
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                    @endswitch
                 </div>
                 <div class="fa-item-text">
-                    <span class="fa-item-name">Outdoor Garden</span>
+                    <span class="fa-item-name">{{ $fa->name }}</span>
+                    @if($fa->note)
+                    <div class="fa-item-note">{{ $fa->note }}</div>
+                    @endif
                 </div>
             </div>
-            <div class="fa-item">
-                <div class="fa-item-icon">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h6M3 15h6"/></svg>
-                </div>
-                <div class="fa-item-text">
-                    <span class="fa-item-name">Fresh Linen Provided</span>
-                    <div class="fa-item-note">All Rooms &amp; Suites</div>
-                </div>
-            </div>
-            <div class="fa-item">
-                <div class="fa-item-icon">
-                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-                </div>
-                <div class="fa-item-text">
-                    <span class="fa-item-name linked">Business Center</span>
-                </div>
-            </div>
-            <div class="fa-item">
-                <div class="fa-item-icon">
-                    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-                </div>
-                <div class="fa-item-text">
-                    <span class="fa-item-name">Meeting Space</span>
-                </div>
-            </div>
-            <div class="fa-item">
-                <div class="fa-item-icon">
-                    <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-                </div>
-                <div class="fa-item-text">
-                    <span class="fa-item-name">Restaurant &amp; Bar</span>
-                    <div class="fa-item-note">Complimentary Water</div>
-                </div>
-            </div>
-            <div class="fa-item">
-                <div class="fa-item-icon">
-                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                </div>
-                <div class="fa-item-text">
-                    <span class="fa-item-name linked">Fitness Center</span>
-                    <div class="fa-item-note">Complimentary</div>
-                </div>
-            </div>
-            <div class="fa-item">
-                <div class="fa-item-icon">
-                    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                </div>
-                <div class="fa-item-text">
-                    <span class="fa-item-name">On-Site Laundry</span>
-                </div>
-            </div>
-            <div class="fa-item">
-                <div class="fa-item-icon">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-                </div>
-                <div class="fa-item-text">
-                    <span class="fa-item-name">24-Hour Front Desk</span>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
@@ -1111,156 +1084,170 @@
     <div class="hotel-info-inner">
         <div class="hi-section-title">Hotel Information</div>
         <div class="hi-grid reveal">
+            @foreach($hotelInfos as $group => $items)
             <div>
-                <div class="hi-group-title">Policies</div>
+                <div class="hi-group-title">{{ $group }}</div>
+                @foreach($items as $info)
                 <div class="hi-row">
-                    <div class="hi-row-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
-                    <div class="hi-row-body"><div class="hi-row-title">Check-in: 2:00 PM</div></div>
+                    <div class="hi-row-icon">
+                        @switch($info->icon)
+                            @case('clock')
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                                @break
+                            @case('user')
+                                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                                @break
+                            @case('phone')
+                                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.07 8.63 19.79 19.79 0 01.01 4.05 2 2 0 012 1.87h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81A2 2 0 017.25 8.5l-1.16 1.4a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                                @break
+                            @case('truck')
+                                <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h3l4 4v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                                @break
+                            @case('pin')
+                                <svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 5.5 4 10c0 5.25 8 12 8 12s8-6.75 8-12c0-4.5-4-8-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+                                @break
+                            @case('cup')
+                                <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                                @break
+                            @case('accessibility')
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><path d="M7 20l1-6h8l1 6"/><path d="M12 7v7"/></svg>
+                                @break
+                            @case('shield')
+                                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                @break
+                            @case('no')
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                                @break
+                            @default
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                        @endswitch
+                    </div>
+                    <div class="hi-row-body">
+                        <div class="hi-row-title">{{ $info->title }}</div>
+                        @if($info->detail)
+                        <div class="hi-row-detail">{{ $info->detail }}</div>
+                        @endif
+                    </div>
                 </div>
-                <div class="hi-row">
-                    <div class="hi-row-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
-                    <div class="hi-row-body"><div class="hi-row-title">Check-out: 12:00 PM</div></div>
-                </div>
-                <div class="hi-row">
-                    <div class="hi-row-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
-                    <div class="hi-row-body"><div class="hi-row-title">Minimum Age to Check In: 18</div></div>
-                </div>
-                <div class="hi-row">
-                    <div class="hi-row-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
-                    <div class="hi-row-body"><div class="hi-row-title">Smoke Free Property</div></div>
-                </div>
+                @endforeach
             </div>
-            <div>
-                <div class="hi-group-title">Services</div>
-                <div class="hi-row">
-                    <div class="hi-row-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.07 8.63 19.79 19.79 0 01.01 4.05 2 2 0 012 1.87h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81A2 2 0 017.25 8.5l-1.16 1.4a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg></div>
-                    <div class="hi-row-body"><div class="hi-row-title">Front Desk</div><div class="hi-row-detail">Staffed 24/7</div></div>
-                </div>
-                <div class="hi-row">
-                    <div class="hi-row-icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h3l4 4v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
-                    <div class="hi-row-body"><div class="hi-row-title">Airport Transfer</div><div class="hi-row-detail">Available on request</div></div>
-                </div>
-                <div class="hi-row">
-                    <div class="hi-row-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8 2 4 5.5 4 10c0 5.25 8 12 8 12s8-6.75 8-12c0-4.5-4-8-8-8z"/><circle cx="12" cy="10" r="3"/></svg></div>
-                    <div class="hi-row-body"><div class="hi-row-title">Parking</div><div class="hi-row-detail">Complimentary On-Site</div></div>
-                </div>
-                <div class="hi-row">
-                    <div class="hi-row-icon"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
-                    <div class="hi-row-body"><div class="hi-row-title">Restaurant</div><div class="hi-row-detail">Open daily 06:30 – 22:30</div></div>
-                </div>
-            </div>
-            <div>
-                <div class="hi-group-title">Accessibility &amp; Pet Policy</div>
-                <div class="hi-row">
-                    <div class="hi-row-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><path d="M7 20l1-6h8l1 6"/><path d="M12 7v7"/></svg></div>
-                    <div class="hi-row-body"><div class="hi-row-title">Accessible Facilities</div><div class="hi-row-detail">Ramps &amp; accessible rooms available</div></div>
-                </div>
-                <div class="hi-row">
-                    <div class="hi-row-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
-                    <div class="hi-row-body"><div class="hi-row-title">Pet Policy</div><div class="hi-row-detail">Pets not allowed<br>No animals allowed</div></div>
-                </div>
-                <div class="hi-row">
-                    <div class="hi-row-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-                    <div class="hi-row-body"><div class="hi-row-title">Safety &amp; Security</div><div class="hi-row-detail">24-hour security on premises</div></div>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
 
 {{-- DINING --}}
+@if(($homeSections['dining']->status ?? true))
+@php $diningSection = $homeSections['dining'] ?? null; @endphp
 <section class="dining-section" id="dining">
     <div class="dining-img-wrap">
-        <img class="dining-img" src="{{ asset('frontend/assets/img/resto_bar/resto.jpg') }}" alt="Restaurant" loading="lazy">
+        <img class="dining-img" src="{{ asset($diningSection->image ?? 'frontend/assets/img/resto_bar/resto.jpg') }}" alt="Restaurant" loading="lazy">
         <div class="dining-img-bar"></div>
     </div>
     <div class="dining-content">
-        <span class="eyebrow light reveal">Gastronomy</span>
+        <span class="eyebrow light reveal">{{ $diningSection->eyebrow ?? 'Gastronomy' }}</span>
         <div class="bar light reveal d1"></div>
-        <h2 class="h-section on-dark reveal d1">A Table Set<br>with <em>Passion</em></h2>
-        <p class="lead on-dark reveal d2">Our culinary team crafts every meal as an act of hospitality — drawing from Rwandan heritage and global traditions.</p>
+        <h2 class="h-section on-dark reveal d1">{!! $diningSection->title ?? 'A Table Set<br>with <em>Passion</em>' !!}</h2>
+        <p class="lead on-dark reveal d2">{{ $diningSection->description ?? 'Our culinary team crafts every meal as an act of hospitality — drawing from Rwandan heritage and global traditions.' }}</p>
         <div class="dining-items reveal d2">
-            <div class="dining-item"><span class="dining-item-name">The Garden Restaurant</span><span class="dining-item-time">06:30 – 22:30</span></div>
-            <div class="dining-item"><span class="dining-item-name">Lucerna Bar &amp; Lounge</span><span class="dining-item-time">11:00 – 00:00</span></div>
-            <div class="dining-item"><span class="dining-item-name">Private Dining Room</span><span class="dining-item-time">By Reservation</span></div>
-            <div class="dining-item"><span class="dining-item-name">Conference Catering</span><span class="dining-item-time">Full-day Service</span></div>
+            @foreach($diningItems as $item)
+            <div class="dining-item"><span class="dining-item-name">{{ $item->name }}</span><span class="dining-item-time">{{ $item->time_text }}</span></div>
+            @endforeach
         </div>
-        <a href="#contact" class="btn-blue reveal d3">
-            <span>Reserve a Table</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
     </div>
 </section>
+@endif
 
 {{-- EVENTS --}}
+@if(($homeSections['events']->status ?? true))
+@php $eventsSection = $homeSections['events'] ?? null; @endphp
 <section class="events-section" id="meetings">
     <div class="events-inner">
         <div>
-            <span class="eyebrow reveal">Events &amp; Conferences</span>
+            <span class="eyebrow reveal">{{ $eventsSection->eyebrow ?? 'Events & Conferences' }}</span>
             <div class="bar reveal d1"></div>
-            <h2 class="h-section reveal d1">Where Great <em>Decisions</em> Are Made</h2>
-            <p class="lead reveal d2">Rwanda's finest conference and events facilities — purpose-built for productivity, inspiring in design, impeccable in service.</p>
-            <p class="lead reveal d2">From boardroom sessions to grand celebrations, our events team orchestrates every detail with precision.</p>
+            <h2 class="h-section reveal d1">{!! $eventsSection->title ?? 'Where Great <em>Decisions</em> Are Made' !!}</h2>
+            <p class="lead reveal d2">{{ $eventsSection->description ?? '' }}</p>
+            @if($eventsSection->description_2 ?? null)
+            <p class="lead reveal d2">{{ $eventsSection->description_2 }}</p>
+            @endif
             <div class="events-features reveal d3">
-                <div class="events-feat"><div class="ef-name">Grand Ballroom</div><div class="ef-desc">Up to 300 guests, theatre style, full AV</div></div>
-                <div class="events-feat"><div class="ef-name">Executive Boardroom</div><div class="ef-desc">Intimate 20-seat meetings</div></div>
-                <div class="events-feat"><div class="ef-name">Breakout Spaces</div><div class="ef-desc">Four flexible rooms for workshops</div></div>
-                <div class="events-feat"><div class="ef-name">Garden Terrace</div><div class="ef-desc">Open-air receptions under Rwanda's sky</div></div>
+                @foreach($eventFeatures as $feat)
+                <div class="events-feat"><div class="ef-name">{{ $feat->name }}</div><div class="ef-desc">{{ $feat->description }}</div></div>
+                @endforeach
             </div>
-            <a href="#contact" class="btn-blue reveal d4">
-                <span>Enquire About Events</span>
+            @if($eventsSection->button_text ?? null)
+            <a href="{{ $eventsSection->button_url ?? '#contact' }}" class="btn-blue reveal d4">
+                <span>{{ $eventsSection->button_text }}</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
+            @endif
         </div>
         <div class="events-img-wrap reveal">
             <div class="events-img-bar"></div>
-            <img class="events-img" src="{{ asset('frontend/assets/img/DSC_0319.jpg') }}" alt="Conference" loading="lazy">
+            <img class="events-img" src="{{ asset($eventsSection->image ?? 'frontend/assets/img/DSC_0319.jpg') }}" alt="Conference" loading="lazy">
+            @if($eventsSection->badge_value ?? null)
             <div class="events-badge">
-                <div class="eb-num">300</div>
-                <div class="eb-lbl">Guest Capacity</div>
+                <div class="eb-num">{{ $eventsSection->badge_value }}</div>
+                <div class="eb-lbl">{{ $eventsSection->badge_label ?? '' }}</div>
             </div>
+            @endif
         </div>
     </div>
 </section>
+@endif
 
 {{-- TESTIMONIALS --}}
+@if(($homeSections['testimonials']->status ?? true))
+@php $testiSection = $homeSections['testimonials'] ?? null; @endphp
 <section class="testi-section">
     <div class="testi-inner">
         <div class="testi-header">
-            <span class="eyebrow light reveal">Guest Voices</span>
+            <span class="eyebrow light reveal">{{ $testiSection->eyebrow ?? 'Guest Voices' }}</span>
             <div class="bar light center reveal d1"></div>
-            <h2 class="h-section on-dark reveal d1" style="max-width:400px;margin:0 auto">Words That <em>Honour</em> Us</h2>
+            <h2 class="h-section on-dark reveal d1" style="max-width:400px;margin:0 auto">{!! $testiSection->title ?? 'Words That <em>Honour</em> Us' !!}</h2>
         </div>
         <div class="testi-grid">
-            <div class="testi-card"><div class="testi-quote">&ldquo;</div><p class="testi-text">Hotel has good facilities and good customer care. A wonderful place to stay.</p><div class="testi-stars">★★★★★</div><div class="testi-author">Jazmeen</div><div class="testi-location">Kigali · US Embassy / Peace Corps</div></div>
-            <div class="testi-card"><div class="testi-quote">&ldquo;</div><p class="testi-text">Very kind, helpful staff. Always trying to help. Very good experience overall.</p><div class="testi-stars">★★★★★</div><div class="testi-author">Sharon Tumusenge</div><div class="testi-location">Kigali · Finance Manager, JHPIEGO</div></div>
-            <div class="testi-card"><div class="testi-quote">&ldquo;</div><p class="testi-text">Very good service and people are very kind. I highly recommend this hotel.</p><div class="testi-stars">★★★★★</div><div class="testi-author">Dr. Teresa Sandinha</div><div class="testi-location">Liverpool, United Kingdom</div></div>
-            <div class="testi-card"><div class="testi-quote">&ldquo;</div><p class="testi-text">Twishimiye uko batwakiriye. Byari byiza cyane kandi tugaruka.</p><div class="testi-stars">★★★★</div><div class="testi-author">Uwera M. Mireille</div><div class="testi-location">Kigali · Zipline</div></div>
-            <div class="testi-card"><div class="testi-quote">&ldquo;</div><p class="testi-text">Rooms are clean and comfortable. A peaceful retreat in a beautiful setting.</p><div class="testi-stars">★★★★</div><div class="testi-author">Ptr. Ruberanziza J. Pierre</div><div class="testi-location">Huye · Pastor, ADEPR</div></div>
+            @forelse($testimonials as $item)
+            <div class="testi-card">
+                <div class="testi-quote">&ldquo;</div>
+                <p class="testi-text">{{ $item->message }}</p>
+                <div class="testi-stars">★★★★★</div>
+                <div class="testi-author">{{ $item->name }}</div>
+                @if($item->city)
+                <div class="testi-location">{{ $item->city }}</div>
+                @endif
+            </div>
+            @empty
+            <p style="color:rgba(255,255,255,.5);text-align:center;width:100%">No testimonials yet.</p>
+            @endforelse
         </div>
     </div>
 </section>
+@endif
 
 {{-- CONTACT --}}
+@if(($homeSections['contact']->status ?? true))
+@php $contactSection = $homeSections['contact'] ?? null; @endphp
 <section class="contact-section" id="contact">
     <div class="contact-inner">
         <div class="contact-left">
-            <span class="eyebrow reveal">Get In Touch</span>
+            <span class="eyebrow reveal">{{ $contactSection->eyebrow ?? 'Get In Touch' }}</span>
             <div class="bar reveal d1"></div>
-            <h2 class="h-section reveal d1">Begin Your <em>Journey</em></h2>
-            <p class="lead reveal d2">Our concierge team is ready to curate a bespoke experience for you — personal retreat, family stay, or grand corporate event.</p>
+            <h2 class="h-section reveal d1">{!! $contactSection->title ?? 'Begin Your <em>Journey</em>' !!}</h2>
+            <p class="lead reveal d2">{{ $contactSection->description ?? 'Our concierge team is ready to curate a bespoke experience for you — personal retreat, family stay, or grand corporate event.' }}</p>
             <div class="contact-details reveal d3">
                 <div class="cd-item">
                     <div class="cd-icon">◈</div>
-                    <div><div class="cd-label">Address</div><div class="cd-val">Muhanga, Kabgayi, Rwanda</div></div>
+                    <div><div class="cd-label">Address</div><div class="cd-val">{{ $siteSettings->address ?? 'Muhanga, Kabgayi, Rwanda' }}</div></div>
                 </div>
                 <div class="cd-item">
                     <div class="cd-icon">◎</div>
-                    <div><div class="cd-label">Reservations</div><div class="cd-val"><a href="tel:+250794191115">+250 794 191 115</a></div></div>
+                    <div><div class="cd-label">Reservations</div><div class="cd-val"><a href="tel:{{ preg_replace('/\s+/', '', $siteSettings->phone ?? '+250794191115') }}">{{ $siteSettings->phone ?? '+250 794 191 115' }}</a></div></div>
                 </div>
                 <div class="cd-item">
                     <div class="cd-icon">✉</div>
-                    <div><div class="cd-label">Email</div><div class="cd-val"><a href="mailto:hotellucernakabgayi@gmail.com">hotellucernakabgayi@gmail.com</a></div></div>
+                    <div><div class="cd-label">Email</div><div class="cd-val"><a href="mailto:{{ $siteSettings->email ?? 'hotellucernakabgayi@gmail.com' }}">{{ $siteSettings->email ?? 'hotellucernakabgayi@gmail.com' }}</a></div></div>
                 </div>
                 <div class="cd-item">
                     <div class="cd-icon">◑</div>
@@ -1268,7 +1255,7 @@
                 </div>
             </div>
             <div class="map-wrap reveal d4">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6149.053947903886!2d29.754994947779355!3d-2.08832623103027!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dccb9e7e84a8c1%3A0xbf93699bed85f0f!2sLucerna-Kabgayi%20Hotel!5e0!3m2!1sen!2sus!4v1707836567416!5m2!1sen!2sus" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <iframe src="{{ $siteSettings->google_maps_embed ?? 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6149.053947903886!2d29.754994947779355!3d-2.08832623103027!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dccb9e7e84a8c1%3A0xbf93699bed85f0f!2sLucerna-Kabgayi%20Hotel!5e0!3m2!1sen!2sus!4v1707836567416!5m2!1sen!2sus' }}" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
 
@@ -1276,22 +1263,17 @@
             <div class="cfc-title">Send Us a Message</div>
             <form method="POST" action="{{ route('store.contact') }}" class="contact-form">
                 @csrf
-                <div class="form-row">
-                    <div class="form-field"><label for="first_name">First Name</label><input type="text" id="first_name" name="first_name" placeholder="First name" value="{{ old('first_name') }}" required></div>
-                    <div class="form-field"><label for="last_name">Last Name</label><input type="text" id="last_name" name="last_name" placeholder="Last name" value="{{ old('last_name') }}" required></div>
-                </div>
+                <div class="form-field"><label for="name">Full Name</label><input type="text" id="name" name="name" placeholder="Your full name" value="{{ old('name') }}" required></div>
                 <div class="form-field"><label for="email">Email Address</label><input type="email" id="email" name="email" placeholder="your@email.com" value="{{ old('email') }}" required></div>
                 <div class="form-field"><label for="phone">Phone Number</label><input type="tel" id="phone" name="phone" placeholder="+250 ..." value="{{ old('phone') }}"></div>
-                <div class="form-row">
-                    <div class="form-field"><label for="arrival">Arrival</label><input type="date" id="arrival" name="arrival" value="{{ old('arrival') }}"></div>
-                    <div class="form-field"><label for="departure">Departure</label><input type="date" id="departure" name="departure" value="{{ old('departure') }}"></div>
-                </div>
-                <div class="form-field"><label for="message">Message or Special Requests</label><textarea id="message" name="message" placeholder="Any special requests...">{{ old('message') }}</textarea></div>
+                <div class="form-field"><label for="subject">Subject</label><input type="text" id="subject" name="subject" placeholder="Subject of your message" value="{{ old('subject') }}" required></div>
+                <div class="form-field"><label for="message">Message</label><textarea id="message" name="message" placeholder="Your message..." required>{{ old('message') }}</textarea></div>
                 <button type="submit" class="form-submit">Send Enquiry</button>
             </form>
         </div>
     </div>
 </section>
+@endif
 
 @endsection
 
@@ -1299,6 +1281,40 @@
 <script>
 (function(){
     'use strict';
+
+    /* ── Category → Guests dynamic ── */
+    var catSel = document.getElementById('room_type');
+    var guestSel = document.getElementById('persion');
+    var defaultMax = 4;
+
+    function buildGuestOptions(max) {
+        var prev = parseInt(guestSel.value) || 1;
+        guestSel.innerHTML = '';
+        for (var i = 1; i <= max; i++) {
+            var opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = i + (i === 1 ? ' Guest' : ' Guests');
+            if (i === prev) opt.selected = true;
+            guestSel.appendChild(opt);
+        }
+        if (prev > max) guestSel.value = max;
+    }
+
+    if (catSel && guestSel) {
+        catSel.addEventListener('change', function() {
+            var selected = catSel.options[catSel.selectedIndex];
+            if (!catSel.value) {
+                buildGuestOptions(defaultMax);
+                return;
+            }
+            var dataMax = parseInt(selected.getAttribute('data-max'));
+            if (dataMax && dataMax > 0) {
+                buildGuestOptions(Math.min(dataMax, 50));
+            } else {
+                buildGuestOptions(defaultMax);
+            }
+        });
+    }
 
     /* ── Hero slideshow ── */
     var slides=document.querySelectorAll('.hero-slide'),dots=document.querySelectorAll('.hero-dot'),cur=0,timer;

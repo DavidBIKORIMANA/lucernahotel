@@ -25,10 +25,13 @@ class TestimonialController extends Controller
 
     public function StoreTestimonial(Request $request){
 
-        $image = $request->file('image');
-        $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
-        Image::make($image)->resize(50,50)->save('upload/testimonial/'.$name_gen);
-        $save_url = 'upload/testimonial/'.$name_gen;
+        $save_url = null;
+        if($request->file('image')){
+            $image = $request->file('image');
+            $name_gen = hexdec(uniqid()).'.'.$image->getClientOriginalExtension();
+            Image::make($image)->resize(50,50)->save('upload/testimonial/'.$name_gen);
+            $save_url = 'upload/testimonial/'.$name_gen;
+        }
 
         Testimonial::insert([
 
@@ -110,7 +113,9 @@ class TestimonialController extends Controller
 
         $item = Testimonial::findOrFail($id);
         $img = $item->image;
-        unlink($img);
+        if($img && file_exists($img)){
+            unlink($img);
+        }
 
         Testimonial::findOrFail($id)->delete();
 

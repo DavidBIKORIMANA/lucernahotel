@@ -130,17 +130,32 @@ class GalleryController extends Controller
 
      public function StoreContactUs(Request $request){
 
-        Contact::insert([
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:30',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string|max:5000',
+        ]);
+
+        $contact = Contact::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
             'subject' => $request->subject,
             'message' => $request->message,
-            'created_at' => Carbon::now(),
         ]);
 
+        try {
+            \Illuminate\Support\Facades\Mail::to($request->email)
+                ->send(new \App\Mail\ContactConfirm($contact));
+        } catch (\Exception $e) {
+            // Log failure but don't block the user
+            \Illuminate\Support\Facades\Log::error('Contact confirm email failed: '.$e->getMessage());
+        }
+
         $notification = array(
-            'message' => 'Your Message Send Successfully',
+            'message' => 'Your Message Sent Successfully',
             'alert-type' => 'success'
         );
 

@@ -20,6 +20,8 @@ use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Frontend\ReviewController;
 use App\Http\Controllers\Backend\RateSeasonController;
 use App\Http\Controllers\Backend\ReviewController as BackendReviewController;
+use App\Http\Controllers\Backend\HomepageController;
+use App\Http\Controllers\Backend\FacilityOptionController;
 use App\Models\Booking;
 // Route::get('/', function () {
 //     return view('welcome');
@@ -35,9 +37,9 @@ Route::get('/dashboard', function () {
    $recentBookings = Booking::with('room.type')->where('user_id', $id)->orderBy('id','desc')->take(5)->get();
 
    return view('frontend.dashboard.user_dashboard',compact('BookingA','BookingP','BookingT','recentBookings'));
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'user'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'user'])->group(function () {
 
     Route::get('/profile', [UserController::class, 'UserProfile'])->name('user.profile');
     Route::post('/profile/store', [UserController::class, 'UserStore'])->name('profile.store');
@@ -223,6 +225,81 @@ Route::middleware(['auth','roles:admin'])->group(function(){
       Route::post('/update/admin/{id}', 'UpdateAdmin')->name('update.admin');
       Route::get('/delete/admin/{id}', 'DeleteAdmin')->name('delete.admin');
    });
+   /// Homepage Content All Route
+   Route::controller(HomepageController::class)->group(function(){
+      Route::get('/homepage/manage', 'Index')->name('homepage.manage');
+      // Sections
+      Route::get('/homepage/sections', 'EditSections')->name('homepage.sections');
+      Route::post('/homepage/sections/update', 'UpdateSections')->name('homepage.sections.update');
+      // Hero Slides
+      Route::get('/all/hero/slides', 'AllHeroSlides')->name('all.hero.slides');
+      Route::get('/add/hero/slide', 'AddHeroSlide')->name('add.hero.slide');
+      Route::post('/hero/slide/store', 'StoreHeroSlide')->name('hero.slide.store');
+      Route::get('/edit/hero/slide/{id}', 'EditHeroSlide')->name('edit.hero.slide');
+      Route::post('/hero/slide/update', 'UpdateHeroSlide')->name('hero.slide.update');
+      Route::get('/delete/hero/slide/{id}', 'DeleteHeroSlide')->name('delete.hero.slide');
+      // Hero Stats
+      Route::get('/all/hero/stats', 'AllHeroStats')->name('all.hero.stats');
+      Route::get('/add/hero/stat', 'AddHeroStat')->name('add.hero.stat');
+      Route::post('/hero/stat/store', 'StoreHeroStat')->name('hero.stat.store');
+      Route::get('/edit/hero/stat/{id}', 'EditHeroStat')->name('edit.hero.stat');
+      Route::post('/hero/stat/update', 'UpdateHeroStat')->name('hero.stat.update');
+      Route::get('/delete/hero/stat/{id}', 'DeleteHeroStat')->name('delete.hero.stat');
+      // About Pillars
+      Route::get('/all/about/pillars', 'AllAboutPillars')->name('all.about.pillars');
+      Route::get('/add/about/pillar', 'AddAboutPillar')->name('add.about.pillar');
+      Route::post('/about/pillar/store', 'StoreAboutPillar')->name('about.pillar.store');
+      Route::get('/edit/about/pillar/{id}', 'EditAboutPillar')->name('edit.about.pillar');
+      Route::post('/about/pillar/update', 'UpdateAboutPillar')->name('about.pillar.update');
+      Route::get('/delete/about/pillar/{id}', 'DeleteAboutPillar')->name('delete.about.pillar');
+      // Amenities (Our Offerings)
+      Route::get('/all/amenities', 'AllAmenities')->name('all.amenities');
+      Route::get('/add/amenity', 'AddAmenity')->name('add.amenity');
+      Route::post('/amenity/store', 'StoreAmenity')->name('amenity.store');
+      Route::get('/edit/amenity/{id}', 'EditAmenity')->name('edit.amenity');
+      Route::post('/amenity/update', 'UpdateAmenity')->name('amenity.update');
+      Route::get('/delete/amenity/{id}', 'DeleteAmenity')->name('delete.amenity');
+      // Featured Amenities
+      Route::get('/all/featured/amenities', 'AllFeaturedAmenities')->name('all.featured.amenities');
+      Route::get('/add/featured/amenity', 'AddFeaturedAmenity')->name('add.featured.amenity');
+      Route::post('/featured/amenity/store', 'StoreFeaturedAmenity')->name('featured.amenity.store');
+      Route::get('/edit/featured/amenity/{id}', 'EditFeaturedAmenity')->name('edit.featured.amenity');
+      Route::post('/featured/amenity/update', 'UpdateFeaturedAmenity')->name('featured.amenity.update');
+      Route::get('/delete/featured/amenity/{id}', 'DeleteFeaturedAmenity')->name('delete.featured.amenity');
+      // Dining Items
+      Route::get('/all/dining/items', 'AllDiningItems')->name('all.dining.items');
+      Route::get('/add/dining/item', 'AddDiningItem')->name('add.dining.item');
+      Route::post('/dining/item/store', 'StoreDiningItem')->name('dining.item.store');
+      Route::get('/edit/dining/item/{id}', 'EditDiningItem')->name('edit.dining.item');
+      Route::post('/dining/item/update', 'UpdateDiningItem')->name('dining.item.update');
+      Route::get('/delete/dining/item/{id}', 'DeleteDiningItem')->name('delete.dining.item');
+      // Event Features
+      Route::get('/all/event/features', 'AllEventFeatures')->name('all.event.features');
+      Route::get('/add/event/feature', 'AddEventFeature')->name('add.event.feature');
+      Route::post('/event/feature/store', 'StoreEventFeature')->name('event.feature.store');
+      Route::get('/edit/event/feature/{id}', 'EditEventFeature')->name('edit.event.feature');
+      Route::post('/event/feature/update', 'UpdateEventFeature')->name('event.feature.update');
+      Route::get('/delete/event/feature/{id}', 'DeleteEventFeature')->name('delete.event.feature');
+      // Hotel Info
+      Route::get('/all/hotel/info', 'AllHotelInfo')->name('all.hotel.info');
+      Route::get('/add/hotel/info', 'AddHotelInfo')->name('add.hotel.info');
+      Route::post('/hotel/info/store', 'StoreHotelInfo')->name('hotel.info.store');
+      Route::get('/edit/hotel/info/{id}', 'EditHotelInfo')->name('edit.hotel.info');
+      Route::post('/hotel/info/update', 'UpdateHotelInfo')->name('hotel.info.update');
+      Route::get('/delete/hotel/info/{id}', 'DeleteHotelInfo')->name('delete.hotel.info');
+      // Site Settings
+      Route::get('/homepage/site-settings', 'EditSiteSettings')->name('homepage.site.settings');
+      Route::post('/homepage/site-settings/update', 'UpdateSiteSettings')->name('homepage.site.settings.update');
+   });
+   /// Facility Options All Route
+   Route::controller(FacilityOptionController::class)->group(function(){
+      Route::get('/all/facility/options', 'AllFacilityOptions')->name('all.facility.options');
+      Route::get('/add/facility/option', 'AddFacilityOption')->name('add.facility.option');
+      Route::post('/facility/option/store', 'StoreFacilityOption')->name('facility.option.store');
+      Route::get('/edit/facility/option/{id}', 'EditFacilityOption')->name('edit.facility.option');
+      Route::post('/facility/option/update', 'UpdateFacilityOption')->name('facility.option.update');
+      Route::get('/delete/facility/option/{id}', 'DeleteFacilityOption')->name('delete.facility.option');
+   });
 }); // End Admin Group Middleware 
 /// Room All Route 
 Route::controller(FrontendRoomController::class)->group(function(){
@@ -233,15 +310,9 @@ Route::controller(FrontendRoomController::class)->group(function(){
    Route::get('/check_room_availability/', 'CheckRoomAvailability')->name('check_room_availability');
    Route::get('/bookings-all/{id}', 'BookingSeachAll')->name('booking.search.all');
 });
-// Auth Middleware User must have login for access this route 
-Route::middleware(['auth'])->group(function(){
-   /// CHECKOUT ALL Route 
+// Auth Middleware - Admin only booking management routes
+Route::middleware(['auth', 'roles:admin'])->group(function(){
    Route::controller(BookingController::class)->group(function(){
-      Route::get('/checkout/', 'Checkout')->name('checkout');
-      Route::post('/booking/store/', 'BookingStore')->name('user_booking_store');
-      Route::post('/checkout/store/', 'CheckoutStore')->name('checkout.store');
-      Route::get('/booking/confirmation/{id}', 'BookingConfirmation')->name('booking.confirmation');
-      Route::match(['get', 'post'],'/stripe_pay', [BookingController::class, 'stripe_pay'])->name('stripe_pay');
       // booking Update 
       Route::post('/update/booking/status/{id}', 'UpdateBookingStatus')->name('update.booking.status');
       Route::post('/update/booking/{id}', 'UpdateBooking')->name('update.booking');
@@ -249,6 +320,18 @@ Route::middleware(['auth'])->group(function(){
       Route::get('/assign_room/{id}', 'AssignRoom')->name('assign_room');
       Route::get('/assign_room/store/{booking_id}/{room_number_id}', 'AssignRoomStore')->name('assign_room_store');
       Route::get('/assign_room_delete/{id}', 'AssignRoomDelete')->name('assign_room_delete');
+   });
+});
+
+// Auth Middleware - User only routes
+Route::middleware(['auth', 'user'])->group(function(){
+   /// CHECKOUT ALL Route 
+   Route::controller(BookingController::class)->group(function(){
+      Route::get('/checkout/', 'Checkout')->name('checkout');
+      Route::post('/booking/store/', 'BookingStore')->name('user_booking_store');
+      Route::post('/checkout/store/', 'CheckoutStore')->name('checkout.store');
+      Route::get('/booking/confirmation/{id}', 'BookingConfirmation')->name('booking.confirmation');
+      Route::match(['get', 'post'],'/stripe_pay', [BookingController::class, 'stripe_pay'])->name('stripe_pay');
       ////////// User Booking Route
       Route::get('/user/booking', 'UserBooking')->name('user.booking');
       Route::get('/user/invoice/{id}', 'UserInvoice')->name('user.invoice');

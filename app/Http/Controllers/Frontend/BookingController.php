@@ -377,7 +377,7 @@ class BookingController extends Controller
             'message' => 'Booking Confirmed Successfully',
             'alert-type' => 'success'
         ); 
-        return redirect()->back()->with($notification);  
+        return redirect()->route('booking.list')->with($notification);  
      } // End Method
 
 
@@ -410,6 +410,14 @@ class BookingController extends Controller
         $booking = Booking::findOrFail($id);
         $booking->payment_status = $request->payment_action == 'approve' ? 1 : 0;
         $booking->admin_notes = $request->admin_notes;
+
+        // Auto-confirm booking when payment is approved on a pending booking
+        if ($request->payment_action == 'approve' && $booking->status == 0) {
+            $booking->status = 1;
+            $booking->confirmed_at = now();
+            $booking->confirmed_by = Auth::id();
+        }
+
         $booking->save();
 
         // Update payment transaction

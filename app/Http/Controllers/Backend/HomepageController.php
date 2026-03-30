@@ -10,7 +10,10 @@ use App\Models\AboutPillar;
 use App\Models\Amenity;
 use App\Models\DiningItem;
 use App\Models\EventFeature;
+use App\Models\FeaturedAmenity;
 use App\Models\HomeSection;
+use App\Models\HotelInfo;
+use App\Models\SiteSetting;
 use Carbon\Carbon;
 
 class HomepageController extends Controller
@@ -26,11 +29,14 @@ class HomepageController extends Controller
         $amenities = Amenity::ordered()->get();
         $dining_items = DiningItem::ordered()->get();
         $event_features = EventFeature::ordered()->get();
+        $featured_amenities = FeaturedAmenity::orderBy('sort_order')->get();
+        $hotel_infos = HotelInfo::orderBy('sort_order')->get();
         $sections = HomeSection::all()->keyBy('section_key');
 
         return view('backend.homepage.index', compact(
             'hero_slides', 'hero_stats', 'about_pillars',
-            'amenities', 'dining_items', 'event_features', 'sections'
+            'amenities', 'dining_items', 'event_features',
+            'featured_amenities', 'hotel_infos', 'sections'
         ));
     }
 
@@ -424,7 +430,7 @@ class HomepageController extends Controller
         $sections = HomeSection::all()->keyBy('section_key');
 
         // Ensure all keys exist
-        $keys = ['hero', 'about', 'rooms', 'amenities', 'dining', 'events', 'testimonials', 'contact'];
+        $keys = ['hero', 'about', 'rooms', 'halls', 'amenities', 'dining', 'events', 'testimonials', 'contact', 'mission', 'vision'];
         foreach ($keys as $key) {
             if (!isset($sections[$key])) {
                 $sections[$key] = HomeSection::create(['section_key' => $key]);
@@ -447,6 +453,7 @@ class HomepageController extends Controller
                 'badge_label' => $data['badge_label'] ?? null,
                 'button_text' => $data['button_text'] ?? null,
                 'button_url' => $data['button_url'] ?? null,
+                'status' => isset($data['status']) ? 1 : 0,
             ];
 
             // Handle image upload per section
@@ -465,6 +472,177 @@ class HomepageController extends Controller
 
         return redirect()->back()->with([
             'message' => 'All Sections Updated Successfully',
+            'alert-type' => 'success'
+        ]);
+    }
+
+    // ═══════════════════════════════════════
+    //  FEATURED AMENITIES
+    // ═══════════════════════════════════════
+    public function AllFeaturedAmenities()
+    {
+        $amenities = FeaturedAmenity::orderBy('sort_order')->get();
+        return view('backend.homepage.featured_amenities.all', compact('amenities'));
+    }
+
+    public function AddFeaturedAmenity()
+    {
+        return view('backend.homepage.featured_amenities.add');
+    }
+
+    public function StoreFeaturedAmenity(Request $request)
+    {
+        $request->validate(['icon_key' => 'required', 'name' => 'required']);
+
+        FeaturedAmenity::create([
+            'icon_key' => $request->icon_key,
+            'name' => $request->name,
+            'note' => $request->note,
+            'sort_order' => $request->sort_order ?? 0,
+            'status' => $request->has('status') ? 1 : 0,
+        ]);
+
+        return redirect()->route('all.featured.amenities')->with([
+            'message' => 'Featured Amenity Added Successfully',
+            'alert-type' => 'success'
+        ]);
+    }
+
+    public function EditFeaturedAmenity($id)
+    {
+        $amenity = FeaturedAmenity::findOrFail($id);
+        return view('backend.homepage.featured_amenities.edit', compact('amenity'));
+    }
+
+    public function UpdateFeaturedAmenity(Request $request)
+    {
+        FeaturedAmenity::findOrFail($request->id)->update([
+            'icon_key' => $request->icon_key,
+            'name' => $request->name,
+            'note' => $request->note,
+            'sort_order' => $request->sort_order ?? 0,
+            'status' => $request->has('status') ? 1 : 0,
+        ]);
+
+        return redirect()->route('all.featured.amenities')->with([
+            'message' => 'Featured Amenity Updated Successfully',
+            'alert-type' => 'success'
+        ]);
+    }
+
+    public function DeleteFeaturedAmenity($id)
+    {
+        FeaturedAmenity::findOrFail($id)->delete();
+        return redirect()->back()->with([
+            'message' => 'Featured Amenity Deleted Successfully',
+            'alert-type' => 'success'
+        ]);
+    }
+
+    // ═══════════════════════════════════════
+    //  HOTEL INFO
+    // ═══════════════════════════════════════
+    public function AllHotelInfo()
+    {
+        $infos = HotelInfo::orderBy('group')->orderBy('sort_order')->get();
+        return view('backend.homepage.hotel_info.all', compact('infos'));
+    }
+
+    public function AddHotelInfo()
+    {
+        return view('backend.homepage.hotel_info.add');
+    }
+
+    public function StoreHotelInfo(Request $request)
+    {
+        $request->validate(['group' => 'required', 'title' => 'required']);
+
+        HotelInfo::create([
+            'group' => $request->group,
+            'title' => $request->title,
+            'detail' => $request->detail,
+            'icon' => $request->icon,
+            'sort_order' => $request->sort_order ?? 0,
+        ]);
+
+        return redirect()->route('all.hotel.info')->with([
+            'message' => 'Hotel Info Added Successfully',
+            'alert-type' => 'success'
+        ]);
+    }
+
+    public function EditHotelInfo($id)
+    {
+        $info = HotelInfo::findOrFail($id);
+        return view('backend.homepage.hotel_info.edit', compact('info'));
+    }
+
+    public function UpdateHotelInfo(Request $request)
+    {
+        HotelInfo::findOrFail($request->id)->update([
+            'group' => $request->group,
+            'title' => $request->title,
+            'detail' => $request->detail,
+            'icon' => $request->icon,
+            'sort_order' => $request->sort_order ?? 0,
+        ]);
+
+        return redirect()->route('all.hotel.info')->with([
+            'message' => 'Hotel Info Updated Successfully',
+            'alert-type' => 'success'
+        ]);
+    }
+
+    public function DeleteHotelInfo($id)
+    {
+        HotelInfo::findOrFail($id)->delete();
+        return redirect()->back()->with([
+            'message' => 'Hotel Info Deleted Successfully',
+            'alert-type' => 'success'
+        ]);
+    }
+
+    // ═══════════════════════════════════════
+    //  SITE SETTINGS
+    // ═══════════════════════════════════════
+    public function EditSiteSettings()
+    {
+        $setting = SiteSetting::first();
+        return view('backend.homepage.site_settings.edit', compact('setting'));
+    }
+
+    public function UpdateSiteSettings(Request $request)
+    {
+        $setting = SiteSetting::first();
+
+        $data = [
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'email' => $request->email,
+            'facebook' => $request->facebook,
+            'twitter' => $request->twitter,
+            'copyright' => $request->copyright,
+        ];
+
+        if ($request->file('logo')) {
+            $request->validate(['logo' => 'image|max:2048']);
+            if ($setting && $setting->logo && file_exists(public_path($setting->logo))) {
+                @unlink(public_path($setting->logo));
+            }
+            $file = $request->file('logo');
+            $filename = hexdec(uniqid()) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('upload/settings'), $filename);
+            $data['logo'] = 'upload/settings/' . $filename;
+        }
+
+        if ($setting) {
+            $setting->update($data);
+        } else {
+            SiteSetting::create($data);
+        }
+
+        return redirect()->back()->with([
+            'message' => 'Site Settings Updated Successfully',
             'alert-type' => 'success'
         ]);
     }

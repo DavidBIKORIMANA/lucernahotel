@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Room;
 use App\Models\Facility;
+use App\Models\FacilityOption;
 use App\Models\MultiImage;
 use App\Models\RoomNumber;
 use App\Models\RoomType;
@@ -19,7 +20,8 @@ class RoomController extends Controller
         $multiimgs = MultiImage::where('rooms_id',$id)->get();
         $editData = Room::find($id);
         $allroomNo = RoomNumber::where('rooms_id',$id)->get();
-        return view('backend.allroom.rooms.edit_rooms',compact('editData','basic_facility','multiimgs','allroomNo'));
+        $facilityOptions = FacilityOption::where('status',1)->orderBy('sort_order')->pluck('name')->toArray();
+        return view('backend.allroom.rooms.edit_rooms',compact('editData','basic_facility','multiimgs','allroomNo','facilityOptions'));
     } //End Method 
 
 

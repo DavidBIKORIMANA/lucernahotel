@@ -25,8 +25,23 @@ class UserController extends Controller
             ->get();
 
         $roomTypes = \App\Models\RoomType::where('status','active')->orderBy('sort_order')->get();
+        $testimonials = \App\Models\Testimonial::latest()->get();
+        $diningItems = \App\Models\DiningItem::orderBy('sort_order')->get();
+        $hotelInfos = \App\Models\HotelInfo::orderBy('sort_order')->get()->groupBy('group');
+        $heroSlides = \App\Models\HeroSlide::where('status', 1)->orderBy('sort_order')->get();
+        $heroStats = \App\Models\HeroStat::orderBy('sort_order')->get();
+        $aboutPillars = \App\Models\AboutPillar::orderBy('sort_order')->get();
+        $amenities = \App\Models\Amenity::where('status', 1)->orderBy('sort_order')->get();
+        $featuredAmenities = \App\Models\FeaturedAmenity::where('status', 1)->orderBy('sort_order')->get();
+        $eventFeatures = \App\Models\EventFeature::orderBy('sort_order')->get();
+        $homeSections = \App\Models\HomeSection::all()->keyBy('section_key');
+        $siteSettings = \App\Models\SiteSetting::first();
 
-        return view('frontend.index', compact('rooms', 'halls', 'roomTypes'));
+        return view('frontend.index', compact(
+            'rooms', 'halls', 'roomTypes', 'testimonials', 'diningItems', 'hotelInfos',
+            'heroSlides', 'heroStats', 'aboutPillars', 'amenities', 'featuredAmenities',
+            'eventFeatures', 'homeSections', 'siteSettings'
+        ));
     }// End Method 
 
     public function UserProfile(){

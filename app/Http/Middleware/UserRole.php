@@ -15,9 +15,9 @@ class UserRole
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!Auth()->user()->hasRole('user')){
-            return $next($request);
+        if($request->user()->hasRole('admin')){
+            return redirect('/admin/dashboard');
         }
-        return redirect('home');
+        return $next($request);
     }
 }
