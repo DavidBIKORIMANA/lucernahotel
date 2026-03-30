@@ -22,6 +22,7 @@ use App\Http\Controllers\Backend\RateSeasonController;
 use App\Http\Controllers\Backend\ReviewController as BackendReviewController;
 use App\Http\Controllers\Backend\HomepageController;
 use App\Http\Controllers\Backend\FacilityOptionController;
+use App\Http\Controllers\Admin\ClientController;
 use App\Models\Booking;
 // Route::get('/', function () {
 //     return view('welcome');
@@ -226,6 +227,15 @@ Route::middleware(['auth','roles:admin'])->group(function(){
       Route::get('/delete/admin/{id}', 'DeleteAdmin')->name('delete.admin');
       Route::get('/toggle/admin/status/{id}', 'ToggleAdminStatus')->name('toggle.admin.status');
    });
+
+   /// Client (User role) Management
+   Route::controller(ClientController::class)->group(function(){
+      Route::get('/all/clients', 'AllClients')->name('all.clients');
+      Route::get('/edit/client/{id}', 'EditClient')->name('edit.client');
+      Route::post('/update/client/{id}', 'UpdateClient')->name('update.client');
+      Route::get('/toggle/client/status/{id}', 'ToggleClientStatus')->name('toggle.client.status');
+   });
+
    /// Homepage Content All Route
    Route::controller(HomepageController::class)->group(function(){
       Route::get('/homepage/manage', 'Index')->name('homepage.manage');

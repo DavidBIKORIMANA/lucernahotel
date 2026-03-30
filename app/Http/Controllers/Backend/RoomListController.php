@@ -13,6 +13,7 @@ use App\Models\RoomBookedDate;
 use App\Models\Booking;
 use Illuminate\Support\Facades\Auth; 
 use App\Models\BookingRoomList;
+use Illuminate\Support\Facades\DB;
 use App\Models\RoomNumber;
 use App\Models\RoomType;
 
@@ -96,6 +97,8 @@ class RoomListController extends Controller
            $total_price = $subtotal-$discount;
            $code = rand(000000000,999999999); 
 
+        DB::beginTransaction();
+        try {
            $data = new Booking();
            $data->rooms_id = $room->id;
            $data->user_id = Auth::user()->id;
@@ -125,24 +128,33 @@ class RoomListController extends Controller
            $data->created_at = Carbon::now();
            $data->save();
 
-        $sdate = date('Y-m-d',strtotime($request['check_in']));
-        $edate = date('Y-m-d',strtotime($request['check_out']));
-        $eldate = Carbon::create($edate)->subDay();
-        $d_period = CarbonPeriod::create($sdate,$eldate);
-        foreach ($d_period as $period) {
-            $booked_dates = new RoomBookedDate();
-            $booked_dates->booking_id = $data->id;
-            $booked_dates->room_id = $room->id;
-            $booked_dates->book_date = date('Y-m-d', strtotime($period));
-            $booked_dates->save();
-        }
- 
+            $sdate = date('Y-m-d',strtotime($request['check_in']));
+            $edate = date('Y-m-d',strtotime($request['check_out']));
+            $eldate = Carbon::create($edate)->subDay();
+            $d_period = CarbonPeriod::create($sdate,$eldate);
+            foreach ($d_period as $period) {
+                $booked_dates = new RoomBookedDate();
+                $booked_dates->booking_id = $data->id;
+                $booked_dates->room_id = $room->id;
+                $booked_dates->book_date = date('Y-m-d', strtotime($period));
+                $booked_dates->save();
+            }
 
-        $notification = array(
-            'message' => 'Booking Added Successfully',
-            'alert-type' => 'success'
-        ); 
-        return redirect()->back()->with($notification);  
+            DB::commit();
+
+            $notification = array(
+                'message' => 'Booking Added Successfully',
+                'alert-type' => 'success'
+            ); 
+            return redirect()->back()->with($notification);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $notification = array(
+                'message' => 'Failed to create booking: ' . $e->getMessage(),
+                'alert-type' => 'error'
+            );
+            return redirect()->back()->with($notification);
+        }  
 
     }// End Method 
 

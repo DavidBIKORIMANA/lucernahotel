@@ -12,6 +12,7 @@ use App\Models\RoomNumber;
 use App\Models\RoomType;
 use Intervention\Image\Facades\Image;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class RoomController extends Controller
 {
@@ -26,8 +27,9 @@ class RoomController extends Controller
 
 
     public function UpdateRoom(Request $request, $id){
-
-        $room  = Room::find($id);
+        DB::beginTransaction();
+        try {
+        $room  = Room::findOrFail($id);
         $room->roomtype_id = $room->roomtype_id;
         $room->total_adult = $request->room_capacity;
         // $room->total_adult = $request->total_adult;
@@ -99,6 +101,13 @@ class RoomController extends Controller
 
             }
         } // end if
+
+        DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Room update failed: '.$e->getMessage());
+            return redirect()->back()->withInput()->with(['message' => 'Failed to update room: '.$e->getMessage(), 'alert-type' => 'error']);
+        }
 
         $notification = array(
             'message' => 'Room Updated Successfully',
@@ -199,7 +208,9 @@ class RoomController extends Controller
     }//End Method
 
     public function DeleteRoom(Request $request, $id){
-        $room = Room::find($id);
+        DB::beginTransaction();
+        try {
+        $room = Room::findOrFail($id);
 
         if (file_exists('upload/roomimg/'.$room->image) AND ! empty($room->image)) {
            @unlink('upload/roomimg/'.$room->image);
@@ -219,6 +230,13 @@ class RoomController extends Controller
         Facility::where('rooms_id',$room->id)->delete();
         RoomNumber::where('rooms_id',$room->id)->delete();
         $room->delete();
+
+        DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Room deletion failed: '.$e->getMessage());
+            return redirect()->back()->with(['message' => 'Failed to delete room. It may be linked to bookings.', 'alert-type' => 'error']);
+        }
 
         $notification = array(
             'message' => 'Room Deleted Successfully',

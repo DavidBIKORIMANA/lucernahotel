@@ -15,6 +15,7 @@ use App\Models\Facility;
 use App\Models\RoomBookedDate;
 use App\Models\Booking;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Stripe;
 use App\Models\BookingRoomList;
 use App\Models\RoomNumber;
@@ -159,6 +160,8 @@ class BookingController extends Controller
          }
 
            // Create booking
+           DB::beginTransaction();
+           try {
            $data = new Booking();
            $data->rooms_id = $room->id;
            $data->user_id = Auth::user()->id;
@@ -236,6 +239,17 @@ class BookingController extends Controller
             $booked_dates->save();
         }
 
+        DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Booking creation failed: '.$e->getMessage());
+            $notification = [
+                'message' => 'Booking failed. Please try again.',
+                'alert-type' => 'error',
+            ];
+            return redirect()->back()->withInput()->with($notification);
+        }
+
         Session::forget('book_date');
 
         // Send confirmation email to guest
@@ -280,8 +294,9 @@ class BookingController extends Controller
     }// End Method 
 
      public function UpdateBookingStatus(Request $request, $id){
-
-        $booking = Booking::find($id);
+        DB::beginTransaction();
+        try {
+        $booking = Booking::findOrFail($id);
         $booking->payment_status = $request->payment_status;
         $booking->status = $request->status;
 
@@ -344,6 +359,13 @@ class BookingController extends Controller
             Mail::to($booking->email)->send(new BookConfirm($data));
         }
         /// End Sent Email 
+
+        DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Booking status update failed: '.$e->getMessage());
+            return redirect()->back()->with(['message' => 'Failed to update booking. Please try again.', 'alert-type' => 'error']);
+        }
  
         $notification = array(
             'message' => 'Information Updated Successfully',

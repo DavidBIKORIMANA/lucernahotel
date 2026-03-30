@@ -196,19 +196,32 @@ class RoleController extends Controller
         $data = array();
         $permissions = $request->permission;
 
-        foreach ($permissions as $key => $item) {
-            $data['role_id'] = $request->role_id;
-            $data['permission_id'] = $item;
+        DB::beginTransaction();
+        try {
+            foreach ($permissions as $key => $item) {
+                $data['role_id'] = $request->role_id;
+                $data['permission_id'] = $item;
 
-            DB::table('role_has_permissions')->insert($data);
-        } // end foreach
+                DB::table('role_has_permissions')->insert($data);
+            } // end foreach
 
-        $notification = array(
-            'message' => 'Role Permission Added Successfully',
-            'alert-type' => 'success'
-        );
+            DB::commit();
 
-        return redirect()->route('all.roles.permission')->with($notification);   
+            $notification = array(
+                'message' => 'Role Permission Added Successfully',
+                'alert-type' => 'success'
+            );
+
+            return redirect()->route('all.roles.permission')->with($notification);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $notification = array(
+                'message' => 'Failed to add role permissions: ' . $e->getMessage(),
+                'alert-type' => 'error'
+            );
+
+            return redirect()->back()->with($notification);
+        }   
 
     }// End Method
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\RateSeason;
 use App\Models\Room;
 use App\Models\RoomRateOverride;
+use Illuminate\Support\Facades\DB;
 
 class RateSeasonController extends Controller
 {
@@ -62,6 +63,9 @@ class RateSeasonController extends Controller
         ]);
 
         $season = RateSeason::findOrFail($id);
+
+        DB::beginTransaction();
+        try {
         $season->update([
             'name' => $request->name,
             'start_date' => $request->start_date,
@@ -85,6 +89,13 @@ class RateSeasonController extends Controller
                     ]);
                 }
             }
+        }
+
+        DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Rate season update failed: '.$e->getMessage());
+            return redirect()->back()->withInput()->with(['message' => 'Failed to update rate season.', 'alert-type' => 'error']);
         }
 
         return redirect()->route('all.seasons')->with([

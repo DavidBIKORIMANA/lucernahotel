@@ -250,6 +250,13 @@ class AdminController extends Controller
 
     public function StoreAdmin(Request $request){
 
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6',
+            'phone'    => 'nullable|string|max:30',
+        ]);
+
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
@@ -284,7 +291,13 @@ class AdminController extends Controller
 
     public function UpdateAdmin(Request $request,$id){
 
-        $user = User::find($id);
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,'.$id,
+            'phone' => 'nullable|string|max:30',
+        ]);
+
+        $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->email = $request->email;
         $user->phone = $request->phone;
