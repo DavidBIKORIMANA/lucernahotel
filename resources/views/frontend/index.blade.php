@@ -563,6 +563,17 @@
     .hi-grid { grid-template-columns:1fr 1fr; }
     .about-inner,.events-inner,.contact-inner { gap:44px; }
 }
+@media(max-width:960px){
+    .booking-bar-inner { flex-wrap:wrap; }
+    .bfield { flex:1 1 45%; min-width:200px; border-right:none; border-bottom:1px solid rgba(12,77,162,.07); }
+    .booking-btn { flex:1 1 100%; }
+    .about-inner { grid-template-columns:1fr; gap:36px; }
+    .dining-section { grid-template-columns:1fr; }
+    .dining-img { min-height:300px; }
+    .dining-content { padding:44px 28px; }
+    .events-inner { grid-template-columns:1fr; gap:32px; }
+    .contact-inner { grid-template-columns:1fr; gap:32px; }
+}
 @media(max-width:768px){
     .hero { min-height:420px; }
     .hero-title { font-size:clamp(28px,9vw,44px); }
@@ -602,6 +613,7 @@
     .hall-name { font-size:26px; }
     .testi-inner { padding:0 14px; }
     .testi-card { flex:0 0 250px; padding:24px 18px; }
+    .testi-grid { scroll-padding:0 14px; }
     .events-img { height:260px; }
     .events-badge { bottom:-14px; right:14px; padding:14px 20px; }
     .eb-num { font-size:28px; }
@@ -615,6 +627,7 @@
     .hero-eyebrow { font-size:10px; letter-spacing:.22em; margin-bottom:10px; }
     .hero-sub { font-size:13px; max-width:280px; margin-bottom:22px; }
     .hero-actions { gap:8px; }
+    .hero-actions .btn-blue,.hero-actions .btn-outline-w { width:100%; text-align:center; justify-content:center; }
     .hero-dots { bottom:80px; }
     .hero-dot { width:20px; }
     .hero-dot.active { width:36px; }

@@ -18,16 +18,16 @@ class FrontendRoomController extends Controller
 {
     public function AllFrontendRoomList(){
 
-        $rooms = Room::with('type')->latest()->get();
+        $rooms = Room::with('type')->where('status', 1)->latest()->get();
         return view('frontend.room.all_rooms',compact('rooms'));
     } // End Method 
 
 
     public function RoomDetailsPage($id){
 
-        $roomdetails = Room::with('approved_reviews.user')->find($id);
-        $multiImage = MultiImage::where('rooms_id',$id)->get();
-        $facility = Facility::where('rooms_id',$id)->get();
+        $roomdetails = Room::with(['type', 'approved_reviews.user', 'multi_images', 'facilities'])->findOrFail($id);
+        $multiImage = $roomdetails->multi_images;
+        $facility = $roomdetails->facilities;
 
         $otherRooms = Room::with('type')->where('id','!=', $id)->orderBy('id','DESC')->limit(2)->get();
         return view('frontend.room.room_details',compact('roomdetails','multiImage','facility','otherRooms'));
@@ -75,9 +75,9 @@ class FrontendRoomController extends Controller
 
     public function SearchRoomDetails(Request $request,$id){
         $request->flash();
-        $roomdetails = Room::with('type')->find($id);
-        $multiImage = MultiImage::where('rooms_id',$id)->get();
-        $facility = Facility::where('rooms_id',$id)->get();
+        $roomdetails = Room::with(['type', 'multi_images', 'facilities'])->findOrFail($id);
+        $multiImage = $roomdetails->multi_images;
+        $facility = $roomdetails->facilities;
 
         $otherRooms = Room::with('type')->where('id','!=', $id)->orderBy('id','DESC')->limit(2)->get();
         $room_id = $id;

@@ -1,29 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Password — {{ config('app.name') }}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="{{ asset('frontend/assets/img/favicon.png') }}">
-    <style>
-        :root{--brand:#0c4da2;--brand-dark:#034ea2;--navy:#0c2340;--white:#fff;--off-white:#f6f7fa;--ink:#181c2a;--mid:#4a5568;--gold:#d4a853;--f-head:'Cormorant Garamond',Georgia,serif;--f-body:'Source Sans 3',-apple-system,sans-serif;}
-        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-        html,body{height:100%;font-family:var(--f-body);color:var(--ink);-webkit-font-smoothing:antialiased;}
-        .auth-wrapper{display:flex;min-height:100vh;}
+@extends('frontend.main_master')
+
+@section('title', 'New Password — ' . config('app.name'))
+
+@section('styles')
+    /* ── Nav solid on auth pages ── */
+    nav#mainNav{background-image:linear-gradient(180deg,#0860c5 0%,#034ea2 100%)!important;box-shadow:0 4px 22px rgba(3,40,100,.3)!important;}
+    /* ── Auth Layout ── */
+    .auth-wrapper{display:flex;min-height:calc(100vh - 96px);margin-top:96px;}
         .auth-hero{flex:1;position:relative;background:var(--navy);display:flex;flex-direction:column;overflow:hidden;}
         .auth-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
         .auth-hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(3,78,162,.85) 0%,rgba(7,22,38,.7) 50%,rgba(7,22,38,.8) 100%);}
-        .auth-hero-top{position:relative;z-index:2;padding:36px 48px;}
-        .auth-hero-logo{height:38px;filter:brightness(10);transition:opacity .2s;}
-        .auth-hero-logo:hover{opacity:.85;}
-        .auth-hero-nav{position:relative;z-index:2;padding:0 48px;display:flex;gap:24px;flex-wrap:wrap;}
-        .auth-hero-nav a{font-family:var(--f-body);font-size:13px;font-weight:500;color:rgba(255,255,255,.7);text-decoration:none;transition:color .2s;letter-spacing:.02em;}
-        .auth-hero-nav a:hover{color:var(--white);}
-        .auth-hero-nav a::after{content:'';display:block;width:0;height:1.5px;background:var(--gold);transition:width .3s;margin-top:2px;}
-        .auth-hero-nav a:hover::after{width:100%;}
-        .auth-hero-content{position:relative;z-index:2;padding:0 48px 48px;margin-top:auto;margin-bottom:auto;max-width:520px;}
+        .auth-hero-content{position:relative;z-index:2;padding:48px;margin:auto 0;max-width:520px;}
         .auth-hero-title{font-family:var(--f-head);font-size:38px;font-weight:400;color:var(--white);line-height:1.2;margin-bottom:14px;}
         .auth-hero-sub{font-family:var(--f-body);font-size:15px;color:rgba(255,255,255,.7);line-height:1.8;}
         .auth-hero-stars{color:var(--gold);font-size:16px;letter-spacing:5px;margin-bottom:14px;display:block;}
@@ -52,47 +39,33 @@
         .pw-strength{height:3px;border-radius:2px;margin-top:6px;background:#e2e8f0;overflow:hidden;}
         .pw-strength-bar{height:100%;border-radius:2px;transition:width .3s,background .3s;width:0;}
         @media(max-width:960px){
-            .auth-wrapper{flex-direction:column;}
+            .auth-wrapper{flex-direction:column;min-height:auto;margin-top:96px;}
             .auth-hero{min-height:220px;max-height:260px;}
-            .auth-hero-top{padding:20px 24px;}
-            .auth-hero-logo{height:30px;}
-            .auth-hero-nav{padding:0 24px;gap:16px;}
-            .auth-hero-nav a{font-size:12px;}
-            .auth-hero-content{padding:0 24px 24px;}
+            .auth-hero-content{padding:24px;}
             .auth-hero-title{font-size:24px;margin-bottom:8px;}
             .auth-hero-sub{font-size:13px;line-height:1.6;}
             .auth-hero-stars{font-size:13px;letter-spacing:3px;margin-bottom:8px;}
             .auth-form-panel{width:100%;padding:32px 24px;}
         }
+        @media(max-width:768px){
+            .auth-wrapper{margin-top:92px;min-height:calc(100vh - 92px);}
+        }
         @media(max-width:480px){
+            .auth-wrapper{margin-top:82px;min-height:calc(100vh - 82px);}
             .auth-hero{min-height:180px;max-height:200px;}
-            .auth-hero-top{padding:16px 16px;}
-            .auth-hero-nav{padding:0 16px;}
-            .auth-hero-content{padding:0 16px 16px;}
+            .auth-hero-content{padding:16px;}
             .auth-hero-title{font-size:20px;}
             .auth-hero-sub{font-size:12px;}
             .auth-form-panel{padding:24px 16px;}
             .auth-form-title{font-size:26px;}
         }
-    </style>
-</head>
-<body>
+@endsection
+
+@section('main')
 <div class="auth-wrapper">
     <div class="auth-hero">
         <img src="{{ asset('frontend/assets/img/home-one.jpg') }}" alt="{{ config('app.name') }}">
         <div class="auth-hero-overlay"></div>
-        <div class="auth-hero-top">
-            <a href="{{ route('home') }}">
-                <img class="auth-hero-logo" src="{{ asset('frontend/assets/img/logos/logo.jpeg') }}" alt="{{ config('app.name') }}">
-            </a>
-        </div>
-        <div class="auth-hero-nav">
-            <a href="{{ route('home') }}">Home</a>
-            <a href="{{ route('froom.all') }}">Rooms</a>
-            <a href="{{ route('show.gallery') }}">Gallery</a>
-            <a href="{{ route('blog.list') }}">Blog</a>
-            <a href="{{ route('contact.us') }}">Contact</a>
-        </div>
         <div class="auth-hero-content">
             <span class="auth-hero-stars">★★★</span>
             <h2 class="auth-hero-title">Create New Password</h2>
@@ -147,7 +120,9 @@
         </form>
     </div>
 </div>
+@endsection
 
+@section('scripts')
 <script>
 function togglePw(id, btn){
     var inp = document.getElementById(id);
@@ -174,5 +149,4 @@ function togglePw(id, btn){
     });
 })();
 </script>
-</body>
-</html>
+@endsection

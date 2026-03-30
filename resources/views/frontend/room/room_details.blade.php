@@ -132,7 +132,7 @@ input:focus, select:focus, textarea:focus, button:focus {
 
 /* ── Booking Sidebar ── */
 .rd-booking {
-    position:sticky; top:24px;
+    position:sticky; top:108px;
     background:var(--white); border:1px solid rgba(12,36,64,.06);
     box-shadow:0 8px 40px rgba(12,36,64,.07);
     overflow:hidden;

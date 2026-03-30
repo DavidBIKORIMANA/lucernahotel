@@ -333,17 +333,15 @@ class BookingController extends Controller
           
         /// Start Sent Email 
         if (!in_array($request->status, [4, 5])) {
-            $sendmail = Booking::find($id);
-
             $data = [
-                'check_in' => $sendmail->check_in,
-                'check_out' => $sendmail->check_out,
-                'name' => $sendmail->name,
-                'email' => $sendmail->email,
-                'phone' => $sendmail->phone,
+                'check_in' => $booking->check_in,
+                'check_out' => $booking->check_out,
+                'name' => $booking->name,
+                'email' => $booking->email,
+                'phone' => $booking->phone,
             ];
 
-            Mail::to($sendmail->email)->send(new BookConfirm($data));
+            Mail::to($booking->email)->send(new BookConfirm($data));
         }
         /// End Sent Email 
  
