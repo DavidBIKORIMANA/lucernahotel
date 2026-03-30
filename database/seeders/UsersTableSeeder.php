@@ -14,25 +14,25 @@ class UsersTableSeeder extends Seeder
     public function run(): void
     {
         // Create roles
-        $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
-        $userRole = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
+    //     $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+    //     $userRole = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
 
-        // Admin
-        $admin = User::create([
-            'name' => 'Admin',
-            'email' => 'admin@gmail.com',
-            'password' => bcrypt('11223344'),
-            'status' => 'active',
-        ]);
-        $admin->assignRole($adminRole);
+    //     // Admin
+    //     $admin = User::create([
+    //         'name' => 'Admin',
+    //         'email' => 'admin@gmail.com',
+    //         'password' => bcrypt('11223344'),
+    //         'status' => 'active',
+    //     ]);
+    //     $admin->assignRole($adminRole);
 
-        // User
-        $user = User::create([
-            'name' => 'User',
-            'email' => 'user@gmail.com',
-            'password' => bcrypt('11223344'),
-            'status' => 'active',
-        ]);
-        $user->assignRole($userRole);
-    }
+    //     // User
+    //     $user = User::create([
+    //         'name' => 'User',
+    //         'email' => 'user@gmail.com',
+    //         'password' => bcrypt('11223344'),
+    //         'status' => 'active',
+    //     ]);
+    //     $user->assignRole($userRole);
+    // }
 }
